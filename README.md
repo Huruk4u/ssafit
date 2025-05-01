@@ -3,9 +3,9 @@ SSAFY 1학기 관통 프로젝트
 # SSAFIT
 
 > 인바디 데이터를 기반으로 개인 맞춤형 운동을 추천하는 플랫폼 어플리케이션
-> 
+> ![image.png](attachment:e1294607-bbd6-47ee-a91a-3ff9b4f351e8:5707f658-8145-4f82-aa36-85bb6804bfa2.png)
 
-![image.png](attachment:e1294607-bbd6-47ee-a91a-3ff9b4f351e8:5707f658-8145-4f82-aa36-85bb6804bfa2.png)
+
 
 ### TEAM
 
