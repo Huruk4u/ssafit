@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.ssafit.mapper.BoardMyBatisMapper">
+
+    <resultMap id="BoardResultMap" type="Board">
+        <id property="id" column="id" />
+        <result property="title" column="title" />
+        <result property="content" column="content" />
+        <result property="author" column="author" />
+        <result property="createdAt" column="created_at" />
+        <result property="updatedAt" column="updated_at" />
+    </resultMap>
+
+    <!-- Insert a new board post -->
+    <insert id="insertBoard" parameterType="Board" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO board (title, content, author)
+        VALUES (#{title}, #{content}, #{author})
+    </insert>
+
+    <!-- Get a board post by ID -->
+    <select id="getBoardById" resultMap="BoardResultMap">
+        SELECT id, title, content, author, created_at, updated_at
+        FROM board
+        WHERE id = #{id}
+    </select>
+
+    <!-- Get all board posts -->
+    <select id="getAllBoards" resultMap="BoardResultMap">
+        SELECT id, title, content, author, created_at, updated_at
+        FROM board
+        ORDER BY created_at DESC
+    </select>
+
+    <!-- Update a board post -->
+    <update id="updateBoard" parameterType="Board">
+        UPDATE board
+        SET title = #{title}, content = #{content}, author = #{author}
+        WHERE id = #{id}
+    </update>
+
+    <!-- Delete a board post by ID -->
+    <delete id="deleteBoardById">
+        DELETE FROM board
+        WHERE id = #{id}
+    </delete>
+
+    <!-- Check if a board post exists by ID -->
+    <select id="existsById" resultType="boolean">
+        SELECT COUNT(*) > 0
+        FROM board
+        WHERE id = #{id}
+    </select>
+
+</mapper>
