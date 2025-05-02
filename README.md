@@ -11,7 +11,7 @@ SSAFY 1학기 관통 프로젝트
 
 유성민 : https://github.com/Huruk4u
 
-하헌석 : 
+하헌석 : https://github.com/rickyhi99
 
 ---
 
