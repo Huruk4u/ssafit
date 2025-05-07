@@ -2,7 +2,7 @@ package com.example.ssafit.config;
 
 import java.io.IOException;
 
-import com.example.ssafit.service.JwtUserDetailsService;
+import com.example.ssafit.model.service.JwtUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;

@@ -1,4 +1,4 @@
-package com.example.ssafit.service;
+package com.example.ssafit.model.service;
 
 import java.util.ArrayList;
 
@@ -28,7 +28,7 @@ public class JwtUserDetailsService implements UserDetailsService {
 
         if (user != null) {
             return new org.springframework.security.core.userdetails.User(
-                    user.getUsername(), user.getPassword(), new ArrayList<>());
+                    user.getUserName(), user.getUserPassword(), new ArrayList<>());
         } else {
             throw new UsernameNotFoundException("User not found with username: " + username);
         }
@@ -36,8 +36,8 @@ public class JwtUserDetailsService implements UserDetailsService {
 
     public User save(User user) {
         User newUser = new User();
-        newUser.setUsername(user.getUsername());
-        newUser.setPassword(bcryptEncoder.encode(user.getPassword()));
+        newUser.setUserName(user.getUserName());
+        newUser.setUserPassword(bcryptEncoder.encode(user.getUserPassword()));
         newUser.setEnabled(true);
         userDao.insertUser(newUser);
         return newUser;

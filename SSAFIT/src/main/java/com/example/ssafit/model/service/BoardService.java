@@ -1,4 +1,4 @@
-package com.example.ssafit.service;
+package com.example.ssafit.model.service;
 
 import com.example.ssafit.exception.BoardNotFoundException;
 import com.example.ssafit.model.dto.Board;
