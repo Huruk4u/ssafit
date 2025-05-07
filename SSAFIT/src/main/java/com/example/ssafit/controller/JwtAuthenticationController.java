@@ -6,7 +6,7 @@ import com.example.ssafit.config.JwtTokenUtil;
 import com.example.ssafit.model.dto.JwtRequest;
 import com.example.ssafit.model.dto.JwtResponse;
 import com.example.ssafit.model.dto.User;
-import com.example.ssafit.service.JwtUserDetailsService;
+import com.example.ssafit.model.service.JwtUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -49,8 +49,8 @@ public class JwtAuthenticationController {
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public ResponseEntity<?> saveUser(@RequestBody JwtRequest request) throws Exception {
         User user = new User();
-        user.setUsername(request.getUsername());
-        user.setPassword(request.getPassword());
+        user.setUserName(request.getUsername());
+        user.setUserPassword(request.getPassword());
         return ResponseEntity.ok(jwtUserDetailsService.save(user));
     }
 
