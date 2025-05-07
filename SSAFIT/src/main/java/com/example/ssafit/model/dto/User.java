@@ -1,50 +1,62 @@
 package com.example.ssafit.model.dto;
 
+import lombok.Getter;
+import lombok.Setter;
+
+/**
+ * TODO
+ * 추후 수정 가능성이 보이는 field
+ * badgeId, profileImage, backgroundImage -> 필드의 타입이 변화할 것 같음
+ * height, weight는 아마 challenge의 가장 마지막 기록을 불러오지 않을까???
+ */
+@Setter
+@Getter
 public class User {
-    private Long id;
-    private String username;
-    private String password;
+    private int userId;
+    private String userName;
+    private String userPassword;
+    private String nickname;
+    private String email;
+    private String profileImage;
+    private String backgroundImage;
+    private String badgeId; // -> 추후 수정 가능성
+    private int height;
+    private int weight;
     private boolean enabled;
+    private String createdAt;
 
-    public User() {
-    }
+    public User() {}
 
-    public User(Long id, String username, String password, boolean enabled) {
-        this.id = id;
-        this.username = username;
-        this.password = password;
+    public User(int userId, String userName, String userPassword, String nickname, String email, String profileImage, String backgroundImage, String badgeId, int height, int weight, boolean enabled, String createdAt) {
+        this.userId = userId;
+        this.userName = userName;
+        this.userPassword = userPassword;
+        this.nickname = nickname;
+        this.email = email;
+        this.profileImage = profileImage;
+        this.backgroundImage = backgroundImage;
+        this.badgeId = badgeId;
+        this.height = height;
+        this.weight = weight;
         this.enabled = enabled;
+        this.createdAt = createdAt;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
+    @Override
+    public String toString() {
+        return "User{" +
+                "userId=" + userId +
+                ", userName='" + userName + '\'' +
+                ", userPassword='" + userPassword + '\'' +
+                ", nickname='" + nickname + '\'' +
+                ", email='" + email + '\'' +
+                ", profileImage='" + profileImage + '\'' +
+                ", backgroundImage='" + backgroundImage + '\'' +
+                ", badgeId='" + badgeId + '\'' +
+                ", height=" + height +
+                ", weight=" + weight +
+                ", enabled=" + enabled +
+                ", createdAt='" + createdAt + '\'' +
+                '}';
     }
 }
