@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.ssafit.model.dao.ArticleDao">
+    <!--1. 모든 글들을 조회-->
+    <select id="selectAllArticle">
+        SELECT *
+        FROM articles
+    </select>
+
+    <!--2. articleId가 일치하는 글을 조회-->
+    <select id="selectArticleByArticleId">
+        SELECT *
+        FROM articles
+        WHERE article_id = #{articleId}
+    </select>
+
+    <!--3. userId가 일치하는 글들을 조회-->
+    <select id="selectArticleListByUserId">
+        SELECT *
+        FROM articles
+        WHERE user_id = #{userId}
+    </select>
+
+    <!--4. ArticleLike의 userId가 일치하는 글들을 조회-->
+    <select id="selectArticleListByArticleLikeUserId">
+        SELECT DISTINCT a.*
+        FROM articles a
+                 INNER JOIN article_likes al ON a.article_id = al.article_id
+        WHERE al.user_id = #{userId}
+    </select>
+
+    <!--5. boardId가 일치하는 글들을 조회-->
+    <select id="selectArticleListByBoardId">
+        SELECT *
+        FROM articles
+        WHERE board_id = #{boardId}
+    </select>
+
+    <!--6. searchForm으로 글들을 조회-->
+    <!--    searchCondition으로 검색을 하는 건, 일단 보류시킴-->
+    <!--    보류 이유 1. tag가 article에 어떤 형태로 들어있는지 명확히 제시되지 않음.-->
+    <!--    <select id="selectArticleListByCondition" parameterType="SearchCondition" resultType="Article">-->
+    <!--        SELECT * FROM articles-->
+    <!--        <trim prefix="WHERE" prefixOverrides="AND | OR">-->
+    <!--            <if test="key == category">-->
+    <!--                AND board_id = #{word}-->
+    <!--            </if>-->
+    <!--            <if test="key == tag">-->
+    <!--                AND-->
+    <!--            </if>-->
+    <!--        </trim>-->
+
+    <!--        <if test="orderBy != null">-->
+    <!--            ORDER BY #{orderBy} #{orderByDir}-->
+    <!--        </if>-->
+    <!--        <if test="limit">-->
+    <!--            LIMIT #{countPerPage} OFFSET #{offset}-->
+    <!--        </if>-->
+    <!--    </select>-->
+    <!--6번 기능 더미-->
+    <select id="selectArticleListByCondition" resultType="Article">
+        SELECT *
+        FROM articles
+    </select>
+
+    <insert id="insertArticle" parameterType="Article">
+        INSERT INTO articles(user_id, board_id, title, content)
+        VALUES (#{userId}, #{boardId}, #{title}, #{content})
+    </insert>
+
+    <update id="updateArticle">
+        UPDATE articles
+        SET title=#{title},
+            content=#{content}
+        WHERE article_id = #{articleId}
+    </update>
+
+    <delete id="deleteArticle">
+        DELETE
+        FROM articles
+        WHERE article_id = #{articleId}
+    </delete>
+</mapper>
