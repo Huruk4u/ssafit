@@ -1,4 +1,4 @@
-package com.example.ssafit.model.dao;
+package com.example.ssafit.model.service;
 
 import com.example.ssafit.model.dto.Article;
 import com.example.ssafit.model.dto.SearchCondition;
