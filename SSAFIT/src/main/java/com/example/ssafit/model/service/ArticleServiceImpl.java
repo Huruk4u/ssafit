@@ -48,18 +48,21 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     @Transactional
     public int addArticle(Article article) {
-        return articleDao.insertArticle(article);
+        articleDao.insertArticle(article);
+        return 1;
     }
 
     @Override
     @Transactional
     public int modifyArticle(int articleId, Article article) {
-        return articleDao.updateArticle(articleId, article);
+        articleDao.updateArticle(articleId, article);
+        return 1;
     }
 
     @Override
     @Transactional
     public int removeArticle(int articleId) {
-        return articleDao.deleteArticle(articleId);
+        articleDao.deleteArticle(articleId);
+        return 1;
     }
 }
