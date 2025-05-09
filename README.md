@@ -53,5 +53,5 @@ FRONT :
 https://docs.google.com/spreadsheets/d/1BYQmy34NbOERa4ITg_LEPok-snsSiy_OyTTjeFaaVyU/edit?usp=sharing
 
 ## MOCK UP
-DEV LINK : https://www.figma.com/design/IoU9HRO94ODc7Ey8e3pBJA/SSAFIT?node-id=0-1&m=dev&t=S8XHIH6vzCU9PyOl-1
+DEV LINK : https://www.figma.com/design/IoU9HRO94ODc7Ey8e3pBJA/SSAFIT?node-id=0-1&m=dev&t=S8XHIH6vzCU9PyOl-1<br>
 프로토타입 : https://www.figma.com/proto/IoU9HRO94ODc7Ey8e3pBJA/SSAFIT?node-id=0-1&t=S8XHIH6vzCU9PyOl-1
