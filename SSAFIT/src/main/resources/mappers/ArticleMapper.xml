@@ -71,9 +71,9 @@
 
     <update id="updateArticle">
         UPDATE articles
-        SET title=#{title},
-            content=#{content}
-        WHERE article_id = #{articleId}
+        SET title=#{article.title},
+            content=#{article.content}
+        WHERE article_id = #{article.articleId}
     </update>
 
     <delete id="deleteArticle">
