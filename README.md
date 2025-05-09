@@ -51,3 +51,7 @@ FRONT :
 ## 기능 명세서
 
 https://docs.google.com/spreadsheets/d/1BYQmy34NbOERa4ITg_LEPok-snsSiy_OyTTjeFaaVyU/edit?usp=sharing
+
+## MOCK UP
+DEV LINK : https://www.figma.com/design/A5F3IXxUhkFXCjwMDcCiKe/Chimhaha?node-id=9-508&m=dev&t=RhlUTpVcIJaqnKYG-1<br>
+프로토타입 : https://www.figma.com/proto/A5F3IXxUhkFXCjwMDcCiKe/Chimhaha?node-id=9-508&t=RhlUTpVcIJaqnKYG-1
