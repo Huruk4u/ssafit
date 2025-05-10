@@ -1,6 +1,6 @@
 //package com.example.ssafit.model.dao;
 //
-//import com.example.ssafit.model.dto.User;
+//import com.example.ssafit.model.dto.User.User;
 //import org.apache.ibatis.session.SqlSession;
 //import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.stereotype.Repository;

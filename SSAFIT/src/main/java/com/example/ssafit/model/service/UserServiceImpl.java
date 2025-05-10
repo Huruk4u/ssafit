@@ -1,8 +1,9 @@
 package com.example.ssafit.model.service;
 
 import com.example.ssafit.model.dao.UserDao;
-import com.example.ssafit.model.dto.User;
+import com.example.ssafit.model.dto.User.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -15,11 +16,14 @@ public class UserServiceImpl implements UserService {
     private UserDao userDao;
 
     @Autowired
+    @Lazy
     private PasswordEncoder passwordEncoder;
 
     @Override
     public User searchByUsername(String username) {
-        return userDao.selectByUsername(username);
+        User user = userDao.selectByUsername(username);
+        System.out.println(user);
+        return user;
     }
 
     @Override
@@ -35,11 +39,11 @@ public class UserServiceImpl implements UserService {
 
         User newUser = new User();
         newUser.setUserName(user.getUserName());
-        newUser.setUserPassword(passwordEncoder.encode(user.getUserPassword()));
+        newUser.setPassword(passwordEncoder.encode(user.getPassword()));
         newUser.setNickname(user.getNickname());
         newUser.setEmail(user.getEmail());
 
-        userDao.insertUser(user);
+        userDao.insertUser(newUser);
         return 1;
     }
 

@@ -2,19 +2,19 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.ssafit.model.dao.UserDao">
 
-    <!-- Result mapping -->
-    <resultMap id="UserResultMap" type="User">
-        <id property="id" column="id" />
-        <result property="userName" column="userName" />
-        <result property="userPassword" column="userPassword" />
-        <result property="enabled" column="enabled" />
-    </resultMap>
+<!--    &lt;!&ndash; Result mapping &ndash;&gt;-->
+<!--    <resultMap id="UserResultMap" type="User">-->
+<!--        <id property="id" column="id" />-->
+<!--        <result property="userName" column="userName" />-->
+<!--        <result property="password" column="password" />-->
+<!--        <result property="enabled" column="enabled" />-->
+<!--    </resultMap>-->
 
     <!-- userName으로 user조회 -->
-    <select id="selectByUsername" resultMap="UserResultMap">
+    <select id="selectByUsername" resultType="User">
         SELECT *
         FROM users
-        WHERE userName = #{userName}
+        WHERE username = #{userName}
     </select>
 
     <!-- userName의 존재 여부 확인 -->
@@ -26,8 +26,8 @@
 
     <!-- user 등록 -->
     <insert id="insertUser" parameterType="User" useGeneratedKeys="true" keyProperty="userId" keyColumn="user_id">
-        INSERT INTO users (username, password)
-        VALUES (#{userName}, #{userPassword})
+        INSERT INTO users (username, password, nickname, email)
+        VALUES (#{userName}, #{password}, #{nickname}, #{email})
     </insert>
 
     <!-- user 업데이트 -->
@@ -43,5 +43,8 @@
         WHERE username = #{userName}
     </delete>
 
-    <select id=""
+    <select id="selectAllUsers">
+        SELECT *
+        FROM users;
+    </select>
 </mapper>

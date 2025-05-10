@@ -1,6 +1,6 @@
 package com.example.ssafit.controller;
 
-import com.example.ssafit.model.dto.User;
+import com.example.ssafit.model.dto.User.User;
 import com.example.ssafit.model.service.JwtUserDetailsService;
 import com.example.ssafit.model.service.UserService;
 import com.example.ssafit.util.JwtTokenUtil;

@@ -1,4 +1,4 @@
-package com.example.ssafit.model.dto;
+package com.example.ssafit.model.dto.User;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -14,7 +14,7 @@ import lombok.Setter;
 public class User {
     private int userId;
     private String userName;
-    private String userPassword;
+    private String password;
     private String nickname;
     private String email;
     private String profileImage;
@@ -25,10 +25,10 @@ public class User {
 
     public User() {}
 
-    public User(int userId, String userName, String userPassword, String nickname, String email, String profileImage, String backgroundImage, String badgeId, int height, int weight, boolean enabled, String createdAt) {
+    public User(int userId, String userName, String password, String nickname, String email, String profileImage, String backgroundImage, String badgeId, int height, int weight, boolean enabled, String createdAt) {
         this.userId = userId;
         this.userName = userName;
-        this.userPassword = userPassword;
+        this.password = password;
         this.nickname = nickname;
         this.email = email;
         this.profileImage = profileImage;
@@ -54,12 +54,12 @@ public class User {
         this.userName = userName;
     }
 
-    public String getUserPassword() {
-        return userPassword;
+    public String getPassword() {
+        return password;
     }
 
-    public void setUserPassword(String userPassword) {
-        this.userPassword = userPassword;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getNickname() {
@@ -123,7 +123,7 @@ public class User {
         return "User{" +
                 "userId=" + userId +
                 ", userName='" + userName + '\'' +
-                ", userPassword='" + userPassword + '\'' +
+                ", password='" + password + '\'' +
                 ", nickname='" + nickname + '\'' +
                 ", email='" + email + '\'' +
                 ", profileImage='" + profileImage + '\'' +
