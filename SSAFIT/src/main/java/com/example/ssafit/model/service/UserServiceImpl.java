@@ -6,8 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -64,5 +68,21 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> searchAllUser() {
         return userDao.selectAllUsers();
+    }
+
+    @Override
+    public int modifyUserProfileImageByUserName(String userName, MultipartFile file) throws IOException {
+        String originalFileName = file.getOriginalFilename();
+        String extension = originalFileName.substring(originalFileName.lastIndexOf(".") + 1);
+
+        String fileName = UUID.randomUUID().toString() + "." + extension;
+
+        String uploadDir = "C:/Users/sungm/Desktop/Spring/ssafit/SSAFIT/src/main/resources/static/images/userProfileImage/";
+        File saveFile = new File(uploadDir + fileName);
+        file.transferTo(saveFile);
+
+        userDao.updateUserProfileImageByUsername(userName, fileName);
+
+        return 1;
     }
 }

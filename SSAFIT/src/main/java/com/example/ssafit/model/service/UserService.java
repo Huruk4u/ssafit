@@ -1,7 +1,9 @@
 package com.example.ssafit.model.service;
 
 import com.example.ssafit.model.dto.User.User;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -31,5 +33,8 @@ public interface UserService {
 
     // 6. 모든 user를 출력하는 기능
     List<User> searchAllUser();
+
+    // 7. User의 프로필이미지를 업데이트 하는 기능
+    int modifyUserProfileImageByUserName(String userName, MultipartFile file) throws IOException;
 
 }

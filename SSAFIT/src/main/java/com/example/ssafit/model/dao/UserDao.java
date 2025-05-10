@@ -30,4 +30,7 @@ public interface UserDao {
 
     // 6. 모든 user를 조회하는 기능
     List<User> selectAllUsers();
+
+    // 7. User의 프로필사진을 업데이트 하는 기능
+    int updateUserProfileImageByUsername(String userName, String fileName);
 }

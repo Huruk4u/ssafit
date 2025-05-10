@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -78,5 +79,19 @@ public class UserController {
 
         int result = userService.modifyUserStringInfoByUsername(userName, user);
         return new ResponseEntity(result, result == 1 ? HttpStatus.ACCEPTED : HttpStatus.BAD_REQUEST);
+    }
+
+    /**
+     * user의 Profile Image를 업데이트 하는 기능
+     */
+    @PutMapping("/update/profileImage")
+    public ResponseEntity updateProfileImageByUsername(@RequestParam("userName") String userName, @RequestParam MultipartFile file, @RequestBody User user) {
+
+        try {
+            userService.modifyUserProfileImageByUserName(userName, file);
+            return new ResponseEntity(HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
     }
 }
