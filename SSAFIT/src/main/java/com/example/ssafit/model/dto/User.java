@@ -1,7 +1,7 @@
 package com.example.ssafit.model.dto;
 
 public class User {
-    private Long userId;
+    private int userId;
     private String username;
     private String password;
     private boolean enabled;
@@ -9,18 +9,18 @@ public class User {
     public User() {
     }
 
-    public User(Long userId, String username, String password, boolean enabled) {
+    public User(int userId, String username, String password, boolean enabled) {
         this.userId = userId;
         this.username = username;
         this.password = password;
         this.enabled = enabled;
     }
 
-    public Long getUserId() {
+    public int getUserId() {
         return userId;
     }
 
-    public void setUserId(Long userId) {
+    public void setUserId(int userId) {
         this.userId = userId;
     }
 

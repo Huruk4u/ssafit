@@ -79,7 +79,7 @@ CREATE TABLE articles (
                           dislike_count    BIGINT NOT NULL DEFAULT 0,
                           created_at  TIMESTAMP  DEFAULT CURRENT_TIMESTAMP,
                           updated_at  TIMESTAMP  DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-                          FOREIGN KEY (user_id)  REFERENCES users(user_id)
+                          FOREIGN KEY (user_id)  REFERENCES users(user_id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
 CREATE TABLE comments (
@@ -87,10 +87,12 @@ CREATE TABLE comments (
                           article_id  BIGINT     NOT NULL,
                           user_id     BIGINT     NOT NULL,
                           content     TEXT        NOT NULL,
+                          like_count    BIGINT NOT NULL DEFAULT 0,
+                          dislike_count    BIGINT NOT NULL DEFAULT 0,
                           created_at  TIMESTAMP  DEFAULT CURRENT_TIMESTAMP,
                           updated_at  TIMESTAMP  DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-                          FOREIGN KEY (article_id) REFERENCES articles(article_id),
-                          FOREIGN KEY (user_id)    REFERENCES users(user_id)
+                          FOREIGN KEY (article_id) REFERENCES articles(article_id) ON DELETE CASCADE,
+                          FOREIGN KEY (user_id)    REFERENCES users(user_id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
 CREATE TABLE article_likes (
@@ -98,8 +100,8 @@ CREATE TABLE article_likes (
                                article_id      BIGINT NOT NULL,
                                user_id         BIGINT NOT NULL,
                                created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                               FOREIGN KEY (article_id) REFERENCES articles(article_id),
-                               FOREIGN KEY (user_id)    REFERENCES users(user_id)
+                               FOREIGN KEY (article_id) REFERENCES articles(article_id) ON DELETE CASCADE,
+                               FOREIGN KEY (user_id)    REFERENCES users(user_id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
 CREATE TABLE article_dislikes (
@@ -107,8 +109,8 @@ CREATE TABLE article_dislikes (
                                   article_id         BIGINT NOT NULL,
                                   user_id            BIGINT NOT NULL,
                                   created_at         TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                                  FOREIGN KEY (article_id) REFERENCES articles(article_id),
-                                  FOREIGN KEY (user_id)    REFERENCES users(user_id)
+                                  FOREIGN KEY (article_id) REFERENCES articles(article_id) ON DELETE CASCADE,
+                                  FOREIGN KEY (user_id)    REFERENCES users(user_id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
 CREATE TABLE comment_likes (
@@ -116,8 +118,8 @@ CREATE TABLE comment_likes (
                                comment_id      BIGINT NOT NULL,
                                user_id         BIGINT NOT NULL,
                                created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                               FOREIGN KEY (comment_id) REFERENCES comments(comment_id),
-                               FOREIGN KEY (user_id)     REFERENCES users(user_id)
+                               FOREIGN KEY (comment_id) REFERENCES comments(comment_id) ON DELETE CASCADE,
+                               FOREIGN KEY (user_id)     REFERENCES users(user_id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
 CREATE TABLE comment_dislikes (
@@ -125,8 +127,8 @@ CREATE TABLE comment_dislikes (
                                   comment_id         BIGINT NOT NULL,
                                   user_id            BIGINT NOT NULL,
                                   created_at         TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                                  FOREIGN KEY (comment_id) REFERENCES comments(comment_id),
-                                  FOREIGN KEY (user_id)     REFERENCES users(user_id)
+                                  FOREIGN KEY (comment_id) REFERENCES comments(comment_id) ON DELETE CASCADE,
+                                  FOREIGN KEY (user_id)     REFERENCES users(user_id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
 -- ========================================
