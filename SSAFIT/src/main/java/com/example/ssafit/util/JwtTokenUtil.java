@@ -1,4 +1,4 @@
-package com.example.ssafit.config;
+package com.example.ssafit.util;
 
 import java.io.Serializable;
 import java.security.Key;

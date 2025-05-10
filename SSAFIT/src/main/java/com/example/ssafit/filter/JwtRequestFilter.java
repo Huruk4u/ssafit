@@ -1,8 +1,9 @@
-package com.example.ssafit.config;
+package com.example.ssafit.filter;
 
 import java.io.IOException;
 import java.util.List;
 
+import com.example.ssafit.util.JwtTokenUtil;
 import com.example.ssafit.model.service.JwtUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

@@ -2,7 +2,7 @@ package com.example.ssafit.controller;
 
 import java.util.Objects;
 
-import com.example.ssafit.config.JwtTokenUtil;
+import com.example.ssafit.util.JwtTokenUtil;
 import com.example.ssafit.model.dto.JwtRequest;
 import com.example.ssafit.model.dto.JwtResponse;
 import com.example.ssafit.model.dto.User;
@@ -21,9 +21,16 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 
+/**
+ * User 동작 관련 Controller
+ * 1. 인증 토큰 생성
+ * 2. User를 DB에 저장
+ * 3. User의 토큰 인증 (로그인)
+ *
+ */
 @RestController
 @CrossOrigin
-@RequestMapping("/api_user")
+@RequestMapping("/api_auth")
 public class JwtAuthenticationController {
 
     @Autowired
