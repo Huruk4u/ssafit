@@ -45,4 +45,10 @@ public interface ArticleService {
 
     // 9. article 삭제
     int removeArticle(int articleId);
+
+    boolean likeArticle(int articleId, int userId);
+    boolean disLikeArticle(int articleId, int userId);
+    void increaseViewCount(int articleId);
+    int getLikeCount(int articleId);
+    int getDislikeCount(int articleId);
 }

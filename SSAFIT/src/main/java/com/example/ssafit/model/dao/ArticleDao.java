@@ -2,6 +2,7 @@ package com.example.ssafit.model.dao;
 
 import com.example.ssafit.model.dto.Article;
 import com.example.ssafit.model.dto.SearchCondition;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -45,4 +46,21 @@ public interface ArticleDao {
 
     // 9. article 삭제
     int deleteArticle(int articleId);
+
+    boolean isLiked(@Param("articleId") int articleId, @Param("userId") int userId);
+    void insertLike(@Param("articleId") int articleId, @Param("userId") int userId);
+    void deleteLike(@Param("articleId") int articleId, @Param("userId") int userId);
+
+    boolean isDisliked(@Param("articleId") int articleId, @Param("userId") int userId);
+    void insertDislike(@Param("articleId") int articleId, @Param("userId") int userId);
+    void deleteDislike(@Param("articleId") int articleId, @Param("userId") int userId);
+
+    int getLikeCount(int articleId);
+    int getDislikeCount(int articleId);
+    void increaseLikeCount(int articleId);
+    void decreaseLikeCount(int articleId);
+    void increaseDislikeCount(int articleId);
+    void decreaseDislikeCount(int articleId);
+
+    void increaseViewCount(int articleId);
 }

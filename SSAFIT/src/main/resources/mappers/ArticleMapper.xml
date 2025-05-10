@@ -81,4 +81,79 @@
         FROM articles
         WHERE article_id = #{articleId}
     </delete>
+
+    <!-- ========== 좋아요 기능 ========== -->
+    <select  id="isLiked" resultType="boolean">
+        SELECT EXISTS (
+            SELECT 1 FROM article_likes
+            WHERE article_id = #{articleId}
+              AND user_id    = #{userId}
+        )
+    </select>
+
+    <insert id="insertLike">
+        INSERT INTO article_likes(article_id, user_id)
+        VALUES (#{articleId}, #{userId})
+    </insert>
+
+    <delete id="deleteLike">
+        DELETE FROM article_likes
+        WHERE article_id = #{articleId}
+          AND user_id    = #{userId}
+    </delete>
+
+    <!-- ========== 싫어요 기능 ========== -->
+    <select  id="isDisliked" resultType="boolean">
+        SELECT EXISTS (
+            SELECT 1 FROM article_dislikes
+            WHERE article_id = #{articleId}
+              AND user_id    = #{userId}
+        )
+    </select>
+
+    <insert id="insertDislike">
+        INSERT INTO article_dislikes(article_id, user_id)
+        VALUES (#{articleId}, #{userId})
+    </insert>
+
+    <delete id="deleteDislike">
+        DELETE FROM article_dislikes
+        WHERE article_id = #{articleId}
+          AND user_id    = #{userId}
+    </delete>
+
+    <!-- 좋아요 수 증가 -->
+    <update id="increaseLikeCount">
+        UPDATE articles
+        SET like_count = like_count + 1
+        WHERE article_id = #{articleId}
+    </update>
+
+    <!-- 좋아요 수 감소 -->
+    <update id="decreaseLikeCount">
+        UPDATE articles
+        SET like_count = like_count - 1
+        WHERE article_id = #{articleId}
+    </update>
+
+    <!-- 싫어요 수 증가 -->
+    <update id="increaseDislikeCount">
+        UPDATE articles
+        SET dislike_count = dislike_count + 1
+        WHERE article_id = #{articleId}
+    </update>
+
+    <!-- 싫어요 수 감소 -->
+    <update id="decreaseDislikeCount">
+        UPDATE articles
+        SET dislike_count = dislike_count - 1
+        WHERE article_id = #{articleId}
+    </update>
+
+
+    <update id="increaseViewCount">
+        UPDATE articles
+        SET view_count = view_count + 1
+        WHERE article_id = #{articleId}
+    </update>
 </mapper>
