@@ -24,7 +24,7 @@ public interface UserService {
     int addUser(User user);
 
     // 4. user를 업데이트하는 기능
-    int modifyUser(User user);
+    int modifyUserStringInfoByUsername(String userName, User user);
 
     // 5. user를 삭제하는 기능
     int removeByUsername(String username);

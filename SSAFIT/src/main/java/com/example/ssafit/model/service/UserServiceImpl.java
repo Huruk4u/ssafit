@@ -48,8 +48,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public int modifyUser(User user) {
-        userDao.updateUser(user);
+    public int modifyUserStringInfoByUsername(String userName, User user) {
+        user.setUserName(userName);
+        System.out.println(user);
+        userDao.updateUserStringInfoByUsername(user);
         return 1;
     }
 

@@ -31,9 +31,10 @@
     </insert>
 
     <!-- user 업데이트 -->
-    <update id="updateUser" parameterType="User">
+    <update id="updateUserStringInfoByUsername" parameterType="User">
         UPDATE users
-        SET password = #{password}, enabled = #{enabled}
+        SET nickname=#{nickname},
+            email=#{email}
         WHERE username = #{userName}
     </update>
 
