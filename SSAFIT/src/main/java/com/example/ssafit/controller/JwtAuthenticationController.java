@@ -3,8 +3,8 @@ package com.example.ssafit.controller;
 import java.util.Objects;
 
 import com.example.ssafit.util.JwtTokenUtil;
-import com.example.ssafit.model.dto.JwtRequest;
-import com.example.ssafit.model.dto.JwtResponse;
+import com.example.ssafit.model.dto.jwt.JwtRequest;
+import com.example.ssafit.model.dto.jwt.JwtResponse;
 import com.example.ssafit.model.dto.User;
 import com.example.ssafit.model.service.JwtUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,23 +58,6 @@ public class JwtAuthenticationController {
         final String token = jwtTokenUtil.generateToken(userDetails);
 
         return ResponseEntity.ok(new JwtResponse(token));
-    }
-
-    /**
-     * User 회원가입 컨트롤러
-     * @param request
-     * @return
-     * @throws Exception
-     */
-    @RequestMapping(value = "/register", method = RequestMethod.POST)
-    public ResponseEntity<?> saveUser(@RequestBody JwtRequest request) throws Exception {
-        User user = new User();
-
-        System.out.println(user);
-
-        user.setUserName(request.getUsername());
-        user.setUserPassword(request.getPassword());
-        return ResponseEntity.ok(jwtUserDetailsService.save(user));
     }
 
     private void authenticate(String username, String password) throws Exception {

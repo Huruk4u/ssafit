@@ -1,4 +1,4 @@
-package com.example.ssafit.model.dto;
+package com.example.ssafit.model.dto.jwt;
 
 import java.io.Serializable;
 

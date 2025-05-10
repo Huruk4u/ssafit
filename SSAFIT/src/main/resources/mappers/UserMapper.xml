@@ -10,37 +10,38 @@
         <result property="enabled" column="enabled" />
     </resultMap>
 
-    <!-- Find a user by userName -->
-    <select id="findByUsername" resultMap="UserResultMap">
-        SELECT id, username, password, enabled
+    <!-- userName으로 user조회 -->
+    <select id="selectByUsername" resultMap="UserResultMap">
+        SELECT *
         FROM users
         WHERE userName = #{userName}
     </select>
 
-    <!-- Check if a user exists by userName -->
-    <select id="existsByUsername" resultType="boolean">
+    <!-- userName의 존재 여부 확인 -->
+    <select id="checkExistsByUsername" resultType="boolean">
         SELECT COUNT(*) > 0
         FROM users
         WHERE username = #{userName}
     </select>
 
-    <!-- Insert a new user -->
+    <!-- user 등록 -->
     <insert id="insertUser" parameterType="User" useGeneratedKeys="true" keyProperty="userId" keyColumn="user_id">
         INSERT INTO users (username, password)
         VALUES (#{userName}, #{userPassword})
     </insert>
 
-    <!-- Update a user -->
+    <!-- user 업데이트 -->
     <update id="updateUser" parameterType="User">
         UPDATE users
         SET password = #{password}, enabled = #{enabled}
         WHERE username = #{userName}
     </update>
 
-    <!-- Delete a user by userName -->
+    <!-- userName으로 user삭제 -->
     <delete id="deleteByUsername">
         DELETE FROM users
         WHERE username = #{userName}
     </delete>
 
+    <select id=""
 </mapper>

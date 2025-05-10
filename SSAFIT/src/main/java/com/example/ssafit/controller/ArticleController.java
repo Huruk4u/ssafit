@@ -1,7 +1,7 @@
 package com.example.ssafit.controller;
 
 import com.example.ssafit.model.service.ArticleService;
-import com.example.ssafit.model.dto.Article;
+import com.example.ssafit.model.dto.article.Article;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

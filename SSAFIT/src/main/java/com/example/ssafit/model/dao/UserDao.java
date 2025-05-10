@@ -2,6 +2,8 @@ package com.example.ssafit.model.dao;
 
 import com.example.ssafit.model.dto.User;
 
+import java.util.List;
+
 /**
  * User관련 기능 구현
  * 1. userName으로 user를 조회하는 기능
@@ -18,11 +20,14 @@ public interface UserDao {
     boolean checkExistsByUsername(String username);
     
     // 3. user를 등록하는 기능
-    void insertUser(User user);
+    int insertUser(User user);
     
     // 4. user를 업데이트하는 기능
-    void updateUser(User user);
+    int updateUser(User user);
     
     // 5. user를 삭제하는 기능
-    void deleteByUsername(String username);
+    int deleteByUsername(String username);
+
+    // 6. 모든 user를 조회하는 기능
+    List<User> selectAllUsers();
 }

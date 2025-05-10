@@ -21,10 +21,10 @@
 //        return sqlSession.selectOne(NAMESPACE + ".findByUsername", username);
 //    }
 //
-//    @Override
-//    public boolean existsByUsername(String username) {
-//        return sqlSession.selectOne(NAMESPACE + ".existsByUsername", username);
-//    }
+//@Override
+//public boolean existsByUsername(String username) {
+//    return sqlSession.selectOne(NAMESPACE + ".existsByUsername", username);
+//}
 //
 //    @Override
 //    public void insertUser(User user) {

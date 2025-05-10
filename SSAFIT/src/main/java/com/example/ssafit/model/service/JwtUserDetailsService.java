@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 public class JwtUserDetailsService implements UserDetailsService {
 
     @Autowired
-    private UserDao userDao;
+    private UserService userService;
 
     @Autowired
     @org.springframework.context.annotation.Lazy
@@ -24,7 +24,7 @@ public class JwtUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userDao.findByUsername(username);
+        User user = userService.searchByUsername(username);
 
         if (user != null) {
             return new org.springframework.security.core.userdetails.User(
@@ -32,23 +32,5 @@ public class JwtUserDetailsService implements UserDetailsService {
         } else {
             throw new UsernameNotFoundException("User not found with username: " + username);
         }
-    }
-
-    /**
-     * user가 입력한 정보에 따라, user의 기본 정보를 업데이트 할거임.
-     * 1. userName (userID)
-     * 2. userPassword
-     * 3. user nickname
-     * 4. user email
-     */
-    public User save(User user) {
-        User newUser = new User();
-        newUser.setUserName(user.getUserName());
-        newUser.setUserPassword(bcryptEncoder.encode(user.getUserPassword()));
-        newUser.setNickname(user.getNickname());
-        newUser.setEmail(user.getEmail());
-
-        userDao.insertUser(newUser);
-        return newUser;
     }
 }

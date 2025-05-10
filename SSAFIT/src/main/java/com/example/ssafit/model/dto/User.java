@@ -20,7 +20,6 @@ public class User {
     private String profileImage;
     private String backgroundImage;
     private String badgeId; // -> 추후 수정 가능성
-
     private boolean enabled;
     private String createdAt;
 

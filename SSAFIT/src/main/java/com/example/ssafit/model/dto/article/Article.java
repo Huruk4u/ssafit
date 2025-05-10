@@ -1,4 +1,4 @@
-package com.example.ssafit.model.dto;
+package com.example.ssafit.model.dto.article;
 
 import lombok.Getter;
 import lombok.Setter;

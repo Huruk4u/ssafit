@@ -1,7 +1,7 @@
 package com.example.ssafit.model.service;
 
 import com.example.ssafit.model.dao.ArticleDao;
-import com.example.ssafit.model.dto.Article;
+import com.example.ssafit.model.dto.article.Article;
 import com.example.ssafit.model.dto.SearchCondition;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
