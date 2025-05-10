@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @CrossOrigin
+@RequestMapping("/api_user")
 public class JwtAuthenticationController {
 
     @Autowired
@@ -34,6 +35,12 @@ public class JwtAuthenticationController {
     @Autowired
     private JwtUserDetailsService jwtUserDetailsService;
 
+    /**
+     * User 토큰 발급
+     * @param authenticationRequest
+     * @return
+     * @throws Exception
+     */
     @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
     public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) throws Exception {
 
@@ -46,9 +53,18 @@ public class JwtAuthenticationController {
         return ResponseEntity.ok(new JwtResponse(token));
     }
 
+    /**
+     * User 회원가입 컨트롤러
+     * @param request
+     * @return
+     * @throws Exception
+     */
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public ResponseEntity<?> saveUser(@RequestBody JwtRequest request) throws Exception {
         User user = new User();
+
+        System.out.println(user);
+
         user.setUserName(request.getUsername());
         user.setUserPassword(request.getPassword());
         return ResponseEntity.ok(jwtUserDetailsService.save(user));

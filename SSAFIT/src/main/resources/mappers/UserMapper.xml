@@ -1,46 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.example.ssafit.mapper.UserMyBatisMapper">
+<mapper namespace="com.example.ssafit.model.dao.UserDao">
 
     <!-- Result mapping -->
     <resultMap id="UserResultMap" type="User">
         <id property="id" column="id" />
-        <result property="username" column="username" />
-        <result property="password" column="password" />
+        <result property="userName" column="userName" />
+        <result property="userPassword" column="userPassword" />
         <result property="enabled" column="enabled" />
     </resultMap>
 
-    <!-- Find a user by username -->
+    <!-- Find a user by userName -->
     <select id="findByUsername" resultMap="UserResultMap">
         SELECT id, username, password, enabled
         FROM users
-        WHERE username = #{username}
+        WHERE userName = #{userName}
     </select>
 
-    <!-- Check if a user exists by username -->
+    <!-- Check if a user exists by userName -->
     <select id="existsByUsername" resultType="boolean">
         SELECT COUNT(*) > 0
         FROM users
-        WHERE username = #{username}
+        WHERE username = #{userName}
     </select>
 
     <!-- Insert a new user -->
-    <insert id="insertUser" parameterType="User" useGeneratedKeys="true" keyProperty="id">
+    <insert id="insertUser" parameterType="User" useGeneratedKeys="true" keyProperty="userId" keyColumn="user_id">
         INSERT INTO users (username, password, enabled)
-        VALUES (#{username}, #{password}, #{enabled})
+        VALUES (#{userName}, #{userPassword}, #{enabled})
     </insert>
 
     <!-- Update a user -->
     <update id="updateUser" parameterType="User">
         UPDATE users
         SET password = #{password}, enabled = #{enabled}
-        WHERE username = #{username}
+        WHERE username = #{userName}
     </update>
 
-    <!-- Delete a user by username -->
+    <!-- Delete a user by userName -->
     <delete id="deleteByUsername">
         DELETE FROM users
-        WHERE username = #{username}
+        WHERE username = #{userName}
     </delete>
 
 </mapper>

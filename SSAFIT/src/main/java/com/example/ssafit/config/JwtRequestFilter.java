@@ -1,6 +1,7 @@
 package com.example.ssafit.config;
 
 import java.io.IOException;
+import java.util.List;
 
 import com.example.ssafit.model.service.JwtUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,12 +24,21 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
 
+    private static final List<String> EXCLUDE_URLS = List.of(
+            "/api/v1/auth/**", "/v2/api-docs", "/v3/api-docs",
+            "/v3/api-docs/**", "/swagger-resources", "/swagger-resources/**", "/configuration/ui",
+            "/configuration/security", "/swagger-ui/**", "/webjars/**", "/swagger-ui.html", "/api/auth/**",
+            "/api/test/**", "/api_user/authenticate", "/api_user/register"
+    );
+
     @Override
     protected void doFilterInternal(jakarta.servlet.http.HttpServletRequest request,
                                     jakarta.servlet.http.HttpServletResponse response, jakarta.servlet.FilterChain filterChain)
             throws jakarta.servlet.ServletException, IOException {
 
         final String requestTokenHeader = request.getHeader("Authorization");
+
+        System.out.println("요청 URI: " + request.getRequestURI());
 
         String username = null;
         String jwtToken = null;
