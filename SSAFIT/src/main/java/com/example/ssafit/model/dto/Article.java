@@ -2,9 +2,6 @@ package com.example.ssafit.model.dto;
 
 import java.time.LocalDateTime;
 
-/**
- * DTO for Article entity
- */
 public class Article {
     private Long articleId;
     private int userId;
@@ -13,12 +10,14 @@ public class Article {
     private String content;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private int likeCount;
+    private int dislikeCount;
+    private int commentCount;
+    private int viewCount;
 
-    // Default constructor
     public Article() {
     }
 
-    // Constructor with all fields
     public Article(Long articleId, int userId, int category, String title, String content,
                    LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.articleId = articleId;
@@ -87,6 +86,38 @@ public class Article {
         this.updatedAt = updatedAt;
     }
 
+    public int getLikeCount() {
+        return likeCount;
+    }
+
+    public void setLikeCount(int likeCount) {
+        this.likeCount = likeCount;
+    }
+
+    public int getDislikeCount() {
+        return dislikeCount;
+    }
+
+    public void setDislikeCount(int dislikeCount) {
+        this.dislikeCount = dislikeCount;
+    }
+
+    public int getCommentCount() {
+        return commentCount;
+    }
+
+    public void setCommentCount(int commentCount) {
+        this.commentCount = commentCount;
+    }
+
+    public int getViewCount() {
+        return viewCount;
+    }
+
+    public void setViewCount(int viewCount) {
+        this.viewCount = viewCount;
+    }
+
     @Override
     public String toString() {
         return "Article{" +
@@ -97,6 +128,10 @@ public class Article {
                 ", content='" + content + '\'' +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
+                ", likeCount=" + likeCount +
+                ", dislikeCount=" + dislikeCount +
+                ", commentCount=" + commentCount +
+                ", viewCount=" + viewCount +
                 '}';
     }
 }

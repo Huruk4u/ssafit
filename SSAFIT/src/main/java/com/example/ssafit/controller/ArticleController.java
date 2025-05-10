@@ -37,7 +37,8 @@ public class ArticleController {
     public ResponseEntity getArticleByArticleId(@PathVariable("articleId") int articleId) {
         Article article = articleService.searchArticleByArticleId(articleId);
         if (article == null) return ResponseEntity.noContent().build();
-        else return ResponseEntity.ok(article);
+        articleService.increaseViewCount(articleId);
+        return ResponseEntity.ok(article);
     }
 
     @GetMapping("/get/user_id/{userId}")
@@ -124,6 +125,20 @@ public class ArticleController {
         // 삭제 진행
         int result = articleService.removeArticle(articleId);
         return new ResponseEntity<>(result, result == 1 ? HttpStatus.NO_CONTENT : HttpStatus.BAD_REQUEST);
+    }
+
+    @PostMapping("/like")
+    public ResponseEntity<?> toggleLike(@RequestParam("article_id") int articleId,
+                                        @RequestParam("userId") int userId) {
+        boolean result = articleService.likeArticle(articleId, userId);
+        return new ResponseEntity<>(result, result ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
+    }
+
+    @PostMapping("/disLike")
+    public ResponseEntity<?> toggleDislike(@RequestParam("article_id") int articleId,
+                                           @RequestParam("userId") int userId) {
+        boolean result = articleService.disLikeArticle(articleId, userId);
+        return new ResponseEntity<>(result, result ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
     }
 
 
