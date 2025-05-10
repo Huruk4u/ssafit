@@ -1,4 +1,4 @@
-package com.example.ssafit.model.dao;
+package com.example.ssafit.model.service;
 
 import com.example.ssafit.model.dto.User;
 
@@ -10,19 +10,21 @@ import com.example.ssafit.model.dto.User;
  * 4. user를 업데이트하는 기능
  * 5. user를 삭제하는 기능
  */
-public interface UserDao {
+public interface UserService {
+
     // 1. userName으로 user를 조회하는 기능
-    User selectByUsername(String username);
-    
+    User searchByUsername(String username);
+
     // 2. userName으로 user의 존재 여부를 확인하는 기능
     boolean checkExistsByUsername(String username);
-    
+
     // 3. user를 등록하는 기능
-    void insertUser(User user);
-    
+    void addUser(User user);
+
     // 4. user를 업데이트하는 기능
-    void updateUser(User user);
-    
+    void modifyUser(User user);
+
     // 5. user를 삭제하는 기능
-    void deleteByUsername(String username);
+    void removeByUsername(String username);
+
 }

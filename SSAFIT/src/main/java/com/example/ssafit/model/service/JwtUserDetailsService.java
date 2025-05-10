@@ -34,11 +34,20 @@ public class JwtUserDetailsService implements UserDetailsService {
         }
     }
 
+    /**
+     * user가 입력한 정보에 따라, user의 기본 정보를 업데이트 할거임.
+     * 1. userName (userID)
+     * 2. userPassword
+     * 3. user nickname
+     * 4. user email
+     */
     public User save(User user) {
         User newUser = new User();
         newUser.setUserName(user.getUserName());
         newUser.setUserPassword(bcryptEncoder.encode(user.getUserPassword()));
-        newUser.setEnabled(true);
+        newUser.setNickname(user.getNickname());
+        newUser.setEmail(user.getEmail());
+
         userDao.insertUser(newUser);
         return newUser;
     }

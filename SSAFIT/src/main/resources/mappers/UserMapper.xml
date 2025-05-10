@@ -26,8 +26,8 @@
 
     <!-- Insert a new user -->
     <insert id="insertUser" parameterType="User" useGeneratedKeys="true" keyProperty="userId" keyColumn="user_id">
-        INSERT INTO users (username, password, enabled)
-        VALUES (#{userName}, #{userPassword}, #{enabled})
+        INSERT INTO users (username, password)
+        VALUES (#{userName}, #{userPassword})
     </insert>
 
     <!-- Update a user -->

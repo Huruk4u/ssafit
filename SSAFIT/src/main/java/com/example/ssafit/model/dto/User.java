@@ -20,8 +20,7 @@ public class User {
     private String profileImage;
     private String backgroundImage;
     private String badgeId; // -> 추후 수정 가능성
-    private int height;
-    private int weight;
+
     private boolean enabled;
     private String createdAt;
 
@@ -36,8 +35,6 @@ public class User {
         this.profileImage = profileImage;
         this.backgroundImage = backgroundImage;
         this.badgeId = badgeId;
-        this.height = height;
-        this.weight = weight;
         this.enabled = enabled;
         this.createdAt = createdAt;
     }
@@ -106,22 +103,6 @@ public class User {
         this.badgeId = badgeId;
     }
 
-    public int getHeight() {
-        return height;
-    }
-
-    public void setHeight(int height) {
-        this.height = height;
-    }
-
-    public int getWeight() {
-        return weight;
-    }
-
-    public void setWeight(int weight) {
-        this.weight = weight;
-    }
-
     public boolean isEnabled() {
         return enabled;
     }
@@ -149,8 +130,6 @@ public class User {
                 ", profileImage='" + profileImage + '\'' +
                 ", backgroundImage='" + backgroundImage + '\'' +
                 ", badgeId='" + badgeId + '\'' +
-                ", height=" + height +
-                ", weight=" + weight +
                 ", enabled=" + enabled +
                 ", createdAt='" + createdAt + '\'' +
                 '}';
