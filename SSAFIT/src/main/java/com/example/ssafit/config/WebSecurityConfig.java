@@ -16,10 +16,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 public class WebSecurityConfig {
 
+    // token인증 없이 접근 가능한 URL request
     private static final String[] WHITE_LIST_URL = { "/api/v1/auth/**", "/v2/api-docs", "/v3/api-docs",
             "/v3/api-docs/**", "/swagger-resources", "/swagger-resources/**", "/configuration/ui",
             "/configuration/security", "/swagger-ui/**", "/webjars/**", "/swagger-ui.html", "/api/auth/**",
-            "/api/test/**", "/authenticate", "/register" };
+            "/api/test/**", "/api_user/authenticate", "/api_user/register" };
 
     @Autowired
     @org.springframework.context.annotation.Lazy

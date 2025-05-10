@@ -4,6 +4,7 @@ import com.example.ssafit.model.dao.ArticleDao;
 import com.example.ssafit.model.dto.Article;
 import com.example.ssafit.model.dto.SearchCondition;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,7 +14,8 @@ import java.util.List;
 @RequiredArgsConstructor // constructor injection을 위한 어노테이션
 public class ArticleServiceImpl implements ArticleService {
 
-    private final ArticleDao articleDao;
+    @Autowired
+    private ArticleDao articleDao;
 
     @Override
     public List<Article> searchAllArticle() {
