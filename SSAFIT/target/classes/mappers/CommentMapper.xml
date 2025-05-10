@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.ssafit.model.dao.CommentDao">
+    <!-- 댓글 조회 관련 쿼리 -->
+    <select id="selectAllComments" resultType="Comment">
+        SELECT *
+        FROM comments
+    </select>
+
+    <select id="selectCommentByCommentId" resultType="Comment">
+        SELECT *
+        FROM comments
+        WHERE comment_id = #{commentId}
+    </select>
+
+    <select id="selectCommentListByArticleId" resultType="Comment">
+        SELECT *
+        FROM comments
+        WHERE article_id = #{articleId}
+        ORDER BY created_at DESC
+    </select>
+
+    <select id="selectCommentListByUserId" resultType="Comment">
+        SELECT *
+        FROM comments
+        WHERE user_id = #{userId}
+        ORDER BY created_at DESC
+    </select>
+
+    <!-- 댓글 작성 -->
+    <insert id="insertComment" parameterType="Comment">
+        INSERT INTO comments (article_id, user_id, content)
+        VALUES (#{articleId}, #{userId}, #{content})
+    </insert>
+
+    <!-- 댓글 수정 -->
+    <update id="updateComment">
+        UPDATE comments
+        SET content = #{comment.content}
+        WHERE comment_id = #{commentId}
+    </update>
+
+    <!-- 댓글 삭제 -->
+    <delete id="deleteComment">
+        DELETE
+        FROM comments
+        WHERE comment_id = #{commentId}
+    </delete>
+
+    <!-- ========== 좋아요 기능 ========== -->
+    <select id="isLiked" resultType="boolean">
+        SELECT EXISTS (
+            SELECT 1 FROM comment_likes
+            WHERE comment_id = #{commentId}
+              AND user_id = #{userId}
+        )
+    </select>
+
+    <insert id="insertLike">
+        INSERT INTO comment_likes (comment_id, user_id)
+        VALUES (#{commentId}, #{userId})
+    </insert>
+
+    <delete id="deleteLike">
+        DELETE FROM comment_likes
+        WHERE comment_id = #{commentId}
+          AND user_id = #{userId}
+    </delete>
+
+    <!-- 좋아요 수 증가 -->
+    <update id="increaseLikeCount">
+        UPDATE comments
+        SET like_count = like_count + 1
+        WHERE comment_id = #{commentId}
+    </update>
+
+    <!-- 좋아요 수 감소 -->
+    <update id="decreaseLikeCount">
+        UPDATE comments
+        SET like_count = like_count - 1
+        WHERE comment_id = #{commentId}
+    </update>
+
+    <!-- 좋아요 수 조회 -->
+    <select id="getLikeCount" resultType="int">
+        SELECT like_count
+        FROM comments
+        WHERE comment_id = #{commentId}
+    </select>
+
+    <!-- ========== 싫어요 기능 ========== -->
+    <select id="isDisliked" resultType="boolean">
+        SELECT EXISTS (
+            SELECT 1 FROM comment_dislikes
+            WHERE comment_id = #{commentId}
+              AND user_id = #{userId}
+        )
+    </select>
+
+    <insert id="insertDislike">
+        INSERT INTO comment_dislikes (comment_id, user_id)
+        VALUES (#{commentId}, #{userId})
+    </insert>
+
+    <delete id="deleteDislike">
+        DELETE FROM comment_dislikes
+        WHERE comment_id = #{commentId}
+          AND user_id = #{userId}
+    </delete>
+
+    <!-- 싫어요 수 증가 -->
+    <update id="increaseDislikeCount">
+        UPDATE comments
+        SET dislike_count = dislike_count + 1
+        WHERE comment_id = #{commentId}
+    </update>
+
+    <!-- 싫어요 수 감소 -->
+    <update id="decreaseDislikeCount">
+        UPDATE comments
+        SET dislike_count = dislike_count - 1
+        WHERE comment_id = #{commentId}
+    </update>
+
+    <!-- 싫어요 수 조회 -->
+    <select id="getDislikeCount" resultType="int">
+        SELECT dislike_count
+        FROM comments
+        WHERE comment_id = #{commentId}
+    </select>
+
+    <!-- ========== 신고 기능 ========== -->
+    <insert id="insertReport" parameterType="Report">
+        INSERT INTO reports (comment_id, user_id, reason)
+        VALUES (#{commentId}, #{userId}, #{reason})
+    </insert>
+
+    <select id="isReported" resultType="boolean">
+        SELECT EXISTS (
+            SELECT 1 FROM reports
+            WHERE comment_id = #{commentId}
+              AND user_id = #{userId}
+        )
+    </select>
+</mapper>

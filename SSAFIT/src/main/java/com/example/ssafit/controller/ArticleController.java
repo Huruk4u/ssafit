@@ -65,9 +65,30 @@ public class ArticleController {
     // 6. searchForm으로 글들을 조회. -> 미구현
 
     @PostMapping("/post/write")
-    public ResponseEntity writeArticle(@RequestBody Article article) {
+    public ResponseEntity<?> writeArticle(
+            @RequestBody Article articleData,
+            Principal principal) {
+
+        // 현재 로그인한 사용자 정보 확인
+        User currentUser = userService.findUserByUsername(principal.getName());
+        if (currentUser == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
+        }
+
+        // 게시글 객체 설정 - 실제 로그인한 사용자 ID로 설정
+        Article article = new Article();
+        article.setUserId(currentUser.getUserId());
+        article.setCategory(articleData.getCategory());
+        article.setTitle(articleData.getTitle());
+        article.setContent(articleData.getContent());
+
+        // 필수 필드 검증
+        if (article.getTitle() == null || article.getTitle().trim().isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("제목은 필수 항목입니다.");
+        }
+
         int result = articleService.addArticle(article);
-        return new ResponseEntity(result, result == 1 ? HttpStatus.CREATED : HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(result, result == 1 ? HttpStatus.CREATED : HttpStatus.BAD_REQUEST);
     }
 
     @PutMapping("/put/modify/article_id/{articleId}")
@@ -127,18 +148,48 @@ public class ArticleController {
         return new ResponseEntity<>(result, result == 1 ? HttpStatus.NO_CONTENT : HttpStatus.BAD_REQUEST);
     }
 
+    // 좋아요 기능 - 로그인 사용자 인증 추가
     @PostMapping("/like")
-    public ResponseEntity<?> toggleLike(@RequestParam("article_id") int articleId,
-                                        @RequestParam("userId") int userId) {
-        boolean result = articleService.likeArticle(articleId, userId);
-        return new ResponseEntity<>(result, result ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
+    public ResponseEntity<?> toggleLike(
+            @RequestParam("article_id") int articleId,
+            Principal principal) {
+
+        // 현재 로그인한 사용자 정보 확인
+        User currentUser = userService.findUserByUsername(principal.getName());
+        if (currentUser == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
+        }
+
+        // 게시글 존재 여부 확인
+        Article article = articleService.searchArticleByArticleId(articleId);
+        if (article == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("게시글을 찾을 수 없습니다.");
+        }
+
+        boolean result = articleService.likeArticle(articleId, currentUser.getUserId());
+        return ResponseEntity.ok(result);
     }
 
+    // 싫어요 기능 - 로그인 사용자 인증 추가
     @PostMapping("/disLike")
-    public ResponseEntity<?> toggleDislike(@RequestParam("article_id") int articleId,
-                                           @RequestParam("userId") int userId) {
-        boolean result = articleService.disLikeArticle(articleId, userId);
-        return new ResponseEntity<>(result, result ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
+    public ResponseEntity<?> toggleDislike(
+            @RequestParam("article_id") int articleId,
+            Principal principal) {
+
+        // 현재 로그인한 사용자 정보 확인
+        User currentUser = userService.findUserByUsername(principal.getName());
+        if (currentUser == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
+        }
+
+        // 게시글 존재 여부 확인
+        Article article = articleService.searchArticleByArticleId(articleId);
+        if (article == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("게시글을 찾을 수 없습니다.");
+        }
+
+        boolean result = articleService.disLikeArticle(articleId, currentUser.getUserId());
+        return ResponseEntity.ok(result);
     }
 
 
