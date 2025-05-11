@@ -84,7 +84,13 @@ public class UserController {
     @PutMapping("/put/userName/{userName}")
     public ResponseEntity modifyUserPasswordByUsername(@PathVariable("userName") String userName,
                                                        @RequestBody UpdatePasswordRequestForm requestForm) {
-        userService.modifyUserPasswordByUsername(userName, requestForm);
+        try {
+            userService.modifyUserPasswordByUsername(userName, requestForm);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     // User의 프로필 이미지를 업데이트 하기
