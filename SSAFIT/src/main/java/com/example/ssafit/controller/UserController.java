@@ -1,5 +1,6 @@
 package com.example.ssafit.controller;
 
+import com.example.ssafit.model.dto.User.RegistForm;
 import com.example.ssafit.model.dto.User.User;
 import com.example.ssafit.model.service.JwtUserDetailsService;
 import com.example.ssafit.model.service.UserService;
@@ -34,11 +35,8 @@ public class UserController {
 
     // user회원가입
     @PostMapping("/signup")
-    public ResponseEntity signUp(@RequestBody User user) {
-
-        System.out.println(user);
-
-        userService.addUser(user);
+    public ResponseEntity signUp(@RequestBody RegistForm registForm) {
+        userService.addUser(registForm);
 
         UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(user.getUserName());
         String token = jwtTokenUtil.generateToken(userDetails);

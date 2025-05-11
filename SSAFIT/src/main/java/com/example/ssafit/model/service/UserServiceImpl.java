@@ -1,9 +1,11 @@
 package com.example.ssafit.model.service;
 
 import com.example.ssafit.model.dao.UserDao;
+import com.example.ssafit.model.dto.User.RegistForm;
 import com.example.ssafit.model.dto.User.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -38,18 +40,30 @@ public class UserServiceImpl implements UserService {
         return userDao.checkExistsByUsername(username);
     }
 
+    // User 등록
     @Override
-    public int addUser(User user) {
-        if (checkExistsByUsername(user.getUserName())) {
+    public int addUser(RegistForm registForm) {
+        // registForm의 비밀번호 확인 여부 체크
+        if (!registForm.getPassword().equals(registForm.getCheckPassword())) {
+            throw new RuntimeException("비밀번호가 일치하지 않습니다.");
+        }
+
+        // registForm의 유저아이디 중복 여부 체크
+        if (checkExistsByUsername(registForm.getUserName())) {
             throw new RuntimeException("이미 존재하는 아이디입니다.");
+        }
+
+        if (registForm.getUserName() == null || registForm.getPassword() == null
+                || registForm.getNickname() == null || registForm.getEmail() == null) {
+            throw new RuntimeException("모든 정보를 입력해야 합니다.");
         }
 
         // User등록을 위한 입력 폼 정보
         User newUser = new User();
-        newUser.setUserName(user.getUserName());
-        newUser.setPassword(passwordEncoder.encode(user.getPassword()));
-        newUser.setNickname(user.getNickname());
-        newUser.setEmail(user.getEmail());
+        newUser.setUserName(registForm.getUserName());
+        newUser.setPassword(passwordEncoder.encode(registForm.getPassword()));
+        newUser.setNickname(registForm.getNickname());
+        newUser.setEmail(registForm.getEmail());
 
         userDao.insertUser(newUser);
         return 1;

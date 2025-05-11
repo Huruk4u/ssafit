@@ -1,5 +1,6 @@
 package com.example.ssafit.model.service;
 
+import com.example.ssafit.model.dto.User.RegistForm;
 import com.example.ssafit.model.dto.User.User;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,7 +27,7 @@ public interface UserService {
     boolean checkExistsByUsername(String username);
 
     // 3. user를 등록하는 기능
-    int addUser(User user);
+    int addUser(RegistForm registForm);
 
     // 4. user를 업데이트하는 기능
     int modifyUserStringInfoByUsername(String userName, User user);
