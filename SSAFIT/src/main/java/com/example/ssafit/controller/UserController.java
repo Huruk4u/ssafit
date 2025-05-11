@@ -1,10 +1,12 @@
 package com.example.ssafit.controller;
 
 import com.example.ssafit.model.dto.User.RegistForm;
+import com.example.ssafit.model.dto.User.UpdatePasswordRequestForm;
 import com.example.ssafit.model.dto.User.User;
 import com.example.ssafit.model.service.JwtUserDetailsService;
 import com.example.ssafit.model.service.UserService;
 import com.example.ssafit.util.JwtTokenUtil;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,7 +37,7 @@ public class UserController {
 
     // user회원가입
     @PostMapping("/signup")
-    public ResponseEntity signUp(@RequestBody RegistForm registForm) {
+    public ResponseEntity signUp(@Valid @RequestBody RegistForm registForm) {
         userService.addUser(registForm);
 
         UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(registForm.getUserName());
@@ -76,6 +78,13 @@ public class UserController {
 
         int result = userService.modifyUserStringInfoByUsername(userName, user);
         return new ResponseEntity(result, result == 1 ? HttpStatus.ACCEPTED : HttpStatus.BAD_REQUEST);
+    }
+
+    // User의 password 업데이트
+    @PutMapping("/put/userName/{userName}")
+    public ResponseEntity modifyUserPasswordByUsername(@PathVariable("userName") String userName,
+                                                       @RequestBody UpdatePasswordRequestForm requestForm) {
+        userService.modifyUserPasswordByUsername(userName, requestForm);
     }
 
     // User의 프로필 이미지를 업데이트 하기

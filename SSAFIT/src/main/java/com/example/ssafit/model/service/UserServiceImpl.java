@@ -2,6 +2,7 @@ package com.example.ssafit.model.service;
 
 import com.example.ssafit.model.dao.UserDao;
 import com.example.ssafit.model.dto.User.RegistForm;
+import com.example.ssafit.model.dto.User.UpdatePasswordRequestForm;
 import com.example.ssafit.model.dto.User.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -53,11 +54,6 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("이미 존재하는 아이디입니다.");
         }
 
-        if (registForm.getUserName() == null || registForm.getPassword() == null
-                || registForm.getNickname() == null || registForm.getEmail() == null) {
-            throw new RuntimeException("모든 정보를 입력해야 합니다.");
-        }
-
         // User등록을 위한 입력 폼 정보
         User newUser = new User();
         newUser.setUserName(registForm.getUserName());
@@ -66,15 +62,6 @@ public class UserServiceImpl implements UserService {
         newUser.setEmail(registForm.getEmail());
 
         userDao.insertUser(newUser);
-        return 1;
-    }
-
-    // User의 이메일, 닉네임 정보를 변경.
-    @Override
-    public int modifyUserStringInfoByUsername(String userName, User user) {
-        user.setUserName(userName);
-        System.out.println(user);
-        userDao.updateUserStringInfoByUsername(user);
         return 1;
     }
 
@@ -87,6 +74,31 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> searchAllUser() {
         return userDao.selectAllUsers();
+    }
+
+    // User의 이메일, 닉네임 정보를 변경.
+    @Override
+    public int modifyUserStringInfoByUsername(String userName, User user) {
+        user.setUserName(userName);
+        System.out.println(user);
+        userDao.updateUserStringInfoByUsername(user);
+        return 1;
+    }
+
+    @Override
+    public void modifyUserPasswordByUsername(String userName, UpdatePasswordRequestForm requestForm) {
+        User user = userDao.selectByUsername(userName);
+        if (user == null)
+            throw new RuntimeException("존재하지 않는 유저입니다.");
+
+        if (!passwordEncoder.matches(requestForm.getCurrentPassword(), user.getPassword()))
+            throw new RuntimeException("현재 비밀번호가 일치하지 않습니다.");
+
+        if (requestForm.getNewPassword().equals(requestForm.getCheckNewPassword()))
+            throw new RuntimeException("비밀번호가 일치하지 않습니다.");
+
+        String encodedPassword = passwordEncoder.encode(requestForm.getNewPassword());
+        userDao.updateUserPasswordByUsername(userName, encodedPassword);
     }
 
     // User의 프로필 이미지를 업로드.

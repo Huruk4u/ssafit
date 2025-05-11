@@ -1,6 +1,7 @@
 package com.example.ssafit.model.service;
 
 import com.example.ssafit.model.dto.User.RegistForm;
+import com.example.ssafit.model.dto.User.UpdatePasswordRequestForm;
 import com.example.ssafit.model.dto.User.User;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -44,4 +45,6 @@ public interface UserService {
     // 8. User의 배경이미지를 업데이트 하는 기능
     void modifyUserBackgroundImageByUserName(String userName, MultipartFile file) throws IOException;
 
+    // 9. User의 비밀번호를 업데이트하는 기능
+    void modifyUserPasswordByUsername(String userName, UpdatePasswordRequestForm requestForm);
 }

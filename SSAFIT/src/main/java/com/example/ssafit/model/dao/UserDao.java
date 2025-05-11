@@ -37,4 +37,7 @@ public interface UserDao {
 
     // 8. User의 배경사진을 업데이트 하는 기능
     void updateUserBackgroundImageByUsername(@Param("userName") String userName, @Param("fileName") String fileName);
+
+    // 9. User의 비밀번호를 업데이트 하는 기능
+    void updateUserPasswordByUsername(@Param("userName") String userName, @Param("newPassword") String newPassword);
 }
