@@ -17,10 +17,6 @@ public class JwtUserDetailsService implements UserDetailsService {
     @Autowired
     private UserService userService;
 
-    @Autowired
-    @org.springframework.context.annotation.Lazy
-    private PasswordEncoder bcryptEncoder;
-
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userService.searchByUsername(username);

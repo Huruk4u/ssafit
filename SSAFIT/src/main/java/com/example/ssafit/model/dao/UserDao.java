@@ -1,6 +1,7 @@
 package com.example.ssafit.model.dao;
 
 import com.example.ssafit.model.dto.User.User;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -20,7 +21,7 @@ public interface UserDao {
     boolean checkExistsByUsername(String username);
     
     // 3. user를 등록하는 기능
-    int insertUser(User user);
+    void insertUser(User user);
     
     // 4. user를 업데이트하는 기능
     int updateUserStringInfoByUsername(User user);
@@ -32,5 +33,8 @@ public interface UserDao {
     List<User> selectAllUsers();
 
     // 7. User의 프로필사진을 업데이트 하는 기능
-    int updateUserProfileImageByUsername(String userName, String fileName);
+    void updateUserProfileImageByUsername(@Param("userName") String userName, @Param("fileName") String fileName);
+
+    // 8. User의 배경사진을 업데이트 하는 기능
+    void updateUserBackgroundImageByUsername(@Param("userName") String userName, @Param("fileName") String fileName);
 }

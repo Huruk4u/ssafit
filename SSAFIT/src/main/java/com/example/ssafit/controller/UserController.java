@@ -63,8 +63,7 @@ public class UserController {
         else return ResponseEntity.ok(userList);
     }
 
-    /**
-     */
+    // username으로 user삭제하기
     @DeleteMapping("/delete/username/{username}")
     public ResponseEntity removeUserByUsername(@PathVariable("username") String username) {
         int result = userService.removeByUsername(username);
@@ -72,7 +71,7 @@ public class UserController {
     }
 
     // user String(닉네임, email) 정보 업데이트
-    @PutMapping("/update/userName/{userName}")
+    @PutMapping("/put/userName/{userName}")
     public ResponseEntity modifyUserStringInfoByUsername(@PathVariable("userName") String userName, @RequestBody User user) {
         System.out.println(userName);
         System.out.println(user);
@@ -81,16 +80,26 @@ public class UserController {
         return new ResponseEntity(result, result == 1 ? HttpStatus.ACCEPTED : HttpStatus.BAD_REQUEST);
     }
 
-    /**
-     * user의 Profile Image를 업데이트 하는 기능
-     */
-    @PutMapping("/update/profileImage")
-    public ResponseEntity updateProfileImageByUsername(@RequestParam("userName") String userName, @RequestParam MultipartFile file, @RequestBody User user) {
-
+    // User의 프로필 이미지를 업데이트 하기
+    @PutMapping("/put/profileImage")
+    public ResponseEntity modifyProfileImageByUsername(@RequestParam("userName") String userName, @RequestParam("file") MultipartFile file) {
         try {
             userService.modifyUserProfileImageByUserName(userName, file);
             return new ResponseEntity(HttpStatus.OK);
         } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    // User의 배경 이미지를 업데이트하기
+    @PutMapping("/put/backgroundImage")
+    public ResponseEntity modifyBackgroundImageByUsername(@RequestParam("userName") String userName, @RequestParam("file") MultipartFile file) {
+        try {
+            userService.modifyUserBackgroundImageByUserName(userName, file);
+            return new ResponseEntity(HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
     }

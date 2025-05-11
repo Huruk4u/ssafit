@@ -23,10 +23,13 @@ public class UserServiceImpl implements UserService {
     @Lazy
     private PasswordEncoder passwordEncoder;
 
+    private static final String UPLOAD_PROFILE_IMAGE_PATH = "C:\\Temp\\profile";
+
+    private static final String UPLOAD_BACKGROUND_IMAGE_PATH = "C:\\Temp\\background";
+
     @Override
     public User searchByUsername(String username) {
         User user = userDao.selectByUsername(username);
-        System.out.println(user);
         return user;
     }
 
@@ -41,6 +44,7 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("이미 존재하는 아이디입니다.");
         }
 
+        // User등록을 위한 입력 폼 정보
         User newUser = new User();
         newUser.setUserName(user.getUserName());
         newUser.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -51,6 +55,7 @@ public class UserServiceImpl implements UserService {
         return 1;
     }
 
+    // User의 이메일, 닉네임 정보를 변경.
     @Override
     public int modifyUserStringInfoByUsername(String userName, User user) {
         user.setUserName(userName);
@@ -70,19 +75,36 @@ public class UserServiceImpl implements UserService {
         return userDao.selectAllUsers();
     }
 
+    // User의 프로필 이미지를 업로드.
     @Override
-    public int modifyUserProfileImageByUserName(String userName, MultipartFile file) throws IOException {
+    public void modifyUserProfileImageByUserName(String userName, MultipartFile file) throws IOException {
+        // original File name
         String originalFileName = file.getOriginalFilename();
-        String extension = originalFileName.substring(originalFileName.lastIndexOf(".") + 1);
 
-        String fileName = UUID.randomUUID().toString() + "." + extension;
+        // original FileName으로부터 extension분리
+        String extension = originalFileName.substring(originalFileName.lastIndexOf("."));
+        String fileName = UUID.randomUUID().toString() + extension;
 
-        String uploadDir = "C:/Users/sungm/Desktop/Spring/ssafit/SSAFIT/src/main/resources/static/images/userProfileImage/";
-        File saveFile = new File(uploadDir + fileName);
-        file.transferTo(saveFile);
+        System.out.println(String.format("저장한 파일명 : %s", fileName));
+
+        File target = new File(UPLOAD_PROFILE_IMAGE_PATH, fileName);
+        file.transferTo(target);
 
         userDao.updateUserProfileImageByUsername(userName, fileName);
+    }
 
-        return 1;
+    // User의 배경 사진을 업로드.
+    @Override
+    public void modifyUserBackgroundImageByUserName(String userName, MultipartFile file) throws IOException {
+
+        String originalFileName = file.getOriginalFilename();
+
+        String extension = originalFileName.substring(originalFileName.lastIndexOf("."));
+        String fileName = UUID.randomUUID().toString() + extension;
+
+        File target = new File(UPLOAD_BACKGROUND_IMAGE_PATH, fileName);
+        file.transferTo(target);
+
+        userDao.updateUserBackgroundImageByUsername(userName, fileName);
     }
 }

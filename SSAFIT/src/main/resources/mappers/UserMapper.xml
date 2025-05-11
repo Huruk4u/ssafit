@@ -44,8 +44,24 @@
         WHERE username = #{userName}
     </delete>
 
+    <!--모든 User 조회-->
     <select id="selectAllUsers">
         SELECT *
         FROM users;
     </select>
+
+    <!--user의 프로필 이미지 업로드-->
+    <update id="updateUserProfileImageByUsername">
+        UPDATE users
+        SET profile_image=#{fileName}
+        WHERE username = #{userName}
+    </update>
+
+    <!--user의 프로필 이미지 업로드-->
+    <update id="updateUserBackgroundImageByUsername">
+        UPDATE users
+        SET background_image=#{fileName}
+        WHERE username = #{userName}
+    </update>
+
 </mapper>

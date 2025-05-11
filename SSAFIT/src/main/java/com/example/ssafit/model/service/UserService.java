@@ -13,6 +13,9 @@ import java.util.List;
  * 3. user를 등록하는 기능
  * 4. user를 업데이트하는 기능
  * 5. user를 삭제하는 기능
+ * 6. 모든 user를 출력하는 기능
+ * 7. User의 프로필이미지를 업데이트 하는 기능
+ * 8. User의 배경이미지를 업데이트 하는 기능
  */
 public interface UserService {
 
@@ -35,6 +38,9 @@ public interface UserService {
     List<User> searchAllUser();
 
     // 7. User의 프로필이미지를 업데이트 하는 기능
-    int modifyUserProfileImageByUserName(String userName, MultipartFile file) throws IOException;
+    void modifyUserProfileImageByUserName(String userName, MultipartFile file) throws IOException;
+
+    // 8. User의 배경이미지를 업데이트 하는 기능
+    void modifyUserBackgroundImageByUserName(String userName, MultipartFile file) throws IOException;
 
 }
