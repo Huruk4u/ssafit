@@ -38,7 +38,7 @@ public class UserController {
     public ResponseEntity signUp(@RequestBody RegistForm registForm) {
         userService.addUser(registForm);
 
-        UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(user.getUserName());
+        UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(registForm.getUserName());
         String token = jwtTokenUtil.generateToken(userDetails);
 
         return ResponseEntity.ok(token);
