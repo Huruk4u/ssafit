@@ -3,38 +3,45 @@ package com.example.ssafit.model.dto;
 import java.time.LocalDateTime;
 
 public class Article {
-    private Long articleId;
+    private int articleId;
     private int userId;
-    private int category;
+    private String category;
     private String title;
     private String content;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private String tag;
+    private int viewCount;
     private int likeCount;
     private int dislikeCount;
-    private int commentCount;
-    private int viewCount;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+
+    // 추가 (조회용, DB와 매핑되지 않음)
+    private String username;
 
     public Article() {
     }
 
-    public Article(Long articleId, int userId, int category, String title, String content,
-                   LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public Article(int articleId, int userId, String category, String title, String content, String tag,int viewCount,
+                   int likeCount, int dislikeCount, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.articleId = articleId;
         this.userId = userId;
         this.category = category;
         this.title = title;
         this.content = content;
+        this.tag = tag;
+        this.viewCount = viewCount;
+        this.likeCount = likeCount;
+        this.dislikeCount = dislikeCount;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
 
     // Getters and Setters
-    public Long getArticleId() {
+    public int getArticleId() {
         return articleId;
     }
 
-    public void setArticleId(Long articleId) {
+    public void setArticleId(int articleId) {
         this.articleId = articleId;
     }
 
@@ -46,11 +53,11 @@ public class Article {
         this.userId = userId;
     }
 
-    public int getCategory() {
+    public String getCategory() {
         return category;
     }
 
-    public void setCategory(int category) {
+    public void setCategory(String category) {
         this.category = category;
     }
 
@@ -70,20 +77,20 @@ public class Article {
         this.content = content;
     }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
+    public String getTag() {
+        return tag;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
+    public void setTag(String tag) {
+        this.tag = tag;
     }
 
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
+    public int getViewCount() {
+        return viewCount;
     }
 
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
+    public void setViewCount(int viewCount) {
+        this.viewCount = viewCount;
     }
 
     public int getLikeCount() {
@@ -102,20 +109,28 @@ public class Article {
         this.dislikeCount = dislikeCount;
     }
 
-    public int getCommentCount() {
-        return commentCount;
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
-    public void setCommentCount(int commentCount) {
-        this.commentCount = commentCount;
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
-    public int getViewCount() {
-        return viewCount;
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
     }
 
-    public void setViewCount(int viewCount) {
-        this.viewCount = viewCount;
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     @Override
@@ -123,15 +138,16 @@ public class Article {
         return "Article{" +
                 "articleId=" + articleId +
                 ", userId=" + userId +
-                ", category=" + category +
+                ", username='" + username + '\'' +
+                ", category='" + category + '\'' +
                 ", title='" + title + '\'' +
                 ", content='" + content + '\'' +
-                ", createdAt=" + createdAt +
-                ", updatedAt=" + updatedAt +
+                ", tag='" + tag + '\'' +
+                ", viewCount=" + viewCount +
                 ", likeCount=" + likeCount +
                 ", dislikeCount=" + dislikeCount +
-                ", commentCount=" + commentCount +
-                ", viewCount=" + viewCount +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
                 '}';
     }
 }

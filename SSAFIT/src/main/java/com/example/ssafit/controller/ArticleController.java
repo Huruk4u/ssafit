@@ -3,6 +3,7 @@ package com.example.ssafit.controller;
 import com.example.ssafit.model.dto.User;
 import com.example.ssafit.service.ArticleService;
 import com.example.ssafit.model.dto.Article;
+import com.example.ssafit.model.dto.SearchCondition;
 import com.example.ssafit.service.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,14 +56,47 @@ public class ArticleController {
         else return ResponseEntity.ok(articleList);
     }
 
+    // 향상된 category 검색 기능 - SearchCondition 사용
     @GetMapping("/get/category/{category}")
-    public ResponseEntity getArticleListByBoardId(@PathVariable("category") int category) {
-        List<Article> articleList = articleService.searchArticleListByBoardId(category);
-        if (articleList == null) return ResponseEntity.noContent().build();
-        else return ResponseEntity.ok(articleList);
-    }
+    public ResponseEntity getArticleListByCategory(
+            @PathVariable("category") String category,
+            @RequestParam(required = false) String key,
+            @RequestParam(required = false) String word,
+            @RequestParam(required = false) String tag,
+            @RequestParam(required = false, defaultValue = "created_at") String orderBy,
+            @RequestParam(required = false, defaultValue = "desc") String orderByDir,
+            @RequestParam(required = false, defaultValue = "1") int currentPage) {
 
-    // 6. searchForm으로 글들을 조회. -> 미구현
+        // SearchCondition 객체 생성 및 파라미터 설정
+        SearchCondition condition = new SearchCondition();
+        condition.setCategory(category);
+
+        // 검색 조건 설정
+        if (key != null && !key.isEmpty()) {
+            condition.setKey(key);
+            condition.setWord(word);
+        }
+
+        // 태그 설정
+        if (tag != null && !tag.isEmpty()) {
+            condition.setTag(tag);
+        }
+
+        // 정렬 설정
+        if (orderBy != null && !orderBy.isEmpty()) {
+            condition.setOrderBy(orderBy);
+            condition.setOrderByDir(orderByDir);
+        }
+
+        // 페이지네이션 설정
+        condition.setCurrentPage(currentPage);
+
+        List<Article> articleList = articleService.searchArticleListByCondition(condition);
+        if (articleList == null || articleList.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(articleList);
+    }
 
     @PostMapping("/post/write")
     public ResponseEntity<?> writeArticle(
@@ -81,6 +115,7 @@ public class ArticleController {
         article.setCategory(articleData.getCategory());
         article.setTitle(articleData.getTitle());
         article.setContent(articleData.getContent());
+        article.setTag(articleData.getTag());
 
         // 필수 필드 검증
         if (article.getTitle() == null || article.getTitle().trim().isEmpty()) {
@@ -120,7 +155,6 @@ public class ArticleController {
         int result = articleService.modifyArticle(articleId, article);
         return new ResponseEntity<>(result, result == 1 ? HttpStatus.ACCEPTED : HttpStatus.BAD_REQUEST);
     }
-
 
     @DeleteMapping("/delete/article_id/{articleId}")
     public ResponseEntity<?> removeArticle(@PathVariable("articleId") int articleId, Principal principal) {
@@ -191,7 +225,4 @@ public class ArticleController {
         boolean result = articleService.disLikeArticle(articleId, currentUser.getUserId());
         return ResponseEntity.ok(result);
     }
-
-
-
 }

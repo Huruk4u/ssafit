@@ -74,6 +74,7 @@ CREATE TABLE articles (
                           category    VARCHAR(255)  NOT NULL,
                           title       VARCHAR(255) NOT NULL,
                           content     TEXT,
+                          tag    VARCHAR(255),
                           view_count BIGINT DEFAULT 0,
                           like_count    BIGINT NOT NULL DEFAULT 0,
                           dislike_count    BIGINT NOT NULL DEFAULT 0,
@@ -142,22 +143,6 @@ CREATE TABLE notifications (
                                is_read         BOOLEAN    DEFAULT FALSE,
                                created_at      TIMESTAMP  DEFAULT CURRENT_TIMESTAMP,
                                FOREIGN KEY (user_id) REFERENCES users(user_id)
-) ENGINE=InnoDB;
-
--- ========================================
--- 6. 태그 / 게시글-태그 매핑
--- ========================================
-CREATE TABLE tags (
-                      tag_id BIGINT PRIMARY KEY AUTO_INCREMENT,
-                      name   VARCHAR(50) UNIQUE NOT NULL
-) ENGINE=InnoDB;
-
-CREATE TABLE article_tags (
-                              article_id BIGINT NOT NULL,
-                              tag_id     BIGINT NOT NULL,
-                              PRIMARY KEY (article_id, tag_id),
-                              FOREIGN KEY (article_id) REFERENCES articles(article_id),
-                              FOREIGN KEY (tag_id)     REFERENCES tags(tag_id)
 ) ENGINE=InnoDB;
 
 -- ========================================

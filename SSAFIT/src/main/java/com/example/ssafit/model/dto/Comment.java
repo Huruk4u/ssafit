@@ -11,7 +11,8 @@ public class Comment {
     private int dislikeCount;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-
+    // 추가 (조회용, DB와 매핑되지 않음)
+    private String username;
     public Comment() {
     }
 
@@ -88,6 +89,14 @@ public class Comment {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     @Override
