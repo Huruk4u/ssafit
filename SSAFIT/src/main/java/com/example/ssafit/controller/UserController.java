@@ -36,7 +36,7 @@ public class UserController {
     private JwtTokenUtil jwtTokenUtil;
 
     // user회원가입
-    @PostMapping("/signup")
+    @PostMapping("/post/signup")
     public ResponseEntity signUp(@Valid @RequestBody RegistForm registForm) {
         userService.addUser(registForm);
 
