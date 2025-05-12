@@ -1,9 +1,9 @@
 -- ========================================
 -- 1. 데이터베이스 생성/사용
 -- ========================================
-DROP DATABASE IF EXISTS ssafitdb;
-CREATE DATABASE IF NOT EXISTS ssafitdb;
-USE ssafitdb;
+DROP DATABASE IF EXISTS ssafydb;
+CREATE DATABASE IF NOT EXISTS ssafydb;
+USE ssafydb;
 
 -- ========================================
 -- 2. 유저 / 관리자 / 배지
@@ -27,6 +27,8 @@ CREATE TABLE users (
                        height           DECIMAL(5,2),
                        weight           DECIMAL(5,2),
                        enabled          BOOLEAN      DEFAULT TRUE,
+                       suspend_start TIMESTAMP NULL,
+                       suspend_end   TIMESTAMP NULL,
                        created_at       TIMESTAMP    DEFAULT CURRENT_TIMESTAMP,
                        FOREIGN KEY (badge_id) REFERENCES badges(badge_id)
 ) ENGINE=InnoDB;
@@ -34,8 +36,6 @@ CREATE TABLE users (
 CREATE TABLE admins (
                         admin_id     BIGINT    PRIMARY KEY AUTO_INCREMENT,
                         user_id      BIGINT    NOT NULL,
-                        suspend_start TIMESTAMP NULL,
-                        suspend_end   TIMESTAMP NULL,
                         FOREIGN KEY (user_id) REFERENCES users(user_id)
 ) ENGINE=InnoDB;
 
@@ -65,34 +65,35 @@ CREATE TABLE inbody_data (
 ) ENGINE=InnoDB;
 
 -- ========================================
--- 4. 게시판 / 게시글 / 댓글 / 좋아요·싫어요
+-- 4. 게시글 / 댓글 / 좋아요·싫어요
 -- ========================================
-CREATE TABLE boards (
-                        board_id BIGINT PRIMARY KEY AUTO_INCREMENT,
-                        category VARCHAR(100)
-) ENGINE=InnoDB;
 
 CREATE TABLE articles (
                           article_id  BIGINT     PRIMARY KEY AUTO_INCREMENT,
                           user_id     BIGINT     NOT NULL,
-                          board_id    BIGINT     NOT NULL,
-                          title       VARCHAR(255),
+                          category    VARCHAR(255)  NOT NULL,
+                          title       VARCHAR(255) NOT NULL,
                           content     TEXT,
+                          tag    VARCHAR(255),
+                          view_count BIGINT DEFAULT 0,
+                          like_count    BIGINT NOT NULL DEFAULT 0,
+                          dislike_count    BIGINT NOT NULL DEFAULT 0,
                           created_at  TIMESTAMP  DEFAULT CURRENT_TIMESTAMP,
                           updated_at  TIMESTAMP  DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-                          FOREIGN KEY (user_id)  REFERENCES users(user_id),
-                          FOREIGN KEY (board_id) REFERENCES boards(board_id)
+                          FOREIGN KEY (user_id)  REFERENCES users(user_id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
 CREATE TABLE comments (
                           comment_id  BIGINT     PRIMARY KEY AUTO_INCREMENT,
                           article_id  BIGINT     NOT NULL,
                           user_id     BIGINT     NOT NULL,
-                          content     TEXT,
+                          content     TEXT        NOT NULL,
+                          like_count    BIGINT NOT NULL DEFAULT 0,
+                          dislike_count    BIGINT NOT NULL DEFAULT 0,
                           created_at  TIMESTAMP  DEFAULT CURRENT_TIMESTAMP,
                           updated_at  TIMESTAMP  DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-                          FOREIGN KEY (article_id) REFERENCES articles(article_id),
-                          FOREIGN KEY (user_id)    REFERENCES users(user_id)
+                          FOREIGN KEY (article_id) REFERENCES articles(article_id) ON DELETE CASCADE,
+                          FOREIGN KEY (user_id)    REFERENCES users(user_id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
 CREATE TABLE article_likes (
@@ -100,8 +101,8 @@ CREATE TABLE article_likes (
                                article_id      BIGINT NOT NULL,
                                user_id         BIGINT NOT NULL,
                                created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                               FOREIGN KEY (article_id) REFERENCES articles(article_id),
-                               FOREIGN KEY (user_id)    REFERENCES users(user_id)
+                               FOREIGN KEY (article_id) REFERENCES articles(article_id) ON DELETE CASCADE,
+                               FOREIGN KEY (user_id)    REFERENCES users(user_id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
 CREATE TABLE article_dislikes (
@@ -109,8 +110,8 @@ CREATE TABLE article_dislikes (
                                   article_id         BIGINT NOT NULL,
                                   user_id            BIGINT NOT NULL,
                                   created_at         TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                                  FOREIGN KEY (article_id) REFERENCES articles(article_id),
-                                  FOREIGN KEY (user_id)    REFERENCES users(user_id)
+                                  FOREIGN KEY (article_id) REFERENCES articles(article_id) ON DELETE CASCADE,
+                                  FOREIGN KEY (user_id)    REFERENCES users(user_id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
 CREATE TABLE comment_likes (
@@ -118,8 +119,8 @@ CREATE TABLE comment_likes (
                                comment_id      BIGINT NOT NULL,
                                user_id         BIGINT NOT NULL,
                                created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                               FOREIGN KEY (comment_id) REFERENCES comments(comment_id),
-                               FOREIGN KEY (user_id)     REFERENCES users(user_id)
+                               FOREIGN KEY (comment_id) REFERENCES comments(comment_id) ON DELETE CASCADE,
+                               FOREIGN KEY (user_id)     REFERENCES users(user_id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
 CREATE TABLE comment_dislikes (
@@ -127,8 +128,8 @@ CREATE TABLE comment_dislikes (
                                   comment_id         BIGINT NOT NULL,
                                   user_id            BIGINT NOT NULL,
                                   created_at         TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                                  FOREIGN KEY (comment_id) REFERENCES comments(comment_id),
-                                  FOREIGN KEY (user_id)     REFERENCES users(user_id)
+                                  FOREIGN KEY (comment_id) REFERENCES comments(comment_id) ON DELETE CASCADE,
+                                  FOREIGN KEY (user_id)     REFERENCES users(user_id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
 -- ========================================
@@ -142,22 +143,6 @@ CREATE TABLE notifications (
                                is_read         BOOLEAN    DEFAULT FALSE,
                                created_at      TIMESTAMP  DEFAULT CURRENT_TIMESTAMP,
                                FOREIGN KEY (user_id) REFERENCES users(user_id)
-) ENGINE=InnoDB;
-
--- ========================================
--- 6. 태그 / 게시글-태그 매핑
--- ========================================
-CREATE TABLE tags (
-                      tag_id BIGINT PRIMARY KEY AUTO_INCREMENT,
-                      name   VARCHAR(50) UNIQUE NOT NULL
-) ENGINE=InnoDB;
-
-CREATE TABLE article_tags (
-                              article_id BIGINT NOT NULL,
-                              tag_id     BIGINT NOT NULL,
-                              PRIMARY KEY (article_id, tag_id),
-                              FOREIGN KEY (article_id) REFERENCES articles(article_id),
-                              FOREIGN KEY (tag_id)     REFERENCES tags(tag_id)
 ) ENGINE=InnoDB;
 
 -- ========================================

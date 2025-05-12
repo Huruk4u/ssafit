@@ -16,7 +16,10 @@ import java.util.List;
 public interface UserDao {
     // 1. userName으로 user를 조회하는 기능
     User selectByUsername(String username);
-    
+
+    // userId로 user조회하는 기능
+    User selectByUserId(int userId);
+
     // 2. userName으로 user의 존재 여부를 확인하는 기능
     boolean checkExistsByUsername(String username);
     

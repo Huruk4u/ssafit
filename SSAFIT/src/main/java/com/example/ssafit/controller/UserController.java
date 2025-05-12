@@ -38,7 +38,11 @@ public class UserController {
     // user회원가입
     @PostMapping("/post/signup")
     public ResponseEntity signUp(@Valid @RequestBody RegistForm registForm) {
+        System.out.println(registForm);
+
         userService.addUser(registForm);
+        System.out.println(String.format("User등록완료"));
+        System.out.println(registForm);
 
         UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(registForm.getUserName());
         String token = jwtTokenUtil.generateToken(userDetails);
@@ -71,7 +75,7 @@ public class UserController {
     }
 
     // user String(닉네임, email) 정보 업데이트
-    @PutMapping("/put/userName/{userName}")
+    @PutMapping("/put/userInfo/userName/{userName}")
     public ResponseEntity modifyUserStringInfoByUsername(@PathVariable("userName") String userName, @RequestBody User user) {
         System.out.println(userName);
         System.out.println(user);
@@ -81,7 +85,7 @@ public class UserController {
     }
 
     // User의 password 업데이트
-    @PutMapping("/put/userName/{userName}")
+    @PutMapping("/put/password/userName/{userName}")
     public ResponseEntity modifyUserPasswordByUsername(@PathVariable("userName") String userName,
                                                        @RequestBody UpdatePasswordRequestForm requestForm) {
         try {

@@ -1,39 +1,153 @@
 package com.example.ssafit.model.dto.article;
 
-import lombok.Getter;
-import lombok.Setter;
+import java.time.LocalDateTime;
 
-import java.util.List;
-
-/**
- * TODO
- * 임시 수정을 가한 field
- * tag : 여러개의 String을 List형식으로 포함한 구조로 하는 게 더 좋을 것 같음.
- * SQL에선 이걸 어떤 형식으로 표현해야할 지..
- */
-@Setter
-@Getter
 public class Article {
     private int articleId;
     private int userId;
-    private int boardId;
+    private String category;
     private String title;
     private String content;
-    private List<String> tag;
-    private String createdAt;
-    private String updatedAt;
+    private String tag;
+    private int viewCount;
+    private int likeCount;
+    private int dislikeCount;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
-    public Article() {}
+    // 추가 (조회용, DB와 매핑되지 않음)
+    private String username;
 
-    public Article(int articleId, int userId, int boardId, String title, String content, List<String> tag, String createdAt, String updatedAt) {
+    public Article() {
+    }
+
+    public Article(int articleId, int userId, String category, String title, String content, String tag,int viewCount,
+                   int likeCount, int dislikeCount, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.articleId = articleId;
         this.userId = userId;
-        this.boardId = boardId;
+        this.category = category;
         this.title = title;
         this.content = content;
         this.tag = tag;
+        this.viewCount = viewCount;
+        this.likeCount = likeCount;
+        this.dislikeCount = dislikeCount;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
 
+    // Getters and Setters
+    public int getArticleId() {
+        return articleId;
+    }
+
+    public void setArticleId(int articleId) {
+        this.articleId = articleId;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public String getTag() {
+        return tag;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
+    }
+
+    public int getViewCount() {
+        return viewCount;
+    }
+
+    public void setViewCount(int viewCount) {
+        this.viewCount = viewCount;
+    }
+
+    public int getLikeCount() {
+        return likeCount;
+    }
+
+    public void setLikeCount(int likeCount) {
+        this.likeCount = likeCount;
+    }
+
+    public int getDislikeCount() {
+        return dislikeCount;
+    }
+
+    public void setDislikeCount(int dislikeCount) {
+        this.dislikeCount = dislikeCount;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    @Override
+    public String toString() {
+        return "Article{" +
+                "articleId=" + articleId +
+                ", userId=" + userId +
+                ", username='" + username + '\'' +
+                ", category='" + category + '\'' +
+                ", title='" + title + '\'' +
+                ", content='" + content + '\'' +
+                ", tag='" + tag + '\'' +
+                ", viewCount=" + viewCount +
+                ", likeCount=" + likeCount +
+                ", dislikeCount=" + dislikeCount +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                '}';
+    }
 }

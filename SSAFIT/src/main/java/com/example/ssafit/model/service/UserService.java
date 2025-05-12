@@ -24,6 +24,9 @@ public interface UserService {
     // 1. userName으로 user를 조회하는 기능
     User searchByUsername(String username);
 
+    // userId로 user검색하는 기능
+    User searchByUserId(int userId);
+
     // 2. userName으로 user의 존재 여부를 확인하는 기능
     boolean checkExistsByUsername(String username);
 

@@ -1,27 +1,102 @@
 package com.example.ssafit.model.dto.comment;
 
-import lombok.Getter;
-import lombok.Setter;
+import java.time.LocalDateTime;
 
-@Getter
-@Setter
 public class Comment {
     private int commentId;
     private int articleId;
     private int userId;
     private String content;
-    private String createdAt;
-    private String updatedAt;
+    private int likeCount;
+    private int dislikeCount;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+    // 추가 (조회용, DB와 매핑되지 않음)
+    private String username;
+    public Comment() {
+    }
 
-    public Comment() {}
-
-    public Comment(int commentId, int articleId, int userId, String content, String createdAt, String updatedAt) {
+    public Comment(int commentId, int articleId, int userId, String content, int likeCount, int dislikeCount, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.commentId = commentId;
         this.articleId = articleId;
         this.userId = userId;
         this.content = content;
+        this.likeCount = likeCount;
+        this.dislikeCount = dislikeCount;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+    }
+
+    public int getCommentId() {
+        return commentId;
+    }
+
+    public void setCommentId(int commentId) {
+        this.commentId = commentId;
+    }
+
+    public int getArticleId() {
+        return articleId;
+    }
+
+    public void setArticleId(int articleId) {
+        this.articleId = articleId;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public int getLikeCount() {
+        return likeCount;
+    }
+
+    public void setLikeCount(int likeCount) {
+        this.likeCount = likeCount;
+    }
+
+    public int getDislikeCount() {
+        return dislikeCount;
+    }
+
+    public void setDislikeCount(int dislikeCount) {
+        this.dislikeCount = dislikeCount;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     @Override
@@ -31,8 +106,10 @@ public class Comment {
                 ", articleId=" + articleId +
                 ", userId=" + userId +
                 ", content='" + content + '\'' +
-                ", createdAt='" + createdAt + '\'' +
-                ", updatedAt='" + updatedAt + '\'' +
+                ", likeCount=" + likeCount +
+                ", dislikeCount=" + dislikeCount +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
                 '}';
     }
 }

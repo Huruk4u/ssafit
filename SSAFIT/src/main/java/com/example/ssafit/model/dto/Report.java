@@ -1,32 +1,62 @@
 package com.example.ssafit.model.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import java.time.LocalDateTime;
 
-/**
- * //TODO
- * 1. 신고자 ID, 피신고자 ID 두 개가 다 필요하지 않을까?
- */
-@Getter
-@Setter
 public class Report {
     private int reportId;
-    private String reportCategory;
-    private int reportedUserId;
-    private int reportedArticleId;
-    private int reportedCommentId;
-    private String content;
-    private String createdAt;
+    private int commentId;
+    private long userId;
+    private String reason;
+    private LocalDateTime createdAt;
 
-    public Report() {}
+    public Report() {
+    }
 
-    public Report(int reportId, String reportCategory, int reportedUserId, int reportedArticleId, int reportedCommentId, String content, String createdAt) {
+    public Report(int reportId, int commentId, long userId, String reason, LocalDateTime createdAt) {
         this.reportId = reportId;
-        this.reportCategory = reportCategory;
-        this.reportedUserId = reportedUserId;
-        this.reportedArticleId = reportedArticleId;
-        this.reportedCommentId = reportedCommentId;
-        this.content = content;
+        this.commentId = commentId;
+        this.userId = userId;
+        this.reason = reason;
+        this.createdAt = createdAt;
+    }
+
+    public int getReportId() {
+        return reportId;
+    }
+
+    public void setReportId(int reportId) {
+        this.reportId = reportId;
+    }
+
+    public int getCommentId() {
+        return commentId;
+    }
+
+    public void setCommentId(int commentId) {
+        this.commentId = commentId;
+    }
+
+    public long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(long userId) {
+        this.userId = userId;
+    }
+
+    public String getReason() {
+        return reason;
+    }
+
+    public void setReason(String reason) {
+        this.reason = reason;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 
@@ -34,12 +64,10 @@ public class Report {
     public String toString() {
         return "Report{" +
                 "reportId=" + reportId +
-                ", reportCategory='" + reportCategory + '\'' +
-                ", reportedUserId=" + reportedUserId +
-                ", reportedArticleId=" + reportedArticleId +
-                ", reportedCommentId=" + reportedCommentId +
-                ", content='" + content + '\'' +
-                ", createdAt='" + createdAt + '\'' +
+                ", commentId=" + commentId +
+                ", userId=" + userId +
+                ", reason='" + reason + '\'' +
+                ", createdAt=" + createdAt +
                 '}';
     }
 }

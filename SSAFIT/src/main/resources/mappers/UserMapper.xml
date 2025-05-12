@@ -17,6 +17,12 @@
         WHERE username = #{userName}
     </select>
 
+    <select id="selectByUserId" resultType="User">
+        SELECT *
+        FROM users
+        WHERE user_id = #{userId}
+    </select>
+
     <!-- userName의 존재 여부 확인 -->
     <select id="checkExistsByUsername" resultType="boolean">
         SELECT COUNT(*) > 0

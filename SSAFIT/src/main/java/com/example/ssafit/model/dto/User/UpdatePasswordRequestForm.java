@@ -29,6 +29,30 @@ public class UpdatePasswordRequestForm {
         this.checkNewPassword = checkNewPassword;
     }
 
+    public String getCurrentPassword() {
+        return currentPassword;
+    }
+
+    public void setCurrentPassword(String currentPassword) {
+        this.currentPassword = currentPassword;
+    }
+
+    public String getNewPassword() {
+        return newPassword;
+    }
+
+    public void setNewPassword(String newPassword) {
+        this.newPassword = newPassword;
+    }
+
+    public String getCheckNewPassword() {
+        return checkNewPassword;
+    }
+
+    public void setCheckNewPassword(String checkNewPassword) {
+        this.checkNewPassword = checkNewPassword;
+    }
+
     @Override
     public String toString() {
         return "UpdatePasswordRequestForm{" +
