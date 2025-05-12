@@ -9,8 +9,6 @@ import lombok.Setter;
  * 1. Challenge는 기록된 날짜를 가지고 있어야 하고,
  *    User는 Challenge의 List를 가지고 있어야 한다?
  */
-@Getter
-@Setter
 public class Challenge {
     private int challengeId;
     private int userId;

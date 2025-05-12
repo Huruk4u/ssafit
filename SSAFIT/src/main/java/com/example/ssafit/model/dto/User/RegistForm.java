@@ -11,8 +11,6 @@ import lombok.Setter;
  * 1. 이메일 형식 여부 체크
  * 2. 모든 값이 입력되도록 조건 형성
  */
-@Getter
-@Setter
 public class RegistForm {
 
     @NotBlank

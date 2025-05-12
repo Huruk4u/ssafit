@@ -15,10 +15,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 
 /**
- * User의 접근 제어 관리.
- *
+ * 웹 보안 규칙 설정
  */
-
 @Configuration
 public class WebSecurityConfig {
 
@@ -42,6 +40,11 @@ public class WebSecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * 보안관련규칙 정의
+     * 1. WHITE_LIST_URL에 없는 모든 접근은 인증 절차 없이 접근 불가.
+     * 2. User의 역할에 따라 접근 가능 URL 제어
+     */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
@@ -49,6 +52,10 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(
                         auth -> auth.requestMatchers(WHITE_LIST_URL).permitAll().anyRequest().authenticated());
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+        http.authorizeHttpRequests(auth -> auth
+                .requestMatchers("/api_admin/**").hasRole("ADMIN")
+                .anyRequest().authenticated()
+        );
         return http.build();
     }
 }

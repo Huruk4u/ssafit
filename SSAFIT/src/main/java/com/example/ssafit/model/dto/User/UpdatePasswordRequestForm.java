@@ -8,8 +8,6 @@ import lombok.Setter;
 /**
  * 사용자의 비밀번호를 수정하기 위한 입력 폼.
  */
-@Getter
-@Setter
 public class UpdatePasswordRequestForm {
 
     @NotBlank
