@@ -50,12 +50,13 @@ public class WebSecurityConfig {
         http.csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(
-                        auth -> auth.requestMatchers(WHITE_LIST_URL).permitAll().anyRequest().authenticated());
+                        auth -> auth
+                                .requestMatchers(WHITE_LIST_URL).permitAll()
+                                .requestMatchers("/api_admin/**").hasRole("ADMIN")
+                                .anyRequest().authenticated()
+                );
+
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
-        http.authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api_admin/**").hasRole("ADMIN")
-                .anyRequest().authenticated()
-        );
         return http.build();
     }
 }
