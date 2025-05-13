@@ -54,9 +54,8 @@ public class AdminController {
 
     @PutMapping("/suspend")
     public ResponseEntity suspendUserByUserId(@RequestBody @Valid SuspendRequest requestForm) {
-        int result = userService.suspendUserByUserId(requestForm.getUserId(), 
-                requestForm.getSuspendStart(),
-                requestForm.getSuspendEnd());
+        int result = userService.suspendUserByUserId(requestForm.getUserId(),
+                requestForm.getDurationDays());
 
         System.out.println("유저 정지 기간 부여 완료.");
         

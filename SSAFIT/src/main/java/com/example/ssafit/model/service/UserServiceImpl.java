@@ -142,8 +142,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public int suspendUserByUserId(int userId, LocalDateTime suspendStart, LocalDateTime suspendEnd) {
+    public int suspendUserByUserId(int userId, int durationDays) {
+        LocalDateTime suspendStart = LocalDateTime.now();
+        LocalDateTime suspendEnd = suspendStart.plusDays(durationDays);
         userDao.updateSuspendTimeByUserId(userId, suspendStart, suspendEnd);
+
         return 1;
     }
 }
