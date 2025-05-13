@@ -67,13 +67,6 @@ public class UserController {
         else return ResponseEntity.ok(userList);
     }
 
-    // username으로 user삭제하기
-    @DeleteMapping("/delete/username/{username}")
-    public ResponseEntity removeUserByUsername(@PathVariable("username") String username) {
-        int result = userService.removeByUsername(username);
-        return new ResponseEntity(result, result == 1 ? HttpStatus.NO_CONTENT : HttpStatus.BAD_REQUEST);
-    }
-
     // user String(닉네임, email) 정보 업데이트
     @PutMapping("/put/userInfo/userName/{userName}")
     public ResponseEntity modifyUserStringInfoByUsername(@PathVariable("userName") String userName, @RequestBody User user) {

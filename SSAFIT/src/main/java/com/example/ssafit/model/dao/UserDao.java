@@ -30,7 +30,7 @@ public interface UserDao {
     int updateUserStringInfoByUsername(User user);
     
     // 5. user를 삭제하는 기능
-    int deleteByUsername(String username);
+    int deleteByUserId(long userId);
 
     // 6. 모든 user를 조회하는 기능
     List<User> selectAllUsers();

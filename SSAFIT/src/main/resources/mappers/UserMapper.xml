@@ -45,9 +45,9 @@
     </update>
 
     <!-- userName으로 user삭제 -->
-    <delete id="deleteByUsername">
+    <delete id="deleteByUserId">
         DELETE FROM users
-        WHERE username = #{userName}
+        WHERE user_id = #{userId}
     </delete>
 
     <!--모든 User 조회-->

@@ -1,12 +1,12 @@
 package com.example.ssafit.controller;
 
+import com.example.ssafit.model.dto.admin.SuspendRequest;
 import com.example.ssafit.model.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * Admin의 관리자 기능
@@ -32,7 +32,15 @@ public class AdminController {
     @Autowired
     private UserService userService;
 
+    // 유저 삭제
     @DeleteMapping("/api_admin/delete/user/userId/{userId}")
-    public void deleteUserByUsername(@PathVariable("userId") String userId) {
+    public void deleteUserByUsername(@PathVariable("userId") int userId) {
+        userService.removeByUserId(userId);
+    }
+
+    @PutMapping("/suspend")
+    public ResponseEntity suspendUserByUserId(@RequestBody @Valid SuspendRequest requestForm) {
+        userService.suspendUserByUserId(requestForm.getUserId(), requestForm.getSuspendStart(), requestForm.getSuspendEnd());
+
     }
 }

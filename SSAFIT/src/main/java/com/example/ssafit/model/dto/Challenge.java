@@ -1,7 +1,4 @@
-package com.example.ssafit.model.dto.User;
-
-import lombok.Getter;
-import lombok.Setter;
+package com.example.ssafit.model.dto;
 
 /**
  * //TODO

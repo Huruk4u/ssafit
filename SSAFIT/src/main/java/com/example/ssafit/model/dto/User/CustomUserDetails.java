@@ -42,15 +42,17 @@ public class CustomUserDetails implements UserDetails {
     }
 
     // 계정의 정지 여부를 반환하는 메서드
+    // 일부 기능만 차단할거라서 이 로직을 interceptor에서 처리해줄거임.
     @Override
     public boolean isAccountNonLocked() {
-        // user가 정지되지 않은 상태일 경우, true를 반환
-        if (user.getSuspendStart() == null || user.getSuspendEnd() == null) return true;
-
-        // user가 정지된 상태일 경우, 현재 시점 반환
-        LocalDateTime now = LocalDateTime.now();
-
-        return now.isBefore(user.getSuspendStart()) || now.isAfter(user.getSuspendEnd());
+//        // user가 정지되지 않은 상태일 경우, true를 반환
+//        if (user.getSuspendStart() == null || user.getSuspendEnd() == null) return true;
+//
+//        // user가 정지된 상태일 경우, 현재 시점 반환
+//        LocalDateTime now = LocalDateTime.now();
+//
+//        return now.isBefore(user.getSuspendStart()) || now.isAfter(user.getSuspendEnd());
+        return true;
     }
 
     //
