@@ -1,9 +1,9 @@
 -- ========================================
 -- 1. 데이터베이스 생성/사용
 -- ========================================
-DROP DATABASE IF EXISTS ssafydb;
-CREATE DATABASE IF NOT EXISTS ssafydb;
-USE ssafydb;
+DROP DATABASE IF EXISTS ssafitdb;
+CREATE DATABASE IF NOT EXISTS ssafitdb;
+USE ssafitdb;
 
 -- ========================================
 -- 2. 유저 / 관리자 / 배지

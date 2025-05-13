@@ -18,13 +18,13 @@ public class User {
     private String profileImage;
     private String backgroundImage;
     private String badgeId; // -> 추후 수정 가능성
-    private boolean enabled;
     private String createdAt;
     private String role; // -> 역할 분리
 
     // User정지 기간 관련 필드
     private LocalDateTime suspendStart;
     private LocalDateTime suspendEnd;
+    private boolean enabled;
 
     public User() {}
 
