@@ -1,10 +1,10 @@
 package com.example.ssafit.controller;
 
-import com.example.ssafit.model.dto.Comment;
+import com.example.ssafit.model.dto.comment.Comment;
 import com.example.ssafit.model.dto.Report;
-import com.example.ssafit.model.dto.User;
-import com.example.ssafit.service.CommentService;
-import com.example.ssafit.service.UserService;
+import com.example.ssafit.model.dto.User.User;
+import com.example.ssafit.model.service.CommentService;
+import com.example.ssafit.model.service.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -44,7 +44,7 @@ public class CommentController {
             Principal principal) {
 
         // 현재 로그인한 사용자 정보 확인
-        User currentUser = userService.findUserByUsername(principal.getName());
+        User currentUser = userService.searchByUsername(principal.getName());
         if (currentUser == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
         }
@@ -75,13 +75,13 @@ public class CommentController {
         }
 
         // 작성자 정보 조회
-        User author = userService.findUserById((int) originalComment.getUserId());
+        User author = userService.searchByUserId((int) originalComment.getUserId());
         if (author == null) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("작성자 정보를 찾을 수 없습니다.");
         }
 
         // 로그인 사용자와 작성자가 다르면 수정 불가
-        if (!author.getUsername().equals(currentUsername)) {
+        if (!author.getUserName().equals(currentUsername)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("수정 권한이 없습니다.");
         }
 
@@ -105,13 +105,13 @@ public class CommentController {
         }
 
         // 작성자 정보 조회
-        User author = userService.findUserById(comment.getUserId());
+        User author = userService.searchByUserId(comment.getUserId());
         if (author == null) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("작성자 정보를 찾을 수 없습니다.");
         }
 
         // 로그인 사용자와 작성자가 다르면 삭제 불가
-        if (!author.getUsername().equals(currentUsername)) {
+        if (!author.getUserName().equals(currentUsername)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("삭제 권한이 없습니다.");
         }
 
@@ -127,7 +127,7 @@ public class CommentController {
             Principal principal) {
 
         // 현재 로그인한 사용자 정보 확인
-        User currentUser = userService.findUserByUsername(principal.getName());
+        User currentUser = userService.searchByUsername(principal.getName());
         if (currentUser == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
         }
@@ -149,7 +149,7 @@ public class CommentController {
             Principal principal) {
 
         // 현재 로그인한 사용자 정보 확인
-        User currentUser = userService.findUserByUsername(principal.getName());
+        User currentUser = userService.searchByUsername(principal.getName());
         if (currentUser == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
         }
@@ -172,7 +172,7 @@ public class CommentController {
             Principal principal) {
 
         // 현재 로그인한 사용자 정보 확인
-        User currentUser = userService.findUserByUsername(principal.getName());
+        User currentUser = userService.searchByUsername(principal.getName());
         if (currentUser == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
         }

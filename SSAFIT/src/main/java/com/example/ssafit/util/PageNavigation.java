@@ -123,4 +123,3 @@ public class PageNavigation {
         return (page - 1) * this.countPerPage;
     }
 }
-

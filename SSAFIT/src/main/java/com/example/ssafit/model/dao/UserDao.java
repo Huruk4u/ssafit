@@ -1,48 +1,46 @@
 package com.example.ssafit.model.dao;
 
-import com.example.ssafit.model.dto.User;
+import com.example.ssafit.model.dto.User.User;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
- * Data Access Object interface for User entity
+ * User관련 기능 구현
+ * 1. userName으로 user를 조회하는 기능
+ * 2. userName으로 user의 존재 여부를 확인하는 기능
+ * 3. user를 등록하는 기능
+ * 4. user를 업데이트하는 기능
+ * 5. user를 삭제하는 기능
  */
 public interface UserDao {
+    // 1. userName으로 user를 조회하는 기능
+    User selectByUsername(String username);
 
-    /**
-     * 사용자명(username)으로 사용자 조회
-     * @param username 조회할 사용자명
-     * @return 해당 사용자 정보, 없으면 null
-     */
-    User findByUsername(String username);
+    // userId로 user조회하는 기능
+    User selectByUserId(int userId);
 
-    /**
-     * 사용자 ID(userId)로 사용자 조회
-     * @param userId 조회할 사용자 ID
-     * @return 해당 사용자 정보, 없으면 null
-     */
-    User findById(int userId);
-
-    /**
-     * 사용자명으로 사용자 존재 여부 확인
-     * @param username 확인할 사용자명
-     * @return 존재하면 true, 아니면 false
-     */
-    boolean existsByUsername(String username);
-
-    /**
-     * 새로운 사용자 등록
-     * @param user 등록할 사용자 정보
-     */
+    // 2. userName으로 user의 존재 여부를 확인하는 기능
+    boolean checkExistsByUsername(String username);
+    
+    // 3. user를 등록하는 기능
     void insertUser(User user);
+    
+    // 4. user를 업데이트하는 기능
+    int updateUserStringInfoByUsername(User user);
+    
+    // 5. user를 삭제하는 기능
+    int deleteByUsername(String username);
 
-    /**
-     * 사용자 정보 수정
-     * @param user 수정할 사용자 정보
-     */
-    void updateUser(User user);
+    // 6. 모든 user를 조회하는 기능
+    List<User> selectAllUsers();
 
-    /**
-     * 사용자명으로 사용자 삭제
-     * @param username 삭제할 사용자명
-     */
-    void deleteByUsername(String username);
+    // 7. User의 프로필사진을 업데이트 하는 기능
+    void updateUserProfileImageByUsername(@Param("userName") String userName, @Param("fileName") String fileName);
+
+    // 8. User의 배경사진을 업데이트 하는 기능
+    void updateUserBackgroundImageByUsername(@Param("userName") String userName, @Param("fileName") String fileName);
+
+    // 9. User의 비밀번호를 업데이트 하는 기능
+    void updateUserPasswordByUsername(@Param("userName") String userName, @Param("newPassword") String newPassword);
 }

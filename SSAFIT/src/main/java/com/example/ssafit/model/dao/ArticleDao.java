@@ -1,6 +1,6 @@
 package com.example.ssafit.model.dao;
 
-import com.example.ssafit.model.dto.Article;
+import com.example.ssafit.model.dto.article.Article;
 import com.example.ssafit.model.dto.SearchCondition;
 import org.apache.ibatis.annotations.Param;
 

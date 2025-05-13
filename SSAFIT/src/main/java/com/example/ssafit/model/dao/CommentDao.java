@@ -1,6 +1,6 @@
 package com.example.ssafit.model.dao;
 
-import com.example.ssafit.model.dto.Comment;
+import com.example.ssafit.model.dto.comment.Comment;
 import com.example.ssafit.model.dto.Report;
 import org.apache.ibatis.annotations.Param;
 

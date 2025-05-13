@@ -2,53 +2,79 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.ssafit.model.dao.UserDao">
 
-    <!-- Result mapping -->
-    <resultMap id="UserResultMap" type="com.example.ssafit.model.dto.User">
-        <id property="userId" column="user_id" />
-        <result property="username" column="username" />
-        <result property="password" column="password" />
-        <result property="enabled" column="enabled" />
-    </resultMap>
+<!--    &lt;!&ndash; Result mapping &ndash;&gt;-->
+<!--    <resultMap id="UserResultMap" type="User">-->
+<!--        <id property="id" column="id" />-->
+<!--        <result property="userName" column="userName" />-->
+<!--        <result property="password" column="password" />-->
+<!--        <result property="enabled" column="enabled" />-->
+<!--    </resultMap>-->
 
-
-    <!-- Find a user by username -->
-    <select id="findByUsername" resultMap="UserResultMap">
-        SELECT user_id, username, password, enabled
+    <!-- userName으로 user조회 -->
+    <select id="selectByUsername" resultType="User">
+        SELECT *
         FROM users
-        WHERE username = #{username}
+        WHERE username = #{userName}
     </select>
 
-    <!-- Check if a user exists by username -->
-    <select id="existsByUsername" resultType="boolean">
-        SELECT COUNT(*) > 0
-        FROM users
-        WHERE username = #{username}
-    </select>
-
-    <!-- Insert a new user -->
-    <insert id="insertUser" parameterType="User" useGeneratedKeys="true" keyProperty="userId" keyColumn="user_id">
-        INSERT INTO users (username, password, enabled)
-        VALUES (#{username}, #{password}, #{enabled})
-    </insert>
-
-    <!-- Update a user -->
-    <update id="updateUser" parameterType="User">
-        UPDATE users
-        SET password = #{password}, enabled = #{enabled}
-        WHERE username = #{username}
-    </update>
-
-    <!-- Delete a user by username -->
-    <delete id="deleteByUsername">
-        DELETE FROM users
-        WHERE username = #{username}
-    </delete>
-
-    <!-- 사용자 ID로 사용자 조회 -->
-    <select id="findById" resultMap="UserResultMap">
-        SELECT user_id, username, password, enabled
+    <select id="selectByUserId" resultType="User">
+        SELECT *
         FROM users
         WHERE user_id = #{userId}
     </select>
+
+    <!-- userName의 존재 여부 확인 -->
+    <select id="checkExistsByUsername" resultType="boolean">
+        SELECT COUNT(*) > 0
+        FROM users
+        WHERE username = #{userName}
+    </select>
+
+    <!-- user 등록 -->
+    <insert id="insertUser" parameterType="User" useGeneratedKeys="true" keyProperty="userId" keyColumn="user_id">
+        INSERT INTO users (username, password, nickname, email)
+        VALUES (#{userName}, #{password}, #{nickname}, #{email})
+    </insert>
+
+    <!-- user 업데이트 -->
+    <update id="updateUserStringInfoByUsername" parameterType="User">
+        UPDATE users
+        SET nickname=#{nickname},
+            email=#{email}
+        WHERE username = #{userName}
+    </update>
+
+    <!-- userName으로 user삭제 -->
+    <delete id="deleteByUsername">
+        DELETE FROM users
+        WHERE username = #{userName}
+    </delete>
+
+    <!--모든 User 조회-->
+    <select id="selectAllUsers">
+        SELECT *
+        FROM users;
+    </select>
+
+    <!--user의 프로필 이미지 업로드-->
+    <update id="updateUserProfileImageByUsername">
+        UPDATE users
+        SET profile_image=#{fileName}
+        WHERE username = #{userName}
+    </update>
+
+    <!--user의 프로필 이미지 업로드-->
+    <update id="updateUserBackgroundImageByUsername">
+        UPDATE users
+        SET background_image=#{fileName}
+        WHERE username = #{userName}
+    </update>
+
+    <!--user의 비밀번호 업데이트-->
+    <update id="updateUserPasswordByUsername">
+        UPDATE users
+        SET password=#{newPassword}
+        WHERE username = #{userName}
+    </update>
 
 </mapper>

@@ -30,13 +30,8 @@ CREATE TABLE users (
                        suspend_start TIMESTAMP NULL,
                        suspend_end   TIMESTAMP NULL,
                        created_at       TIMESTAMP    DEFAULT CURRENT_TIMESTAMP,
+                       role VARCHAR(20) DEFAULT 'USER',
                        FOREIGN KEY (badge_id) REFERENCES badges(badge_id)
-) ENGINE=InnoDB;
-
-CREATE TABLE admins (
-                        admin_id     BIGINT    PRIMARY KEY AUTO_INCREMENT,
-                        user_id      BIGINT    NOT NULL,
-                        FOREIGN KEY (user_id) REFERENCES users(user_id)
 ) ENGINE=InnoDB;
 
 -- ========================================
@@ -45,12 +40,10 @@ CREATE TABLE admins (
 CREATE TABLE challenges (
                             challenge_id        BIGINT    PRIMARY KEY AUTO_INCREMENT,
                             user_id             BIGINT    NOT NULL,
-                            streak_count        INT       DEFAULT 0,
-                            longest_streak      INT       DEFAULT 0,
-                            streak_map          JSON      COMMENT '날짜별 수행여부 맵',
+                            record_date   DATE NOT NULL,
                             created_at          TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                            updated_at          TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-                            FOREIGN KEY (user_id) REFERENCES users(user_id)
+                            FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+                            UNIQUE (user_id, record_date)
 ) ENGINE=InnoDB;
 
 CREATE TABLE inbody_data (
@@ -61,7 +54,7 @@ CREATE TABLE inbody_data (
                              body_fat     DECIMAL(5,2),
                              uploaded_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                              updated_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-                             FOREIGN KEY (user_id) REFERENCES users(user_id)
+                             FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
 -- ========================================
@@ -156,14 +149,6 @@ CREATE TABLE videos (
                         uploaded_by  BIGINT,
                         created_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         FOREIGN KEY (uploaded_by) REFERENCES users(user_id)
-) ENGINE=InnoDB;
-
-CREATE TABLE video_tags (
-                            video_id BIGINT NOT NULL,
-                            tag_id   BIGINT NOT NULL,
-                            PRIMARY KEY (video_id, tag_id),
-                            FOREIGN KEY (video_id) REFERENCES videos(video_id),
-                            FOREIGN KEY (tag_id)   REFERENCES tags(tag_id)
 ) ENGINE=InnoDB;
 
 CREATE TABLE user_favorite_videos (
