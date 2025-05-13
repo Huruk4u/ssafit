@@ -58,15 +58,6 @@ public class UserController {
         else return ResponseEntity.ok(user);
     }
 
-    // 모든 user 조회하기
-    @GetMapping("/get")
-    public ResponseEntity getAllUser() {
-        List<User> userList = userService.searchAllUser();
-
-        if (userList == null) return ResponseEntity.noContent().build();
-        else return ResponseEntity.ok(userList);
-    }
-
     // user String(닉네임, email) 정보 업데이트
     @PutMapping("/put/userInfo/userName/{userName}")
     public ResponseEntity modifyUserStringInfoByUsername(@PathVariable("userName") String userName, @RequestBody User user) {

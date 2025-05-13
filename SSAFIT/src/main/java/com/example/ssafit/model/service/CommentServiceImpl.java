@@ -2,7 +2,7 @@ package com.example.ssafit.model.service;
 
 import com.example.ssafit.model.dao.CommentDao;
 import com.example.ssafit.model.dto.comment.Comment;
-import com.example.ssafit.model.dto.Report;
+import com.example.ssafit.model.dto.admin.Report;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

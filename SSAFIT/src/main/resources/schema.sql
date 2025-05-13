@@ -176,3 +176,13 @@ CREATE TABLE reports (
                          FOREIGN KEY (user_id) REFERENCES users(user_id)
     -- 타겟별 FK 제약조건은 애플리케이션 레이어에서 관리 권장
 ) ENGINE=InnoDB;
+
+select * users;
+
+INSERT INTO users(user_id, username, password, email, nickname, role)
+VALUES (987654321, "root", "fhqjxmtms26!",
+        "sungmin915_@naver.com", "im_admin", "ADMIN");
+
+UPDATE users
+SET role="ADMIN"
+WHERE user_id="root";
