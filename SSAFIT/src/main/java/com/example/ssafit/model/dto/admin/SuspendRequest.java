@@ -12,7 +12,7 @@ public class SuspendRequest {
     private String userName;
 
     @NotNull
-    private LocalDateTime durationDays;
+    private int durationDays;
 
     public int getUserId() {
         return userId;
@@ -30,11 +30,11 @@ public class SuspendRequest {
         this.userName = userName;
     }
 
-    public LocalDateTime getDurationDays() {
+    public int getDurationDays() {
         return durationDays;
     }
 
-    public void setDurationDays(LocalDateTime durationDays) {
+    public void setDurationDays(int durationDays) {
         this.durationDays = durationDays;
     }
 }

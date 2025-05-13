@@ -24,6 +24,8 @@ public class User {
     // User정지 기간 관련 필드
     private LocalDateTime suspendStart;
     private LocalDateTime suspendEnd;
+
+    // User 영구 정지 관련 필드
     private boolean enabled;
 
     public User() {}
