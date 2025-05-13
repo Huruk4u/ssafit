@@ -167,11 +167,14 @@ CREATE TABLE user_favorite_videos (
 -- ========================================
 CREATE TABLE reports (
                          report_id    BIGINT    PRIMARY KEY AUTO_INCREMENT,
+
                          report_category VARCHAR(100),
-                         user_id      BIGINT    NOT NULL,
+                         reporter_id      BIGINT    NOT NULL COMMENT '신고자 id',
+                         reportee_id      BIGINT    NOT NULL COMMENT '피신고자 id',
                          target_type  VARCHAR(20) NOT NULL COMMENT 'article, comment, user 등',
                          target_id    BIGINT    NOT NULL,
                          content      TEXT,
+                         action VARCHAR(20) NOT NULL COMMENT '조치 내용',
                          created_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                          FOREIGN KEY (user_id) REFERENCES users(user_id)
     -- 타겟별 FK 제약조건은 애플리케이션 레이어에서 관리 권장
