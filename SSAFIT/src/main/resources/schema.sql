@@ -183,7 +183,7 @@ CREATE TABLE reports (
                          content      TEXT,
                          action VARCHAR(200) NULL COMMENT '조치 내용',
                          created_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                         FOREIGN KEY (article_id) REFERENCES  articles(article_id) ON DELETE CASCADE
+                         FOREIGN KEY (article_id) REFERENCES articles(article_id) ON DELETE CASCADE
     -- 타겟별 FK 제약조건은 애플리케이션 레이어에서 관리 권장
 ) ENGINE=InnoDB;
 
@@ -204,6 +204,7 @@ VALUES
 
 
 select * from users;
+select * from reports;
 
 INSERT INTO users(user_id, username, password, email, nickname, role)
 VALUES (987654321, "root", "fhqjxmtms26!",
