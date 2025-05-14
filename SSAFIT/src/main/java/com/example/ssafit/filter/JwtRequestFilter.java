@@ -42,9 +42,10 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                                     jakarta.servlet.http.HttpServletResponse response, jakarta.servlet.FilterChain filterChain)
             throws jakarta.servlet.ServletException, IOException {
 
-        final String requestTokenHeader = request.getHeader("Authorization");
+        String rawHeader = request.getHeader("Authorization");
+        String token = jwtTokenUtil.extractPureToken(rawHeader);
 
-        if (tokenBlacklist.isBlacklisted(requestTokenHeader)) {
+        if (token == null || tokenBlacklist.isBlacklisted(token)) {
             logger.warn("blacklisted된 JWT토큰으로 접근을 시도했습니다.");
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.getWriter().write("토큰이 만료되었거나, 로그아웃된 상태입니다.");
@@ -57,8 +58,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         String jwtToken = null;
         // JWT Token is in the form "Bearer token". Remove Bearer word and get only the
         // Token
-        if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")) {
-            jwtToken = requestTokenHeader.substring(7);
+        if (token != null && token.startsWith("Bearer ")) {
+            jwtToken = token.substring(7);
             try {
                 username = jwtTokenUtil.getUsernameFromToken(jwtToken);
             } catch (IllegalArgumentException e) {

@@ -1,5 +1,9 @@
 package com.example.ssafit.controller;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.Objects;
 
 import com.example.ssafit.model.dto.jwt.TokenBlacklist;
@@ -64,8 +68,15 @@ public class JwtAuthenticationController {
     // 토큰 blacklist에 토큰을 추가하는 방식으로 로그아웃 진행
     @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpServletRequest request) {
-        String token = request.getHeader("Authorization");
-        tokenBlacklist.add(token);
+        String rawHeader = request.getHeader("Authorization");
+        String token = jwtTokenUtil.extractPureToken(rawHeader);
+        Date expiration = jwtTokenUtil.getExpiration(token);
+        long ttlSeconds = Duration.between(
+                LocalDateTime.now(), expiration.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime()
+        ).getSeconds();
+
+        tokenBlacklist.add(token, ttlSeconds);
+
         return ResponseEntity.ok("로그아웃 성공");
     }
 
