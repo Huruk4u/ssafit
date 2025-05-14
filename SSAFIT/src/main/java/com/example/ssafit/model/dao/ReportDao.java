@@ -17,6 +17,9 @@ public interface ReportDao {
     // 1. 모든 Report 조회
     List<Report> selectAllReports();
 
+    // 2. 조치 안 된 Report 조회
+    List<Report> selectReportNotHandled();
+
     // 2. Report 생성
     void insertReport(Report report);
 

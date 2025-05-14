@@ -50,8 +50,18 @@ public class AdminController {
         else return ResponseEntity.ok(userList);
     }
 
+    // 조치되지 않은 Report 조회하기
+    @GetMapping("/get/report/notHandled")
+    public ResponseEntity getNotHandledReports() {
+        System.out.println("요청 도착");
+        List<Report> reportList = reportService.searchReportNotHandled();
+        System.out.println("요청 처리 완료");
+        if (reportList == null) return ResponseEntity.noContent().build();
+        else return ResponseEntity.ok(reportList);
+    }
+
     // 유저 삭제 -> 영구 정지로 변화를 줘야 함.
-    @DeleteMapping("/api_admin/delete/user/userId/{userId}")
+    @DeleteMapping("/delete/user/userId/{userId}")
     public void deleteUserByUsername(@PathVariable("userId") int userId) {
         userService.removeByUserId(userId);
     }

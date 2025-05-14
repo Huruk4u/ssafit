@@ -17,6 +17,9 @@ public interface ReportService {
     // 1. 모든 Report 조회
     List<Report> searchAllReports();
 
+    // 2. 조치 안 된 Report만 조회
+    List<Report> searchReportNotHandled();
+
     // 2. Report 생성
     int addReport(Report report);
 

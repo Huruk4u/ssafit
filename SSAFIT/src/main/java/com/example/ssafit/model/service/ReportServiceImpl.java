@@ -21,6 +21,11 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
+    public List<Report> searchReportNotHandled() {
+        return reportDao.selectReportNotHandled();
+    }
+
+    @Override
     @Transactional
     public int addReport(Report report) {
         reportDao.insertReport(report);

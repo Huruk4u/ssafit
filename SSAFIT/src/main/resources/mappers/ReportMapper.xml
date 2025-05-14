@@ -8,6 +8,13 @@
         FROM reports
     </select>
 
+    <!--조치 안 된 report만 조회-->
+    <select id="selectReportNotHandled">
+        SELECT *
+        FROM reports
+        WHERE is_handled=false
+    </select>
+
     <!--report 생성-->
     <insert id="insertReport">
         INSERT INTO reports(reporter_id, reportee_id, article_id, report_category, type, content)
