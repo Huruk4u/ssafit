@@ -1,6 +1,7 @@
 package com.example.ssafit.filter;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 import com.example.ssafit.model.dto.jwt.TokenBlacklist;
@@ -30,17 +31,24 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     @Autowired
     private TokenBlacklist tokenBlacklist;
 
-    private static final List<String> EXCLUDE_URLS = List.of(
-            "/api/v1/auth/**", "/v2/api-docs", "/v3/api-docs",
+    // token인증 없이 접근 가능한 URL request
+    private static final String[] WHITE_LIST_URL = { "/api/v1/auth/**", "/v2/api-docs", "/v3/api-docs",
             "/v3/api-docs/**", "/swagger-resources", "/swagger-resources/**", "/configuration/ui",
             "/configuration/security", "/swagger-ui/**", "/webjars/**", "/swagger-ui.html", "/api/auth/**",
-            "/api/test/**", "/api_user/authenticate", "/api_user/register"
-    );
+            "/api/test/**", "/api_auth/authenticate", "/api_user/post/signup" };
 
     @Override
     protected void doFilterInternal(jakarta.servlet.http.HttpServletRequest request,
                                     jakarta.servlet.http.HttpServletResponse response, jakarta.servlet.FilterChain filterChain)
             throws jakarta.servlet.ServletException, IOException {
+
+
+        String uri = request.getRequestURI();
+
+        if (Arrays.stream(WHITE_LIST_URL).anyMatch(uri::startsWith)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
 
         String rawHeader = request.getHeader("Authorization");
         String token = jwtTokenUtil.extractPureToken(rawHeader);
@@ -56,10 +64,12 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
         String username = null;
         String jwtToken = null;
+
+        String requestHeader = request.getHeader("Authorization");
         // JWT Token is in the form "Bearer token". Remove Bearer word and get only the
         // Token
-        if (token != null && token.startsWith("Bearer ")) {
-            jwtToken = token.substring(7);
+        if (requestHeader != null && rawHeader.startsWith("Bearer ")) {
+            jwtToken = rawHeader.substring(7);
             try {
                 username = jwtTokenUtil.getUsernameFromToken(jwtToken);
             } catch (IllegalArgumentException e) {
