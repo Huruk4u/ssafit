@@ -162,21 +162,24 @@ CREATE TABLE user_favorite_videos (
                                       FOREIGN KEY (video_id) REFERENCES videos(video_id)
 ) ENGINE=InnoDB;
 
+
+drop table reports;
 -- ========================================
 -- 8. 신고 (Report) — Polymorphic 구조
 -- ========================================
 CREATE TABLE reports (
                          report_id    BIGINT    PRIMARY KEY AUTO_INCREMENT,
-
                          report_category VARCHAR(100),
                          reporter_id      BIGINT    NOT NULL COMMENT '신고자 id',
                          reportee_id      BIGINT    NOT NULL COMMENT '피신고자 id',
-                         target_type  VARCHAR(20) NOT NULL COMMENT 'article, comment, user 등',
-                         target_id    BIGINT    NOT NULL,
+                         type  VARCHAR(20) NOT NULL COMMENT 'article, comment, user 등',
+                         article_id    BIGINT    NOT NULL,
                          content      TEXT,
-                         action VARCHAR(20) NOT NULL COMMENT '조치 내용',
+                         action VARCHAR(200) NOT NULL COMMENT '조치 내용',
                          created_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                         FOREIGN KEY (user_id) REFERENCES users(user_id)
+                         FOREIGN KEY (reporter_id) REFERENCES users(user_id) ON DELETE CASCADE,
+                         FOREIGN KEY (reportee_id) REFERENCES  users(user_id) ON DELETE CASCADE,
+                         FOREIGN KEY (article_id) REFERENCES  articles(article_id) ON DELETE CASCADE
     -- 타겟별 FK 제약조건은 애플리케이션 레이어에서 관리 권장
 ) ENGINE=InnoDB;
 
@@ -185,6 +188,9 @@ select * from users;
 INSERT INTO users(user_id, username, password, email, nickname, role)
 VALUES (987654321, "root", "fhqjxmtms26!",
         "sungmin915_@naver.com", "im_admin", "ROLE_ADMIN");
+
+DELETE FROM users
+WHERE username="root";
 
 UPDATE users
 SET role="ROLE_ADMIN"

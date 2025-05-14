@@ -81,7 +81,7 @@
     <update id="updateSuspendTimeByUserId">
         UPDATE users
         SET suspend_start=#{suspendStart},
-            suspend_end=#{suspendEnd},
+            suspend_end=#{suspendEnd}
         WHERE user_id=#{userId}
     </update>
 

@@ -185,9 +185,10 @@ public class CommentController {
 
         // 신고 객체 설정 - 실제 로그인한 사용자 ID로 설정
         Report report = new Report();
-        report.setCommentId(commentId);
-        report.setUserId(currentUser.getUserId());
-        report.setReason(reportData.getReason());
+        report.setArticleId(comment.getArticleId());
+        report.setReporterId(currentUser.getUserId());
+        report.setReporteeId(comment.getUserId());
+        report.setReportContent(reportData.getReportContent());
 
         boolean result = commentService.reportComment(report);
         if (!result) {
