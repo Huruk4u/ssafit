@@ -8,13 +8,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class ArticleServiceImpl implements ArticleService {
 
     @Autowired
     private ArticleDao articleDao;
+
+    @Autowired
+    private BadgeService badgeService;
 
     @Override
     public List<Article> searchAllArticle() {
@@ -49,8 +51,14 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     @Transactional
     public int addArticle(Article article) {
-        articleDao.insertArticle(article);
-        return 1;
+        int result = articleDao.insertArticle(article);
+
+        // If the article was successfully inserted, check if the user earns any badges
+        if (result > 0) {
+            badgeService.checkAndAwardArticleBadges(article.getUserId());
+        }
+
+        return result;
     }
 
     @Override

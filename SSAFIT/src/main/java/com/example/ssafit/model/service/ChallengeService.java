@@ -32,4 +32,5 @@ public interface ChallengeService {
      * @return 기록 존재 여부
      */
     boolean hasRecordForDate(int userId, LocalDate recordDate);
+
 }

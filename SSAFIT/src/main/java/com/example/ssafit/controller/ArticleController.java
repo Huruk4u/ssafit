@@ -1,9 +1,11 @@
 package com.example.ssafit.controller;
 
+import com.example.ssafit.model.dto.Badge;
 import com.example.ssafit.model.dto.User.User;
 import com.example.ssafit.model.service.ArticleService;
 import com.example.ssafit.model.dto.article.Article;
 import com.example.ssafit.model.dto.SearchCondition;
+import com.example.ssafit.model.service.BadgeService;
 import com.example.ssafit.model.service.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +14,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api_article")
@@ -26,6 +30,9 @@ public class ArticleController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private BadgeService badgeService;
 
     @GetMapping("/get")
     public ResponseEntity getAllArticle() {
@@ -122,8 +129,35 @@ public class ArticleController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("제목은 필수 항목입니다.");
         }
 
+        List<Badge> userBadgesBefore = badgeService.getUserBadges(currentUser.getUserId());
+
         int result = articleService.addArticle(article);
-        return new ResponseEntity<>(result, result == 1 ? HttpStatus.CREATED : HttpStatus.BAD_REQUEST);
+
+        if (result != 1) {
+            return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+        }
+
+        List<Badge> userBadgesAfter = badgeService.getUserBadges(currentUser.getUserId());
+
+        // 뱃지 새로 얻었는가
+        Map<String, Object> response = new HashMap<>();
+        response.put("result", result);
+
+        if (userBadgesAfter.size() > userBadgesBefore.size()) {
+            Map<String, Badge> badgesBeforeMap = new HashMap<>();
+            for (Badge badge : userBadgesBefore) {
+                badgesBeforeMap.put(badge.getBadgeId(), badge);
+            }
+
+            List<Badge> newBadges = userBadgesAfter.stream()
+                    .filter(badge -> !badgesBeforeMap.containsKey(badge.getBadgeId()))
+                    .toList();
+
+            response.put("newBadges", newBadges);
+            response.put("message", "게시글이 등록되었으며, 새로운 배지를 획득하셨습니다!");
+        }
+
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @PutMapping("/put/modify/article_id/{articleId}")

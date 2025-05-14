@@ -15,6 +15,8 @@ CREATE TABLE badges (
                         description TEXT
 ) ENGINE=InnoDB;
 
+
+
 CREATE TABLE users (
                        user_id          BIGINT       PRIMARY KEY AUTO_INCREMENT,
                        username         VARCHAR(100) NOT NULL UNIQUE,
@@ -23,15 +25,23 @@ CREATE TABLE users (
                        email            VARCHAR(255),
                        profile_image    VARCHAR(255),
                        background_image VARCHAR(255),
-                       badge_id         VARCHAR(100),
                        height           DECIMAL(5,2),
                        weight           DECIMAL(5,2),
                        enabled          BOOLEAN      DEFAULT TRUE,
                        suspend_start TIMESTAMP NULL,
                        suspend_end   TIMESTAMP NULL,
                        created_at       TIMESTAMP    DEFAULT CURRENT_TIMESTAMP,
-                       role VARCHAR(20) DEFAULT 'USER',
-                       FOREIGN KEY (badge_id) REFERENCES badges(badge_id)
+                       role VARCHAR(20) DEFAULT 'USER'
+) ENGINE=InnoDB;
+
+CREATE TABLE user_badges (
+                             user_id        BIGINT,
+                             badge_id       VARCHAR(100),
+                             earned_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                             is_represented BOOLEAN DEFAULT FALSE,
+                             PRIMARY KEY (user_id, badge_id),
+                             FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+                             FOREIGN KEY (badge_id) REFERENCES badges(badge_id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
 -- ========================================
@@ -174,3 +184,17 @@ CREATE TABLE reports (
                          FOREIGN KEY (user_id) REFERENCES users(user_id)
     -- 타겟별 FK 제약조건은 애플리케이션 레이어에서 관리 권장
 ) ENGINE=InnoDB;
+
+INSERT INTO badges (badge_id, name, icon_url, description)
+VALUES ('ARTICLE_POSTER_LV1', '게시글 작성자 Lv.1', '/assets/badges/article_poster_lv1.png', '게시글 3개 작성 배지')
+    ON DUPLICATE KEY UPDATE
+                         name = VALUES(name),
+                         icon_url = VALUES(icon_url),
+                         description = VALUES(description);
+
+INSERT INTO badges (badge_id, name, icon_url, description)
+VALUES
+    ('STREAK_3_DAYS', '3일 연속 챌린지', '/badges/streak_3.png', '3일 연속으로 챌린지를 완료했습니다!'),
+    ('STREAK_7_DAYS', '7일 연속 챌린지', '/badges/streak_7.png', '7일 연속으로 챌린지를 완료했습니다!'),
+    ('STREAK_30_DAYS', '30일 연속 챌린지', '/badges/streak_30.png', '30일 연속으로 챌린지를 완료했습니다!'),
+    ('STREAK_100_DAYS', '100일 연속 챌린지', '/badges/streak_100.png', '100일 연속으로 챌린지를 완료했습니다!');

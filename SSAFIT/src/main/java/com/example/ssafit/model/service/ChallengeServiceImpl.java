@@ -5,7 +5,7 @@ import com.example.ssafit.model.dto.User.Challenge;
 import com.example.ssafit.model.dto.User.ChallengeSummary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -16,6 +16,9 @@ public class ChallengeServiceImpl implements ChallengeService {
 
     @Autowired
     private ChallengeDao challengeDAO;
+
+    @Autowired
+    private BadgeService badgeService;
 
     @Override
     public ChallengeSummary getChallengeStreak(int userId) {
@@ -38,6 +41,7 @@ public class ChallengeServiceImpl implements ChallengeService {
     }
 
     @Override
+    @Transactional
     public Challenge createChallengeRecord(int userId, LocalDate recordDate) {
         // 이미 해당 날짜에 기록이 있는지 확인
         if (hasRecordForDate(userId, recordDate)) {
@@ -49,6 +53,12 @@ public class ChallengeServiceImpl implements ChallengeService {
         challenge.setUserId(userId);
         challenge.setRecordDate(recordDate);
         challengeDAO.insertChallenge(challenge);
+
+        // 챌린지 기록 생성 후 현재 스트릭 계산
+        ChallengeSummary summary = getChallengeStreak(userId);
+
+        // 스트릭 기반 뱃지 확인 및 부여 (BadgeService에 위임)
+        badgeService.checkAndAwardStreakBadges(userId, summary.getCurrentStreak());
 
         return challenge;
     }
