@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.ssafit.model.dao.ChallengeDao">
+    <!-- 사용자 ID로 모든 챌린지 기록 조회 -->
+    <select id="getChallengesByUserId" parameterType="int" resultType="Challenge">
+        SELECT
+            challenge_id AS challengeId,
+            user_id AS userId,
+            record_date AS recordDate,
+            created_at AS createdAt
+        FROM
+            challenges
+        WHERE
+            user_id = #{userId}
+        ORDER BY
+            record_date DESC
+    </select>
+
+    <!-- 사용자 ID와 날짜로 특정 챌린지 기록 조회 -->
+    <select id="getChallengeByUserIdAndDate" parameterType="map" resultType="Challenge">
+        SELECT
+            challenge_id AS challengeId,
+            user_id AS userId,
+            record_date AS recordDate,
+            created_at AS createdAt
+        FROM
+            challenges
+        WHERE
+            user_id = #{userId}
+          AND record_date = #{recordDate}
+            LIMIT 1
+    </select>
+
+    <!-- 새로운 챌린지 기록 삽입 -->
+    <insert id="insertChallenge" parameterType="Challenge" useGeneratedKeys="true" keyProperty="challengeId">
+        INSERT INTO challenges (
+            user_id,
+            record_date
+        ) VALUES (
+                     #{userId},
+                     #{recordDate}
+                 )
+    </insert>
+
+</mapper>

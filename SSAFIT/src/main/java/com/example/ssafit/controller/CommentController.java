@@ -1,7 +1,7 @@
 package com.example.ssafit.controller;
 
 import com.example.ssafit.model.dto.comment.Comment;
-import com.example.ssafit.model.dto.admin.Report;
+import com.example.ssafit.model.dto.Report;
 import com.example.ssafit.model.dto.User.User;
 import com.example.ssafit.model.service.CommentService;
 import com.example.ssafit.model.service.UserService;

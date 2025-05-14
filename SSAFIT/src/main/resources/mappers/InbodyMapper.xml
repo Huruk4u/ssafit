@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.ssafit.model.dao.InbodyDao">
+
+    <update id="updateInbody">
+        INSERT INTO inbody_data (user_id, weight, muscle_mass, body_fat)
+        VALUES (#{userId}, #{weight}, #{muscleMass}, #{bodyFat}) ON DUPLICATE KEY
+        UPDATE
+            weight = #{weight},
+            muscle_mass = #{muscleMass},
+            body_fat = #{bodyFat}
+    </update>
+
+    <select id="findLatestInbodyByUserId" resultType="Inbody">
+        SELECT *
+        FROM inbody_data
+        WHERE user_id = #{userId}
+    </select>
+
+</mapper>

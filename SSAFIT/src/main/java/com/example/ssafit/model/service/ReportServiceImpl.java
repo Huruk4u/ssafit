@@ -1,12 +1,11 @@
 package com.example.ssafit.model.service;
 
 import com.example.ssafit.model.dao.ReportDao;
-import com.example.ssafit.model.dto.admin.Report;
+import com.example.ssafit.model.dto.Report;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.beans.Transient;
 import java.util.List;
 
 @Service

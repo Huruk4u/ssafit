@@ -1,6 +1,6 @@
 package com.example.ssafit.model.dao;
 
-import com.example.ssafit.model.dto.admin.Report;
+import com.example.ssafit.model.dto.Report;
 
 import java.util.List;
 

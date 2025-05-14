@@ -1,4 +1,4 @@
-package com.example.ssafit.model.dto.admin;
+package com.example.ssafit.model.dto;
 
 import jakarta.validation.constraints.NotNull;
 

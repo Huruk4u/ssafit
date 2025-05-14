@@ -1,6 +1,6 @@
 package com.example.ssafit.controller;
 
-import com.example.ssafit.model.dto.admin.Report;
+import com.example.ssafit.model.dto.Report;
 import com.example.ssafit.model.service.ReportService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

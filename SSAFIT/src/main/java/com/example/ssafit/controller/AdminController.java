@@ -1,7 +1,7 @@
 package com.example.ssafit.controller;
 
 import com.example.ssafit.model.dto.User.User;
-import com.example.ssafit.model.dto.admin.Report;
+import com.example.ssafit.model.dto.Report;
 import com.example.ssafit.model.dto.admin.SuspendRequest;
 import com.example.ssafit.model.service.ReportService;
 import com.example.ssafit.model.service.UserService;
@@ -48,6 +48,14 @@ public class AdminController {
 
         if (userList == null) return ResponseEntity.noContent().build();
         else return ResponseEntity.ok(userList);
+    }
+
+    // userName으로 user조회
+    @GetMapping("/get/username/{username}")
+    public ResponseEntity getUserByUsername(@PathVariable("username") String username) {
+        User user = userService.searchByUsername(username);
+        if (user == null) return ResponseEntity.noContent().build();
+        else return ResponseEntity.ok(user);
     }
 
     // 조치되지 않은 Report 조회하기

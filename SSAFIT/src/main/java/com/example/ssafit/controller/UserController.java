@@ -50,14 +50,6 @@ public class UserController {
         return ResponseEntity.ok(token);
     }
 
-    // userName으로 user조회
-    @GetMapping("/get/username/{username}")
-    public ResponseEntity getUserByUsername(@PathVariable("username") String username) {
-        User user = userService.searchByUsername(username);
-        if (user == null) return ResponseEntity.noContent().build();
-        else return ResponseEntity.ok(user);
-    }
-
     // user String(닉네임, email) 정보 업데이트
     @PutMapping("/put/userInfo/userName/{userName}")
     public ResponseEntity modifyUserStringInfoByUsername(@PathVariable("userName") String userName, @RequestBody User user) {
