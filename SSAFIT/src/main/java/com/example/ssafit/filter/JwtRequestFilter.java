@@ -3,9 +3,11 @@ package com.example.ssafit.filter;
 import java.io.IOException;
 import java.util.List;
 
+import com.example.ssafit.model.dto.jwt.TokenBlacklist;
 import com.example.ssafit.util.JwtTokenUtil;
 import com.example.ssafit.model.service.JwtUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,6 +27,9 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
 
+    @Autowired
+    private TokenBlacklist tokenBlacklist;
+
     private static final List<String> EXCLUDE_URLS = List.of(
             "/api/v1/auth/**", "/v2/api-docs", "/v3/api-docs",
             "/v3/api-docs/**", "/swagger-resources", "/swagger-resources/**", "/configuration/ui",
@@ -38,6 +43,13 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             throws jakarta.servlet.ServletException, IOException {
 
         final String requestTokenHeader = request.getHeader("Authorization");
+
+        if (tokenBlacklist.isBlacklisted(requestTokenHeader)) {
+            logger.warn("blacklisted된 JWT토큰으로 접근을 시도했습니다.");
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.getWriter().write("토큰이 만료되었거나, 로그아웃된 상태입니다.");
+            return;
+        }
 
         System.out.println("요청 URI: " + request.getRequestURI());
 
