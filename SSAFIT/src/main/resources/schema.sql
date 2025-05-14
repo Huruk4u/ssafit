@@ -181,10 +181,8 @@ CREATE TABLE reports (
                          type  VARCHAR(20) NOT NULL COMMENT 'article, comment, user 등',
                          article_id    BIGINT    NOT NULL,
                          content      TEXT,
-                         action VARCHAR(200) NOT NULL COMMENT '조치 내용',
+                         action VARCHAR(200) NULL COMMENT '조치 내용',
                          created_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                         FOREIGN KEY (reporter_id) REFERENCES users(user_id) ON DELETE CASCADE,
-                         FOREIGN KEY (reportee_id) REFERENCES  users(user_id) ON DELETE CASCADE,
                          FOREIGN KEY (article_id) REFERENCES  articles(article_id) ON DELETE CASCADE
     -- 타겟별 FK 제약조건은 애플리케이션 레이어에서 관리 권장
 ) ENGINE=InnoDB;
