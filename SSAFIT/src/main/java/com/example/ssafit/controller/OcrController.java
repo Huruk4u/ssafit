@@ -29,9 +29,12 @@ public class OcrController {
     public ResponseEntity extractText(@RequestParam("file") MultipartFile file) {
         try {
             File tempFile = File.createTempFile("upload-", file.getOriginalFilename());
+            System.out.println("사고지점 1");
             file.transferTo(tempFile);
+            System.out.println("사고지점 2");
 
             String result = ocrService.extractTextFromImage(tempFile);
+            System.out.println("사고지점 3");
             return ResponseEntity.ok(result);
         } catch (IOException e) {
             System.out.println("텍스트 추출 중 오류 발생 : OcrController.extractText()");
