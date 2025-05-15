@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.ssafit.model.dao.NotificationDao">
+
+    <!-- 알림 추가 -->
+    <insert id="insertNotification" parameterType="com.example.ssafit.model.dto.Notification" useGeneratedKeys="true" keyProperty="notificationId">
+        INSERT INTO notifications (user_id, type, payload, is_read, created_at)
+        VALUES (#{userId}, #{type}, #{payload}, #{isRead}, CURRENT_TIMESTAMP)
+    </insert>
+
+    <!-- 사용자별 알림 조회 -->
+    <select id="selectNotificationsByUserId" resultMap="notificationResultMap">
+        SELECT * FROM notifications
+        WHERE user_id = #{userId}
+        ORDER BY created_at DESC
+    </select>
+
+    <!-- 알림 상세 조회 -->
+    <select id="selectNotificationById" resultMap="notificationResultMap">
+        SELECT * FROM notifications WHERE notification_id = #{notificationId}
+    </select>
+
+    <!-- 알림 읽음 처리 -->
+    <update id="markNotificationAsRead">
+        UPDATE notifications SET is_read = true WHERE notification_id = #{notificationId}
+    </update>
+
+    <!-- 사용자의 전체 알림 읽음 처리 -->
+    <update id="markAllNotificationsAsRead" >
+        UPDATE notifications SET is_read = true WHERE user_id = #{userId}
+    </update>
+
+    <!-- 알림 삭제 -->
+    <delete id="deleteNotification" >
+        DELETE FROM notifications WHERE notification_id = #{notificationId}
+    </delete>
+
+    <!-- 사용자의 전체 알림 삭제 -->
+    <delete id="deleteAllNotificationsByUserId">
+        DELETE FROM notifications WHERE user_id = #{userId}
+    </delete>
+
+    <!-- 게시글 작성자 ID 조회 -->
+    <select id="selectArticleAuthorId" parameterType="int" >
+        SELECT user_id FROM articles WHERE article_id = #{articleId}
+    </select>
+
+    <!-- ResultMap -->
+    <resultMap id="notificationResultMap" type="com.example.ssafit.model.dto.Notification">
+        <id property="notificationId" column="notification_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="type" column="type"/>
+        <result property="payload" column="payload"/>
+        <result property="isRead" column="is_read"/>
+        <result property="createdAt" column="created_at"/>
+    </resultMap>
+
+</mapper>

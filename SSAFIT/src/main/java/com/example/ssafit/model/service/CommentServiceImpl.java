@@ -15,6 +15,9 @@ public class CommentServiceImpl implements CommentService {
     @Autowired
     private CommentDao commentDao;
 
+    @Autowired
+    private NotificationService notificationService;
+
     @Override
     public List<Comment> searchAllComments() {
         return commentDao.selectAllComments();
@@ -38,7 +41,18 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional
     public int addComment(Comment comment) {
-        return commentDao.insertComment(comment);
+        int result = commentDao.insertComment(comment);
+
+        // 댓글 저장 성공 및 댓글 ID가 설정된 경우 알림 생성
+        if (result > 0 && comment.getCommentId() > 0) {
+            notificationService.createCommentNotification(
+                    comment.getArticleId(),
+                    comment.getCommentId(),
+                    comment.getUserId()
+            );
+        }
+
+        return result;
     }
 
     @Override
@@ -110,11 +124,6 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional
     public boolean reportComment(Report report) {
-         // 이미 신고한 경우 중복 신고 방지
-//        if (commentDao.isReported(report.getA(), (int) report.getUserId())) {
-//            return false;
-//        }
-
         // 신고 추가
         commentDao.insertReport(report);
         return true;

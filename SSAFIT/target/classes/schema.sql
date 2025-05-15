@@ -190,8 +190,8 @@ CREATE TABLE reports (
 -- badge 기본 설정
 INSERT INTO badges (badge_id, name, icon_url, description)
 VALUES ('ARTICLE_POSTER_LV1', '게시글 작성자 Lv.1', '/assets/badges/article_poster_lv1.png', '게시글 3개 작성 배지'),
-       ('ARTICLE_POSTER_LV2', '게시글 작성자 Lv.2', '/assets/badges/article_poster_lv2.png', '게시글 3개 작성 배지'),
-       ('ARTICLE_POSTER_LV3', '게시글 작성자 Lv.3', '/assets/badges/article_poster_lv3.png', '게시글 3개 작성 배지')
+       ('ARTICLE_POSTER_LV2', '게시글 작성자 Lv.2', '/assets/badges/article_poster_lv2.png', '게시글 10개 작성 배지'),
+       ('ARTICLE_POSTER_LV3', '게시글 작성자 Lv.3', '/assets/badges/article_poster_lv3.png', '게시글 50개 작성 배지')
        ;
 
 INSERT INTO badges (badge_id, name, icon_url, description)
