@@ -14,6 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
+import org.springframework.util.PathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import io.jsonwebtoken.ExpiredJwtException;
@@ -31,11 +32,15 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     @Autowired
     private TokenBlacklist tokenBlacklist;
 
+    @Autowired
+    private PathMatcher pathMatcher;
+
     // token인증 없이 접근 가능한 URL request
     private static final String[] WHITE_LIST_URL = { "/api/v1/auth/**", "/v2/api-docs", "/v3/api-docs",
             "/v3/api-docs/**", "/swagger-resources", "/swagger-resources/**", "/configuration/ui",
             "/configuration/security", "/swagger-ui/**", "/webjars/**", "/swagger-ui.html", "/api/auth/**",
-            "/api/test/**", "/api_auth/authenticate", "/api_user/post/signup" };
+            "/api/test/**", "/api_auth/authenticate", "/api_user/post/signup", "/swagger-ui/index.html" };
+
 
     @Override
     protected void doFilterInternal(jakarta.servlet.http.HttpServletRequest request,
@@ -45,7 +50,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
         String uri = request.getRequestURI();
 
-        if (Arrays.stream(WHITE_LIST_URL).anyMatch(uri::startsWith)) {
+        if (Arrays.stream(WHITE_LIST_URL).anyMatch(pattern -> pathMatcher.match(pattern, uri))) {
             filterChain.doFilter(request, response);
             return;
         }
