@@ -4,6 +4,7 @@ import com.example.ssafit.model.dto.User.RegistForm;
 import com.example.ssafit.model.dto.User.UpdatePasswordRequestForm;
 import com.example.ssafit.model.dto.User.User;
 import com.example.ssafit.model.service.JwtUserDetailsService;
+import com.example.ssafit.model.service.OcrService;
 import com.example.ssafit.model.service.UserService;
 import com.example.ssafit.util.JwtTokenUtil;
 import jakarta.validation.Valid;
@@ -34,6 +35,9 @@ public class UserController {
 
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
+
+    @Autowired
+    private OcrService ocrService;
 
     // user회원가입
     @PostMapping("/post/signup")
