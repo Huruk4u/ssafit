@@ -4,7 +4,7 @@ import com.example.ssafit.model.dto.User.User;
 import com.example.ssafit.model.dto.Report;
 import com.example.ssafit.model.dto.admin.SuspendRequest;
 import com.example.ssafit.model.service.ReportService;
-import com.example.ssafit.model.service.UserService;
+import com.example.ssafit.model.service.user.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

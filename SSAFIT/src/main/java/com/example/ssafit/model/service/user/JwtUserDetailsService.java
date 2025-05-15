@@ -1,6 +1,4 @@
-package com.example.ssafit.model.service;
-
-import java.util.ArrayList;
+package com.example.ssafit.model.service.user;
 
 import com.example.ssafit.model.dto.User.CustomUserDetails;
 import com.example.ssafit.model.dto.User.User;
@@ -8,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 

@@ -1,4 +1,4 @@
-package com.example.ssafit.model.service;
+package com.example.ssafit.model.service.board;
 
 import com.example.ssafit.model.dao.CommentDao;
 import com.example.ssafit.model.dto.comment.Comment;

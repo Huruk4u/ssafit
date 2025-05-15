@@ -1,9 +1,7 @@
 package com.example.ssafit.controller;
 
-import com.example.ssafit.model.service.OcrService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.ssafit.model.service.inbody.OcrService;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

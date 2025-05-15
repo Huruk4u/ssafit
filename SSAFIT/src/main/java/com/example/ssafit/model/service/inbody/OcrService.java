@@ -1,4 +1,4 @@
-package com.example.ssafit.model.service;
+package com.example.ssafit.model.service.inbody;
 
 import com.google.cloud.vision.v1.*;
 import com.google.protobuf.ByteString;
@@ -30,13 +30,11 @@ public class OcrService {
                 .setImage(img)
                 .build();
 
-
         BatchAnnotateImagesResponse response = vision.batchAnnotateImages(Arrays.asList(request));
         List<AnnotateImageResponse> responses = response.getResponsesList();
 
         StringBuilder sb = new StringBuilder();
         for (AnnotateImageResponse res : responses) {
-            System.out.println(res);
             if (res.hasError()) {
                 throw new IOException("Error : " + res.getError().getMessage());
             }

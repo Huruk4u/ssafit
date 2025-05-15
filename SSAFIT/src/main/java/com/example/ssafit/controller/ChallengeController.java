@@ -2,10 +2,12 @@ package com.example.ssafit.controller;
 
 import com.example.ssafit.model.dto.Badge;
 import com.example.ssafit.model.dto.Inbody;
-import com.example.ssafit.model.dto.User.Challenge;
 import com.example.ssafit.model.dto.User.ChallengeSummary;
 import com.example.ssafit.model.dto.User.User;
 import com.example.ssafit.model.service.*;
+import com.example.ssafit.model.service.inbody.InbodyService;
+import com.example.ssafit.model.service.inbody.OcrService;
+import com.example.ssafit.model.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

@@ -2,11 +2,10 @@ package com.example.ssafit.filter;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.List;
 
 import com.example.ssafit.model.dto.jwt.TokenBlacklist;
 import com.example.ssafit.util.JwtTokenUtil;
-import com.example.ssafit.model.service.JwtUserDetailsService;
+import com.example.ssafit.model.service.user.JwtUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

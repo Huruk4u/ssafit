@@ -3,20 +3,17 @@ package com.example.ssafit.controller;
 import com.example.ssafit.model.dto.User.RegistForm;
 import com.example.ssafit.model.dto.User.UpdatePasswordRequestForm;
 import com.example.ssafit.model.dto.User.User;
-import com.example.ssafit.model.service.JwtUserDetailsService;
-import com.example.ssafit.model.service.OcrService;
-import com.example.ssafit.model.service.UserService;
+import com.example.ssafit.model.service.user.JwtUserDetailsService;
+import com.example.ssafit.model.service.inbody.OcrService;
+import com.example.ssafit.model.service.user.UserService;
 import com.example.ssafit.util.JwtTokenUtil;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 
 /**

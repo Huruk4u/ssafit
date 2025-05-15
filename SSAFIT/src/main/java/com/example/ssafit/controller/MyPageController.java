@@ -5,7 +5,7 @@ import com.example.ssafit.model.dto.User.ChallengeSummary;
 import com.example.ssafit.model.dto.User.User;
 import com.example.ssafit.model.service.BadgeService;
 import com.example.ssafit.model.service.ChallengeService;
-import com.example.ssafit.model.service.UserService;
+import com.example.ssafit.model.service.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;

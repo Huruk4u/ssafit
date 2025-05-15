@@ -1,4 +1,4 @@
-package com.example.ssafit.model.service;
+package com.example.ssafit.model.service.board;
 
 import com.example.ssafit.model.dto.article.Article;
 import com.example.ssafit.model.dto.SearchCondition;
