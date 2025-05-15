@@ -7,15 +7,16 @@
 
     <update id="updateInbody">
         INSERT INTO inbody_data (user_id, weight, muscle_mass, body_fat)
-        VALUES (#{userId}, #{weight}, #{muscleMass}, #{bodyFat})
-            ON DUPLICATE KEY UPDATE
+        VALUES (#{userId}, #{weight}, #{muscleMass}, #{bodyFat}) ON DUPLICATE KEY
+        UPDATE
             weight = #{weight},
             muscle_mass = #{muscleMass},
             body_fat = #{bodyFat}
     </update>
 
     <select id="findLatestInbodyByUserId" resultType="Inbody">
-        SELECT * FROM inbody_data
+        SELECT *
+        FROM inbody_data
         WHERE user_id = #{userId}
     </select>
 

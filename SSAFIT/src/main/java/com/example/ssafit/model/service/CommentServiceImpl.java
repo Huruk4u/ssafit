@@ -110,10 +110,10 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional
     public boolean reportComment(Report report) {
-        // 이미 신고한 경우 중복 신고 방지
-        if (commentDao.isReported(report.getCommentId(), (int) report.getUserId())) {
-            return false;
-        }
+         // 이미 신고한 경우 중복 신고 방지
+//        if (commentDao.isReported(report.getA(), (int) report.getUserId())) {
+//            return false;
+//        }
 
         // 신고 추가
         commentDao.insertReport(report);

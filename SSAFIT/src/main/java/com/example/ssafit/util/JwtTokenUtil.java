@@ -58,8 +58,16 @@ public class JwtTokenUtil implements Serializable {
         return getExpiration(token).before(new Date());
     }
 
-    private Date getExpiration(String token) {
+    // 토큰의 만료 여부를 반환
+    public Date getExpiration(String token) {
         return getClaim(token, Claims::getExpiration);
+    }
+
+    public String extractPureToken(String header) {
+        if (header != null && header.startsWith("Bearer ")) {
+            return header.substring(7);
+        }
+        return null;
     }
 
     private Claims getAllClaims(String token) {

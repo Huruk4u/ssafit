@@ -36,6 +36,12 @@
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
 
+        <!--user logout관련 token blacklist를 처리하기 위한 db-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+
         <!-- 🌐 Spring Web -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

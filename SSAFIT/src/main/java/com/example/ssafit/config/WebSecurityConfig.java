@@ -49,14 +49,14 @@ public class WebSecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(WHITE_LIST_URL).permitAll()
-                        .requestMatchers("/api_admin/**").hasRole("ADMIN")
-                        .anyRequest().authenticated()
+                .authorizeHttpRequests(
+                        auth -> auth
+                                .requestMatchers(WHITE_LIST_URL).permitAll()
+                                .requestMatchers("/api_admin/**").hasRole("ADMIN")
+                                .anyRequest().authenticated()
                 );
 
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
-
 }

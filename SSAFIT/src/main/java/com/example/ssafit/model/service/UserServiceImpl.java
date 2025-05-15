@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -42,7 +43,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean checkExistsByUsername(String username) {
+    public boolean checkExistsByUserName(String username) {
         return userDao.checkExistsByUsername(username);
     }
 
@@ -56,7 +57,7 @@ public class UserServiceImpl implements UserService {
         }
 
         // registForm의 유저아이디 중복 여부 체크
-        if (checkExistsByUsername(registForm.getUserName())) {
+        if (checkExistsByUserName(registForm.getUserName())) {
             throw new RuntimeException("이미 존재하는 아이디입니다.");
         }
 
@@ -72,8 +73,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public int removeByUsername(String username) {
-        userDao.deleteByUsername(username);
+    public int removeByUserId(int userId) {
+        userDao.deleteByUserId(userId);
         return 1;
     }
 
@@ -138,5 +139,14 @@ public class UserServiceImpl implements UserService {
         file.transferTo(target);
 
         userDao.updateUserBackgroundImageByUsername(userName, fileName);
+    }
+
+    @Override
+    public int suspendUserByUserId(int userId, int durationDays) {
+        LocalDateTime suspendStart = LocalDateTime.now();
+        LocalDateTime suspendEnd = suspendStart.plusDays(durationDays);
+        userDao.updateSuspendTimeByUserId(userId, suspendStart, suspendEnd);
+
+        return 1;
     }
 }

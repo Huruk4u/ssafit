@@ -1,9 +1,9 @@
 -- ========================================
 -- 1. 데이터베이스 생성/사용
 -- ========================================
-DROP DATABASE IF EXISTS ssafydb;
-CREATE DATABASE IF NOT EXISTS ssafydb;
-USE ssafydb;
+DROP DATABASE IF EXISTS ssafitdb;
+CREATE DATABASE IF NOT EXISTS ssafitdb;
+USE ssafitdb;
 
 -- ========================================
 -- 2. 유저 / 관리자 / 배지
@@ -15,8 +15,6 @@ CREATE TABLE badges (
                         description TEXT
 ) ENGINE=InnoDB;
 
-
-
 CREATE TABLE users (
                        user_id          BIGINT       PRIMARY KEY AUTO_INCREMENT,
                        username         VARCHAR(100) NOT NULL UNIQUE,
@@ -25,13 +23,15 @@ CREATE TABLE users (
                        email            VARCHAR(255),
                        profile_image    VARCHAR(255),
                        background_image VARCHAR(255),
+                       badge_id         VARCHAR(100),
                        height           DECIMAL(5,2),
                        weight           DECIMAL(5,2),
                        enabled          BOOLEAN      DEFAULT TRUE,
                        suspend_start TIMESTAMP NULL,
                        suspend_end   TIMESTAMP NULL,
                        created_at       TIMESTAMP    DEFAULT CURRENT_TIMESTAMP,
-                       role VARCHAR(20) DEFAULT 'USER'
+                       role VARCHAR(20) DEFAULT 'ROLE_USER',
+                       FOREIGN KEY (badge_id) REFERENCES badges(badge_id)
 ) ENGINE=InnoDB;
 
 CREATE TABLE user_badges (
@@ -50,10 +50,10 @@ CREATE TABLE user_badges (
 CREATE TABLE challenges (
                             challenge_id        BIGINT    PRIMARY KEY AUTO_INCREMENT,
                             user_id             BIGINT    NOT NULL,
-                            record_date   DATE NOT NULL,
+                            record_date DATE NOT NULL,
                             created_at          TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                            FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
-                            UNIQUE (user_id, record_date)
+                            FOREIGN KEY (user_id) REFERENCES users(user_id),
+                            UNIQUE(user_id, record_date)
 ) ENGINE=InnoDB;
 
 CREATE TABLE inbody_data (
@@ -64,7 +64,7 @@ CREATE TABLE inbody_data (
                              body_fat     DECIMAL(5,2),
                              uploaded_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                              updated_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-                             FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+                             FOREIGN KEY (user_id) REFERENCES users(user_id)
 ) ENGINE=InnoDB;
 
 -- ========================================
@@ -176,21 +176,24 @@ CREATE TABLE user_favorite_videos (
 CREATE TABLE reports (
                          report_id    BIGINT    PRIMARY KEY AUTO_INCREMENT,
                          report_category VARCHAR(100),
-                         user_id      BIGINT    NOT NULL,
-                         target_type  VARCHAR(20) NOT NULL COMMENT 'article, comment, user 등',
-                         target_id    BIGINT    NOT NULL,
+                         reporter_id      BIGINT    NOT NULL COMMENT '신고자 id',
+                         reportee_id      BIGINT    NOT NULL COMMENT '피신고자 id',
+                         type  VARCHAR(20) NOT NULL COMMENT 'article, comment, user 등',
+                         article_id    BIGINT    NOT NULL,
                          content      TEXT,
+                         action VARCHAR(200) NULL COMMENT '조치 내용',
                          created_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                         FOREIGN KEY (user_id) REFERENCES users(user_id)
+                         FOREIGN KEY (article_id) REFERENCES articles(article_id) ON DELETE CASCADE
     -- 타겟별 FK 제약조건은 애플리케이션 레이어에서 관리 권장
 ) ENGINE=InnoDB;
 
+-- badge 기본 설정
 INSERT INTO badges (badge_id, name, icon_url, description)
 VALUES ('ARTICLE_POSTER_LV1', '게시글 작성자 Lv.1', '/assets/badges/article_poster_lv1.png', '게시글 3개 작성 배지')
-    ON DUPLICATE KEY UPDATE
-                         name = VALUES(name),
-                         icon_url = VALUES(icon_url),
-                         description = VALUES(description);
+ON DUPLICATE KEY UPDATE
+                     name = VALUES(name),
+                     icon_url = VALUES(icon_url),
+                     description = VALUES(description);
 
 INSERT INTO badges (badge_id, name, icon_url, description)
 VALUES
@@ -198,3 +201,15 @@ VALUES
     ('STREAK_7_DAYS', '7일 연속 챌린지', '/badges/streak_7.png', '7일 연속으로 챌린지를 완료했습니다!'),
     ('STREAK_30_DAYS', '30일 연속 챌린지', '/badges/streak_30.png', '30일 연속으로 챌린지를 완료했습니다!'),
     ('STREAK_100_DAYS', '100일 연속 챌린지', '/badges/streak_100.png', '100일 연속으로 챌린지를 완료했습니다!');
+
+
+select * from users;
+select * from reports;
+
+INSERT INTO users(user_id, username, password, email, nickname, role)
+VALUES (987654321, "root", "fhqjxmtms26!",
+        "sungmin915_@naver.com", "im_admin", "ROLE_ADMIN");
+
+UPDATE users
+SET role="ROLE_ADMIN"
+WHERE username="root";

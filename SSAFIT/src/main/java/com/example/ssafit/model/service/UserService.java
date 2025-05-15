@@ -6,6 +6,7 @@ import com.example.ssafit.model.dto.User.User;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -28,7 +29,7 @@ public interface UserService {
     User searchByUserId(int userId);
 
     // 2. userName으로 user의 존재 여부를 확인하는 기능
-    boolean checkExistsByUsername(String username);
+    boolean checkExistsByUserName(String userName);
 
     // 3. user를 등록하는 기능
     int addUser(RegistForm registForm);
@@ -37,7 +38,7 @@ public interface UserService {
     int modifyUserStringInfoByUsername(String userName, User user);
 
     // 5. user를 삭제하는 기능
-    int removeByUsername(String username);
+    int removeByUserId(int userId);
 
     // 6. 모든 user를 출력하는 기능
     List<User> searchAllUser();
@@ -50,4 +51,6 @@ public interface UserService {
 
     // 9. User의 비밀번호를 업데이트하는 기능
     void modifyUserPasswordByUsername(String userName, UpdatePasswordRequestForm requestForm);
+
+    int suspendUserByUserId(int userId, int durationDays);
 }

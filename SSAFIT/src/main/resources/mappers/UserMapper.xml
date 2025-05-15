@@ -45,9 +45,9 @@
     </update>
 
     <!-- userName으로 user삭제 -->
-    <delete id="deleteByUsername">
+    <delete id="deleteByUserId">
         DELETE FROM users
-        WHERE username = #{userName}
+        WHERE user_id = #{userId}
     </delete>
 
     <!--모든 User 조회-->
@@ -75,6 +75,14 @@
         UPDATE users
         SET password=#{newPassword}
         WHERE username = #{userName}
+    </update>
+
+    <!--유저에게 정지 기간 부여-->
+    <update id="updateSuspendTimeByUserId">
+        UPDATE users
+        SET suspend_start=#{suspendStart},
+            suspend_end=#{suspendEnd}
+        WHERE user_id=#{userId}
     </update>
 
 </mapper>

@@ -50,30 +50,6 @@ public class UserController {
         return ResponseEntity.ok(token);
     }
 
-    // userName으로 user조회
-    @GetMapping("/get/username/{username}")
-    public ResponseEntity getUserByUsername(@PathVariable("username") String username) {
-        User user = userService.searchByUsername(username);
-        if (user == null) return ResponseEntity.noContent().build();
-        else return ResponseEntity.ok(user);
-    }
-
-    // 모든 user 조회하기
-    @GetMapping("/get")
-    public ResponseEntity getAllUser() {
-        List<User> userList = userService.searchAllUser();
-
-        if (userList == null) return ResponseEntity.noContent().build();
-        else return ResponseEntity.ok(userList);
-    }
-
-    // username으로 user삭제하기
-    @DeleteMapping("/delete/username/{username}")
-    public ResponseEntity removeUserByUsername(@PathVariable("username") String username) {
-        int result = userService.removeByUsername(username);
-        return new ResponseEntity(result, result == 1 ? HttpStatus.NO_CONTENT : HttpStatus.BAD_REQUEST);
-    }
-
     // user String(닉네임, email) 정보 업데이트
     @PutMapping("/put/userInfo/userName/{userName}")
     public ResponseEntity modifyUserStringInfoByUsername(@PathVariable("userName") String userName, @RequestBody User user) {

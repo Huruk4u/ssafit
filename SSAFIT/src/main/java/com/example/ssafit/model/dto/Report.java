@@ -1,24 +1,35 @@
 package com.example.ssafit.model.dto;
 
+import jakarta.validation.constraints.NotNull;
+
 import java.time.LocalDateTime;
 
 public class Report {
+
     private int reportId;
-    private int commentId;
-    private long userId;
-    private String reason;
+
+    @NotNull
+    private int reporterId;
+
+    @NotNull
+    private int reporteeId;
+
+    @NotNull
+    private String reportCategory;
+
+    private String type;
+
+    @NotNull
+    private int articleId;
+
+    // Report의 처리 여부
+    private boolean isHandled;
+
+    private String reportContent;
+    private String action;
     private LocalDateTime createdAt;
 
-    public Report() {
-    }
-
-    public Report(int reportId, int commentId, long userId, String reason, LocalDateTime createdAt) {
-        this.reportId = reportId;
-        this.commentId = commentId;
-        this.userId = userId;
-        this.reason = reason;
-        this.createdAt = createdAt;
-    }
+    public Report() {}
 
     public int getReportId() {
         return reportId;
@@ -28,28 +39,60 @@ public class Report {
         this.reportId = reportId;
     }
 
-    public int getCommentId() {
-        return commentId;
+    public int getReporterId() {
+        return reporterId;
     }
 
-    public void setCommentId(int commentId) {
-        this.commentId = commentId;
+    public void setReporterId(int reporterId) {
+        this.reporterId = reporterId;
     }
 
-    public long getUserId() {
-        return userId;
+    public int getReporteeId() {
+        return reporteeId;
     }
 
-    public void setUserId(long userId) {
-        this.userId = userId;
+    public void setReporteeId(int reporteeId) {
+        this.reporteeId = reporteeId;
     }
 
-    public String getReason() {
-        return reason;
+    public String getReportCategory() {
+        return reportCategory;
     }
 
-    public void setReason(String reason) {
-        this.reason = reason;
+    public void setReportCategory(String reportCategory) {
+        this.reportCategory = reportCategory;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public int getArticleId() {
+        return articleId;
+    }
+
+    public void setArticleId(int articleId) {
+        this.articleId = articleId;
+    }
+
+    public String getReportContent() {
+        return reportContent;
+    }
+
+    public void setReportContent(String reportContent) {
+        this.reportContent = reportContent;
+    }
+
+    public String getAction() {
+        return action;
+    }
+
+    public void setAction(String action) {
+        this.action = action;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -60,13 +103,25 @@ public class Report {
         this.createdAt = createdAt;
     }
 
+    public boolean isHandled() {
+        return isHandled;
+    }
+
+    public void setHandled(boolean handled) {
+        isHandled = handled;
+    }
+
     @Override
     public String toString() {
         return "Report{" +
                 "reportId=" + reportId +
-                ", commentId=" + commentId +
-                ", userId=" + userId +
-                ", reason='" + reason + '\'' +
+                ", reporterId=" + reporterId +
+                ", reporteeId=" + reporteeId +
+                ", reportCategory='" + reportCategory + '\'' +
+                ", type='" + type + '\'' +
+                ", articleId=" + articleId +
+                ", reportContent='" + reportContent + '\'' +
+                ", action='" + action + '\'' +
                 ", createdAt=" + createdAt +
                 '}';
     }

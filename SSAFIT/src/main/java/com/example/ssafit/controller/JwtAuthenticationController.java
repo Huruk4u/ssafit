@@ -1,11 +1,18 @@
 package com.example.ssafit.controller;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.Objects;
 
+import com.example.ssafit.model.dto.jwt.TokenBlacklist;
 import com.example.ssafit.util.JwtTokenUtil;
 import com.example.ssafit.model.dto.jwt.JwtRequest;
 import com.example.ssafit.model.dto.jwt.JwtResponse;
 import com.example.ssafit.model.service.JwtUserDetailsService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -37,6 +44,9 @@ public class JwtAuthenticationController {
     @Autowired
     private JwtUserDetailsService jwtUserDetailsService;
 
+    @Autowired
+    private TokenBlacklist tokenBlacklist;
+
     /**
      * User 토큰 발급
      * @param authenticationRequest
@@ -53,6 +63,21 @@ public class JwtAuthenticationController {
         final String token = jwtTokenUtil.generateToken(userDetails);
 
         return ResponseEntity.ok(new JwtResponse(token));
+    }
+
+    // 토큰 blacklist에 토큰을 추가하는 방식으로 로그아웃 진행
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(HttpServletRequest request) {
+        String rawHeader = request.getHeader("Authorization");
+        String token = jwtTokenUtil.extractPureToken(rawHeader);
+        Date expiration = jwtTokenUtil.getExpiration(token);
+        long ttlSeconds = Duration.between(
+                LocalDateTime.now(), expiration.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime()
+        ).getSeconds();
+
+        tokenBlacklist.add(token, ttlSeconds);
+
+        return ResponseEntity.ok("로그아웃 성공");
     }
 
     private void authenticate(String username, String password) throws Exception {

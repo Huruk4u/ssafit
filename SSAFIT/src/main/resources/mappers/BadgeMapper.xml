@@ -5,7 +5,8 @@
 
     <!-- Get all badges -->
     <select id="selectAllBadges" resultMap="BadgeResultMap">
-        SELECT * FROM badges
+        SELECT *
+        FROM badges
     </select>
 
     <!-- Get badges for a specific user with earned_at and is_represented -->
@@ -18,11 +19,10 @@
 
     <!-- Check if user has badge -->
     <select id="isUserHasBadge" resultType="boolean">
-        SELECT EXISTS (
-            SELECT 1 FROM user_badges
-            WHERE user_id = #{userId}
-              AND badge_id = #{badgeId}
-        )
+        SELECT EXISTS (SELECT 1
+                       FROM user_badges
+                       WHERE user_id = #{userId}
+                         AND badge_id = #{badgeId})
     </select>
 
     <!-- Award badge to user -->
@@ -48,16 +48,16 @@
 
     <!-- ResultMap for Badge -->
     <resultMap id="BadgeResultMap" type="Badge">
-        <id property="badgeId" column="badge_id" />
-        <result property="name" column="name" />
-        <result property="iconUrl" column="icon_url" />
-        <result property="description" column="description" />
+        <id property="badgeId" column="badge_id"/>
+        <result property="name" column="name"/>
+        <result property="iconUrl" column="icon_url"/>
+        <result property="description" column="description"/>
     </resultMap>
 
     <!-- ResultMap for Badge with user-specific data -->
     <resultMap id="UserBadgeResultMap" type="Badge" extends="BadgeResultMap">
-        <result property="earnedAt" column="earned_at" />
-        <result property="isRepresented" column="is_represented" />
+        <result property="earnedAt" column="earned_at"/>
+        <result property="isRepresented" column="is_represented"/>
     </resultMap>
 
     <select id="selectRecentlyAwardedBadges" resultMap="UserBadgeResultMap">
