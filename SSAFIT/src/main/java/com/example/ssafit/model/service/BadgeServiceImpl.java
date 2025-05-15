@@ -14,8 +14,11 @@ import java.util.Map;
 public class BadgeServiceImpl implements BadgeService {
 
     // 게시글 관련 뱃지 상수
-    private static final String ARTICLE_POSTER_BADGE_ID = "ARTICLE_POSTER_LV1";
-    private static final int ARTICLE_BADGE_THRESHOLD = 3;
+    private static final Map<Integer, String> ARTICLE_BADGE_THRESHOLDS = Map.of(
+            3, "ARTICLE_POSTER_LV1",
+            10, "ARTICLE_POSTER_LV2",
+            50, "ARTICLE_POSTER_LV3"
+    );
 
     // 챌린지 스트릭 관련 뱃지 상수
     private static final String STREAK_BADGE_3_DAYS = "STREAK_3_DAYS";
@@ -85,12 +88,14 @@ public class BadgeServiceImpl implements BadgeService {
     public void checkAndAwardArticleBadges(int userId) {
         int articleCount = articleDao.selectArticleListByUserId(userId).size();
 
-        // 글3개
-        if (articleCount >= ARTICLE_BADGE_THRESHOLD && !hasBadge(userId, ARTICLE_POSTER_BADGE_ID)) {
-            awardBadge(userId, ARTICLE_POSTER_BADGE_ID);
-        }
+        for (Map.Entry<Integer, String> entry : ARTICLE_BADGE_THRESHOLDS.entrySet()) {
+            int threshold = entry.getKey();
+            String badgeId = entry.getValue();
 
-        // 추가예정
+            if (articleCount >= threshold && !hasBadge(userId, badgeId)) {
+                awardBadge(userId, badgeId);
+            }
+        }
     }
 
     @Override

@@ -5,10 +5,7 @@ import com.example.ssafit.model.dto.Inbody;
 import com.example.ssafit.model.dto.User.Challenge;
 import com.example.ssafit.model.dto.User.ChallengeSummary;
 import com.example.ssafit.model.dto.User.User;
-import com.example.ssafit.model.service.BadgeService;
-import com.example.ssafit.model.service.ChallengeService;
-import com.example.ssafit.model.service.InbodyService;
-import com.example.ssafit.model.service.UserService;
+import com.example.ssafit.model.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -35,6 +32,9 @@ public class ChallengeController {
 
     @Autowired
     private BadgeService badgeService;
+
+    @Autowired
+    private OcrService ocrService;
 
     // 인바디 정보 업데이트 및 챌린지 기록 생성
     @PutMapping("/update/{loginUserId}")
