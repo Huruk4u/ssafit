@@ -1,10 +1,10 @@
 package com.example.ssafit.model.dto.User;
 
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.validation.constraints.NotNull;
+
+import java.time.LocalDateTime;
 
 /**
  * 사용자 회원가입 폼
@@ -19,6 +19,7 @@ public class RegistForm {
     @NotBlank
     private String password;
 
+    @NotBlank
     private String checkPassword;
 
     @NotBlank
@@ -27,6 +28,18 @@ public class RegistForm {
     @Email(message = "올바른 이메일 형식을 입력해주세요.")
     @NotBlank
     private String email;
+
+    @NotNull
+    private Double weight;
+
+    @NotNull
+    private Double height;
+
+    @NotNull
+    private Double muscleMass;
+
+    @NotNull
+    private Double bodyFat;
 
     public RegistForm() {}
 
@@ -78,6 +91,10 @@ public class RegistForm {
         this.email = email;
     }
 
+    public Double getBmi() {
+        return (this.weight / Math.pow(this.height / 100, 2));
+    }
+
     @Override
     public String toString() {
         return "RegistForm{" +
@@ -85,7 +102,7 @@ public class RegistForm {
                 ", password='" + password + '\'' +
                 ", checkPassword='" + checkPassword + '\'' +
                 ", nickname='" + nickname + '\'' +
-                ", email='" + email + '\'' +
+                ", email='" + email +
                 '}';
     }
 }

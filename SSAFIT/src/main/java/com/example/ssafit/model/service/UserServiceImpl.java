@@ -51,6 +51,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public int addUser(RegistForm registForm) {
         System.out.println("addUser진입");
+
         // registForm의 비밀번호 확인 여부 체크
         if (!registForm.getPassword().equals(registForm.getCheckPassword())) {
             throw new RuntimeException("비밀번호가 일치하지 않습니다.");

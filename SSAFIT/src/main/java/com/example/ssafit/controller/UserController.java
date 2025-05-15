@@ -10,6 +10,7 @@ import com.example.ssafit.util.JwtTokenUtil;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
@@ -40,13 +41,12 @@ public class UserController {
     private OcrService ocrService;
 
     // user회원가입
-    @PostMapping("/post/signup")
-    public ResponseEntity signUp(@Valid @RequestBody RegistForm registForm) {
+    @PostMapping(value="/post/signup")
+    public ResponseEntity signUp(@RequestBody @Valid RegistForm registForm) {
         System.out.println(registForm);
-
         userService.addUser(registForm);
+
         System.out.println(String.format("User등록완료"));
-        System.out.println(registForm);
 
         UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(registForm.getUserName());
         String token = jwtTokenUtil.generateToken(userDetails);

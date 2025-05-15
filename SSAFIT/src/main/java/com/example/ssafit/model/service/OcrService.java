@@ -13,6 +13,12 @@ import java.util.List;
 @Service
 public class OcrService {
 
+    private final ImageAnnotatorClient vision;
+
+    public OcrService(ImageAnnotatorClient vision) {
+        this.vision = vision;
+    }
+
     // image file로부터 문자열 추출.
     public String extractTextFromImage(File imageFile) throws IOException {
         try (ImageAnnotatorClient vision = ImageAnnotatorClient.create()) {
