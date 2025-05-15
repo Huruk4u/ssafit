@@ -23,7 +23,6 @@ public class OcrService {
     public String extractTextFromImage(File imageFile) throws IOException {
         ByteString imgBytes = ByteString.readFrom(new FileInputStream(imageFile));
 
-        System.out.println("사고지점 1 : OcrService.extractTextFromImage");
         Image img = Image.newBuilder().setContent(imgBytes).build();
         Feature feat = Feature.newBuilder().setType(Feature.Type.DOCUMENT_TEXT_DETECTION).build();
         AnnotateImageRequest request = AnnotateImageRequest.newBuilder()
@@ -31,11 +30,10 @@ public class OcrService {
                 .setImage(img)
                 .build();
 
-        System.out.println("사고지점 2 : OcrService.extractTextFromImage");
+
         BatchAnnotateImagesResponse response = vision.batchAnnotateImages(Arrays.asList(request));
         List<AnnotateImageResponse> responses = response.getResponsesList();
 
-        System.out.println("사고지점 3 : OcrService.extractTextFromImage");
         StringBuilder sb = new StringBuilder();
         for (AnnotateImageResponse res : responses) {
             System.out.println(res);
