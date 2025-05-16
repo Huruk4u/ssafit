@@ -21,6 +21,10 @@ public class User {
     private String createdAt;
     private String role; // -> 역할 분리
 
+    private String firstExercise;
+    private String secondExercise;
+    private String thirdExercise;
+
     // User정지 기간 관련 필드
     private LocalDateTime suspendStart;
     private LocalDateTime suspendEnd;
@@ -134,6 +138,30 @@ public class User {
         this.suspendEnd = suspendEnd;
     }
 
+    public String getFirstExercise() {
+        return firstExercise;
+    }
+
+    public void setFirstExercise(String firstExercise) {
+        this.firstExercise = firstExercise;
+    }
+
+    public String getSecondExercise() {
+        return secondExercise;
+    }
+
+    public void setSecondExercise(String secondExercise) {
+        this.secondExercise = secondExercise;
+    }
+
+    public String getThirdExercise() {
+        return thirdExercise;
+    }
+
+    public void setThirdExercise(String thirdExercise) {
+        this.thirdExercise = thirdExercise;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -145,11 +173,14 @@ public class User {
                 ", profileImage='" + profileImage + '\'' +
                 ", backgroundImage='" + backgroundImage + '\'' +
                 ", badgeId='" + badgeId + '\'' +
-                ", enabled=" + enabled +
                 ", createdAt='" + createdAt + '\'' +
                 ", role='" + role + '\'' +
+                ", firstExercise='" + firstExercise + '\'' +
+                ", secondExercise='" + secondExercise + '\'' +
+                ", thirdExercise='" + thirdExercise + '\'' +
                 ", suspendStart=" + suspendStart +
                 ", suspendEnd=" + suspendEnd +
+                ", enabled=" + enabled +
                 '}';
     }
 }

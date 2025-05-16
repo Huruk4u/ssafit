@@ -6,10 +6,10 @@ public class Inbody {
     private int inbodyId;
     private int userId;
     private double weight;
-    private double height;
     private double bmi;
     private double muscleMass;
     private double bodyFat;
+    private double bodyFatPercentage;
     private LocalDateTime uploadedAt;
     private LocalDateTime updatedAt;
 
@@ -37,14 +37,6 @@ public class Inbody {
         this.weight = weight;
     }
 
-    public double getHeight() {
-        return height;
-    }
-
-    public void setHeight(double height) {
-        this.height = height;
-    }
-
     public double getBmi() {
         return bmi;
     }
@@ -59,6 +51,14 @@ public class Inbody {
 
     public void setBodyFat(double bodyFat) {
         this.bodyFat = bodyFat;
+    }
+
+    public double getBodyFatPercentage() {
+        return bodyFatPercentage;
+    }
+
+    public void setBodyFatPercentage(double bodyFatPercentage) {
+        this.bodyFatPercentage = bodyFatPercentage;
     }
 
     public LocalDateTime getUploadedAt() {
@@ -91,10 +91,10 @@ public class Inbody {
                 "inbodyId=" + inbodyId +
                 ", userId=" + userId +
                 ", weight=" + weight +
-                ", height=" + height +
                 ", bmi=" + bmi +
                 ", muscleMass=" + muscleMass +
                 ", bodyFat=" + bodyFat +
+                ", bodyFatPercentage=" + bodyFatPercentage +
                 ", uploadedAt=" + uploadedAt +
                 ", updatedAt=" + updatedAt +
                 '}';

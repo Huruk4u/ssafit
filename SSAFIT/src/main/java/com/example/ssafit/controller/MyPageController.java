@@ -32,24 +32,17 @@ public class MyPageController {
     @Autowired
     private BadgeService badgeService;
 
-    @GetMapping("/summary")
+    @GetMapping("/summary/userId/{userId}")
     @Operation(summary = "사용자의 요약 정보 조회", description = "현재 연속 스트릭과 최장 스트릭, 스트릭 캘린더 정보를 반환합니다.")
-    public ResponseEntity<?> getUserSummary(Principal principal) {
-        String username = principal.getName();
-        User user = userService.searchByUsername(username);
-
-        if (user == null) {
-            return ResponseEntity.status(404).body("사용자를 찾을 수 없습니다.");
-        }
-
-        int userId = user.getUserId();
+    public ResponseEntity<?> getUserSummary(@PathVariable("userId") int userId) {
+        User user = userService.searchByUserId(userId);
+        if (user == null) return ResponseEntity.status(404).body("사용자를 찾을 수 없습니다.");
 
         // 현재 연속 스트릭 일수, 최장 스트릭 일수, 스트릭 캘린더 맵 조회
         ChallengeSummary summary = challengeService.getChallengeStreak(userId);
 
         // 응답 데이터에 userId 추가
         Map<String, Object> response = Map.of(
-                "userId", userId,
                 "currentStreak", summary.getCurrentStreak(),
                 "longestStreak", summary.getLongestStreak(),
                 "streakCalendar", summary.getStreakCalendar()
