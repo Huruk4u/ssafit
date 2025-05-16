@@ -55,6 +55,8 @@ public class ChallengeController {
         String username = principal.getName();
         User user = userService.searchByUsername(username);
 
+        System.out.println("사고지점 1");
+
         RecommendResult recommend;
         try {
             File tempFile = File.createTempFile("upload-", file.getOriginalFilename());
@@ -71,6 +73,8 @@ public class ChallengeController {
         }
         int loginUserId = user.getUserId();
 
+        System.out.println("사고지점 2");
+
         // 인바디 데이터 업로드
         Inbody inbodyData = new Inbody();
         inbodyData.setUserId(loginUserId);
@@ -80,8 +84,12 @@ public class ChallengeController {
         inbodyData.setBodyFat(recommend.getBody_fat_mass());
         inbodyData.setBodyFatPercentage(recommend.getBody_fat_percentage());
 
+        System.out.println("사고지점 3");
+
         // inbodyDB에 데이터 업로드
         inbodyService.updateInbodyData(inbodyData);
+
+        System.out.println("사고지점 4");
 
         // 운동 추천 부위
         List<String> exercisePart = recommend.getRecommended_parts();

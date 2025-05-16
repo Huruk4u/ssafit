@@ -30,6 +30,9 @@ CREATE TABLE users (
                        suspend_start TIMESTAMP NULL,
                        suspend_end   TIMESTAMP NULL,
                        created_at       TIMESTAMP    DEFAULT CURRENT_TIMESTAMP,
+                       first_exercise VARCHAR(50) NULL,
+                       second_exercise VARCHAR(50) NULL,
+                       third_exercise VARCHAR(50) NULL,
                        role VARCHAR(20) DEFAULT 'ROLE_USER',
                        FOREIGN KEY (badge_id) REFERENCES badges(badge_id)
 ) ENGINE=InnoDB;
@@ -62,6 +65,8 @@ CREATE TABLE inbody_data (
                              weight       DECIMAL(5,2),
                              muscle_mass  DECIMAL(5,2),
                              body_fat     DECIMAL(5,2),
+                             body_fat_percentage DECIMAL(5,2),
+                             bmi          DECIMAL(5,2),
                              uploaded_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                              updated_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                              FOREIGN KEY (user_id) REFERENCES users(user_id)
