@@ -6,12 +6,14 @@
 <mapper namespace="com.example.ssafit.model.dao.InbodyDao">
 
     <update id="updateInbody">
-        INSERT INTO inbody_data (user_id, weight, muscle_mass, body_fat)
-        VALUES (#{userId}, #{weight}, #{muscleMass}, #{bodyFat}) ON DUPLICATE KEY
+        INSERT INTO inbody_data (user_id, weight, muscle_mass, body_fat, body_fat_percentage, bmi)
+        VALUES (#{userId}, #{weight}, #{muscleMass}, #{bodyFat}, #{bodyFatPercentage}, #{bmi}) ON DUPLICATE KEY
         UPDATE
             weight = #{weight},
             muscle_mass = #{muscleMass},
-            body_fat = #{bodyFat}
+            body_fat = #{bodyFat},
+            body_fat_percentage = #{bodyFatPercentage},
+            bmi = #{bmi}
     </update>
 
     <select id="findLatestInbodyByUserId" resultType="Inbody">
