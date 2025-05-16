@@ -13,6 +13,8 @@ public class Comment {
     private LocalDateTime updatedAt;
     // 추가 (조회용, DB와 매핑되지 않음)
     private String username;
+    private String nickname;
+    private String profileImage;
     public Comment() {
     }
 
@@ -97,6 +99,28 @@ public class Comment {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public String getProfileImage() {
+        return profileImage;
+    }
+
+    public void setProfileImage(String profileImage) {
+        this.profileImage = profileImage;
+    }
+    // 추가 (조회용, DB와 매핑되지 않음)
+    public void setUserInfo(String username, String nickname, String profileImage) {
+        this.username = username;
+        this.nickname = nickname;
+        this.profileImage = profileImage;
     }
 
     @Override

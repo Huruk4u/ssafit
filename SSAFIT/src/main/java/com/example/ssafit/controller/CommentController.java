@@ -4,6 +4,7 @@ import com.example.ssafit.model.dto.comment.Comment;
 import com.example.ssafit.model.dto.Report;
 import com.example.ssafit.model.dto.User.User;
 import com.example.ssafit.model.service.board.CommentService;
+import com.example.ssafit.model.service.NotificationService;
 import com.example.ssafit.model.service.user.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,9 @@ public class CommentController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private NotificationService notificationService;
 
     // 게시글별 댓글 조회
     @GetMapping("/list")
@@ -56,6 +60,12 @@ public class CommentController {
         comment.setContent(commentData.getContent());
 
         int result = commentService.addComment(comment);
+
+        // 댓글 작성 성공 시 알림 생성
+        if (result == 1) {
+            notificationService.createCommentNotification(articleId, comment.getCommentId(), currentUser.getUserId());
+        }
+
         return new ResponseEntity<>(result, result == 1 ? HttpStatus.CREATED : HttpStatus.BAD_REQUEST);
     }
 

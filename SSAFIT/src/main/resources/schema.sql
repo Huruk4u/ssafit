@@ -183,17 +183,16 @@ CREATE TABLE reports (
                          content      TEXT,
                          action VARCHAR(200) NULL COMMENT '조치 내용',
                          created_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                         is_handled BOOLEAN DEFAULT FALSE,
                          FOREIGN KEY (article_id) REFERENCES articles(article_id) ON DELETE CASCADE
-    -- 타겟별 FK 제약조건은 애플리케이션 레이어에서 관리 권장
 ) ENGINE=InnoDB;
 
 -- badge 기본 설정
 INSERT INTO badges (badge_id, name, icon_url, description)
-VALUES ('ARTICLE_POSTER_LV1', '게시글 작성자 Lv.1', '/assets/badges/article_poster_lv1.png', '게시글 3개 작성 배지')
-ON DUPLICATE KEY UPDATE
-                     name = VALUES(name),
-                     icon_url = VALUES(icon_url),
-                     description = VALUES(description);
+VALUES ('ARTICLE_POSTER_LV1', '게시글 작성자 Lv.1', '/assets/badges/article_poster_lv1.png', '게시글 3개 작성 배지'),
+       ('ARTICLE_POSTER_LV2', '게시글 작성자 Lv.2', '/assets/badges/article_poster_lv2.png', '게시글 10개 작성 배지'),
+       ('ARTICLE_POSTER_LV3', '게시글 작성자 Lv.3', '/assets/badges/article_poster_lv3.png', '게시글 50개 작성 배지')
+;
 
 INSERT INTO badges (badge_id, name, icon_url, description)
 VALUES
