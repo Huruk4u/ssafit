@@ -1,21 +1,16 @@
 package com.example.ssafit.controller;
 
-import com.example.ssafit.model.dto.RecommendResult;
 import com.example.ssafit.model.dto.User.User;
-import com.example.ssafit.model.service.inbody.OcrService;
 import com.example.ssafit.model.service.inbody.RecommendService;
 import com.example.ssafit.model.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api_recommend")
