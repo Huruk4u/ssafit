@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.ssafit.model.dao.BadgeDao">
+
+    <!-- Get all badges -->
+    <select id="selectAllBadges" resultMap="BadgeResultMap">
+        SELECT *
+        FROM badges
+    </select>
+
+    <!-- Get badges for a specific user with earned_at and is_represented -->
+    <select id="selectUserBadges" resultMap="UserBadgeResultMap">
+        SELECT b.*, ub.earned_at, ub.is_represented
+        FROM badges b
+                 JOIN user_badges ub ON b.badge_id = ub.badge_id
+        WHERE ub.user_id = #{userId}
+    </select>
+
+    <!-- Check if user has badge -->
+    <select id="isUserHasBadge" resultType="boolean">
+        SELECT EXISTS (SELECT 1
+                       FROM user_badges
+                       WHERE user_id = #{userId}
+                         AND badge_id = #{badgeId})
+    </select>
+
+    <!-- Award badge to user -->
+    <insert id="insertUserBadge">
+        INSERT INTO user_badges (user_id, badge_id, earned_at, is_represented)
+        VALUES (#{userId}, #{badgeId}, CURRENT_TIMESTAMP, FALSE)
+    </insert>
+
+    <!-- Reset all badges to not represented -->
+    <update id="resetUserRepresentedBadges">
+        UPDATE user_badges
+        SET is_represented = FALSE
+        WHERE user_id = #{userId}
+    </update>
+
+    <!-- Set badge as represented -->
+    <update id="updateUserBadgeRepresented">
+        UPDATE user_badges
+        SET is_represented = #{isRepresented}
+        WHERE user_id = #{userId}
+          AND badge_id = #{badgeId}
+    </update>
+
+    <!-- ResultMap for Badge -->
+    <resultMap id="BadgeResultMap" type="Badge">
+        <id property="badgeId" column="badge_id"/>
+        <result property="name" column="name"/>
+        <result property="iconUrl" column="icon_url"/>
+        <result property="description" column="description"/>
+    </resultMap>
+
+    <!-- ResultMap for Badge with user-specific data -->
+    <resultMap id="UserBadgeResultMap" type="Badge" extends="BadgeResultMap">
+        <result property="earnedAt" column="earned_at"/>
+        <result property="isRepresented" column="is_represented"/>
+    </resultMap>
+
+    <select id="selectRecentlyAwardedBadges" resultMap="UserBadgeResultMap">
+        SELECT b.*, ub.earned_at, ub.is_represented
+        FROM badges b
+                 JOIN user_badges ub ON b.badge_id = ub.badge_id
+        WHERE ub.user_id = #{userId}
+          AND ub.earned_at >= NOW() - INTERVAL #{minutesAgo} MINUTE
+        ORDER BY ub.earned_at DESC
+    </select>
+</mapper>

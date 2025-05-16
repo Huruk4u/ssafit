@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.ssafit.model.dao.ReportDao">
+    <!--모든 Report조회-->
+    <select id="selectAllReports">
+        SELECT *
+        FROM reports
+    </select>
+
+    <!--조치 안 된 report만 조회-->
+    <select id="selectReportNotHandled">
+        SELECT *
+        FROM reports
+        WHERE is_handled=false
+    </select>
+
+    <!--report 생성-->
+    <insert id="insertReport">
+        INSERT INTO reports(reporter_id, reportee_id, article_id, report_category, type, content)
+        VALUES (#{reporterId}, #{reporteeId}, #{articleId}, #{reportCategory}, #{type}, #{reportContent})
+    </insert>
+
+    <!--특정 user에 대한 report조회-->
+    <select id="selectReportByUserId" resultType="Report">
+        SELECT *
+        FROM reports
+        WHERE user_id=#{userId}
+    </select>
+
+    <!--report id로 report 조회-->
+    <select id="selectReportByReportId">
+        SELECT *
+        FROM reports
+        WHERE report_id=#{reportId}
+    </select>
+
+    <!--report id의 action수정-->
+    <update id="updateReportAction">
+        UPDATE reports
+        SET action=#{action},
+            is_handled=true
+        WHERE report_id=#{reportId}
+    </update>
+
+</mapper>

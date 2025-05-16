@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.ssafit.model.dao.UserDao">
+
+<!--    &lt;!&ndash; Result mapping &ndash;&gt;-->
+<!--    <resultMap id="UserResultMap" type="User">-->
+<!--        <id property="id" column="id" />-->
+<!--        <result property="userName" column="userName" />-->
+<!--        <result property="password" column="password" />-->
+<!--        <result property="enabled" column="enabled" />-->
+<!--    </resultMap>-->
+
+    <!-- userName으로 user조회 -->
+    <select id="selectByUsername" resultType="User">
+        SELECT *
+        FROM users
+        WHERE username = #{userName}
+    </select>
+
+    <select id="selectByUserId" resultType="User">
+        SELECT *
+        FROM users
+        WHERE user_id = #{userId}
+    </select>
+
+    <!-- userName의 존재 여부 확인 -->
+    <select id="checkExistsByUsername" resultType="boolean">
+        SELECT COUNT(*) > 0
+        FROM users
+        WHERE username = #{userName}
+    </select>
+
+    <!-- user 등록 -->
+    <insert id="insertUser" parameterType="User" useGeneratedKeys="true" keyProperty="userId" keyColumn="user_id">
+        INSERT INTO users (username, password, nickname, email)
+        VALUES (#{userName}, #{password}, #{nickname}, #{email})
+    </insert>
+
+    <!-- user 업데이트 -->
+    <update id="updateUserStringInfoByUsername" parameterType="User">
+        UPDATE users
+        SET nickname=#{nickname},
+            email=#{email}
+        WHERE username = #{userName}
+    </update>
+
+    <!-- userName으로 user삭제 -->
+    <delete id="deleteByUserId">
+        DELETE FROM users
+        WHERE user_id = #{userId}
+    </delete>
+
+    <!--모든 User 조회-->
+    <select id="selectAllUsers">
+        SELECT *
+        FROM users;
+    </select>
+
+    <!--user의 프로필 이미지 업로드-->
+    <update id="updateUserProfileImageByUsername">
+        UPDATE users
+        SET profile_image=#{fileName}
+        WHERE username = #{userName}
+    </update>
+
+    <!--user의 프로필 이미지 업로드-->
+    <update id="updateUserBackgroundImageByUsername">
+        UPDATE users
+        SET background_image=#{fileName}
+        WHERE username = #{userName}
+    </update>
+
+    <!--user의 비밀번호 업데이트-->
+    <update id="updateUserPasswordByUsername">
+        UPDATE users
+        SET password=#{newPassword}
+        WHERE username = #{userName}
+    </update>
+
+    <!--유저에게 정지 기간 부여-->
+    <update id="updateSuspendTimeByUserId">
+        UPDATE users
+        SET suspend_start=#{suspendStart},
+            suspend_end=#{suspendEnd}
+        WHERE user_id=#{userId}
+    </update>
+
+</mapper>
