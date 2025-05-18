@@ -2,10 +2,10 @@ package com.example.ssafit.controller;
 
 import com.example.ssafit.model.dto.comment.Comment;
 import com.example.ssafit.model.dto.Report;
-import com.example.ssafit.model.dto.User.User;
-import com.example.ssafit.model.service.CommentService;
+import com.example.ssafit.model.dto.user.User;
+import com.example.ssafit.model.service.board.CommentService;
 import com.example.ssafit.model.service.NotificationService;
-import com.example.ssafit.model.service.UserService;
+import com.example.ssafit.model.service.user.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

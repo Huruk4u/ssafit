@@ -1,12 +1,12 @@
 package com.example.ssafit.controller;
 
 import com.example.ssafit.model.dto.Badge;
-import com.example.ssafit.model.dto.User.User;
-import com.example.ssafit.model.service.ArticleService;
+import com.example.ssafit.model.dto.user.User;
+import com.example.ssafit.model.service.board.ArticleService;
 import com.example.ssafit.model.dto.article.Article;
 import com.example.ssafit.model.dto.SearchCondition;
 import com.example.ssafit.model.service.BadgeService;
-import com.example.ssafit.model.service.UserService;
+import com.example.ssafit.model.service.user.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

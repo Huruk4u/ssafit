@@ -1,11 +1,11 @@
 package com.example.ssafit.controller;
 
-import com.example.ssafit.model.dto.User.RegistForm;
-import com.example.ssafit.model.dto.User.UpdatePasswordRequestForm;
-import com.example.ssafit.model.dto.User.User;
-import com.example.ssafit.model.service.JwtUserDetailsService;
-import com.example.ssafit.model.service.OcrService;
-import com.example.ssafit.model.service.UserService;
+import com.example.ssafit.model.dto.user.RegistForm;
+import com.example.ssafit.model.dto.user.UpdatePasswordRequestForm;
+import com.example.ssafit.model.dto.user.User;
+import com.example.ssafit.model.service.user.JwtUserDetailsService;
+import com.example.ssafit.model.service.inbody.OcrService;
+import com.example.ssafit.model.service.user.UserService;
 import com.example.ssafit.util.JwtTokenUtil;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 
 /**
@@ -40,13 +38,12 @@ public class UserController {
     private OcrService ocrService;
 
     // user회원가입
-    @PostMapping("/post/signup")
-    public ResponseEntity signUp(@Valid @RequestBody RegistForm registForm) {
+    @PostMapping(value="/post/signup")
+    public ResponseEntity signUp(@RequestBody @Valid RegistForm registForm) {
         System.out.println(registForm);
-
         userService.addUser(registForm);
+
         System.out.println(String.format("User등록완료"));
-        System.out.println(registForm);
 
         UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(registForm.getUserName());
         String token = jwtTokenUtil.generateToken(userDetails);
