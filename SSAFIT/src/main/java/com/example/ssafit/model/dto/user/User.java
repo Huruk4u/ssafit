@@ -1,4 +1,4 @@
-package com.example.ssafit.model.dto.User;
+package com.example.ssafit.model.dto.user;
 
 
 import java.time.LocalDateTime;

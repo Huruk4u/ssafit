@@ -1,7 +1,7 @@
 package com.example.ssafit.controller;
 
 import com.example.ssafit.model.dto.Notification;
-import com.example.ssafit.model.dto.User.User;
+import com.example.ssafit.model.dto.user.User;
 import com.example.ssafit.model.service.NotificationService;
 import com.example.ssafit.model.service.user.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;

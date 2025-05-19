@@ -1,16 +1,13 @@
 package com.example.ssafit.interceptor;
 
-import com.example.ssafit.model.dto.User.CustomUserDetails;
-import com.example.ssafit.model.dto.User.User;
+import com.example.ssafit.model.dto.user.CustomUserDetails;
+import com.example.ssafit.model.dto.user.User;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.context.request.WebRequestInterceptor;
 import org.springframework.web.servlet.HandlerInterceptor;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.handler.WebRequestHandlerInterceptorAdapter;
 
 import java.time.LocalDateTime;
 

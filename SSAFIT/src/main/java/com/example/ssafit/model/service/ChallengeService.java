@@ -1,7 +1,7 @@
 package com.example.ssafit.model.service;
 
-import com.example.ssafit.model.dto.User.Challenge;
-import com.example.ssafit.model.dto.User.ChallengeSummary;
+import com.example.ssafit.model.dto.user.Challenge;
+import com.example.ssafit.model.dto.user.ChallengeSummary;
 
 import java.time.LocalDate;
 

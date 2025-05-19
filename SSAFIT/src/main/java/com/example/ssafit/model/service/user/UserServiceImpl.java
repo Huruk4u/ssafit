@@ -1,9 +1,9 @@
 package com.example.ssafit.model.service.user;
 
 import com.example.ssafit.model.dao.UserDao;
-import com.example.ssafit.model.dto.User.RegistForm;
-import com.example.ssafit.model.dto.User.UpdatePasswordRequestForm;
-import com.example.ssafit.model.dto.User.User;
+import com.example.ssafit.model.dto.user.RegistForm;
+import com.example.ssafit.model.dto.user.UpdatePasswordRequestForm;
+import com.example.ssafit.model.dto.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.password.PasswordEncoder;

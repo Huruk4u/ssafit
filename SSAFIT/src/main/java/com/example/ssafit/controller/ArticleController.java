@@ -1,7 +1,7 @@
 package com.example.ssafit.controller;
 
 import com.example.ssafit.model.dto.Badge;
-import com.example.ssafit.model.dto.User.User;
+import com.example.ssafit.model.dto.user.User;
 import com.example.ssafit.model.service.board.ArticleService;
 import com.example.ssafit.model.dto.article.Article;
 import com.example.ssafit.model.dto.SearchCondition;

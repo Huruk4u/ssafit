@@ -1,8 +1,8 @@
 package com.example.ssafit.controller;
 
 import com.example.ssafit.model.dto.Badge;
-import com.example.ssafit.model.dto.User.ChallengeSummary;
-import com.example.ssafit.model.dto.User.User;
+import com.example.ssafit.model.dto.user.ChallengeSummary;
+import com.example.ssafit.model.dto.user.User;
 import com.example.ssafit.model.service.BadgeService;
 import com.example.ssafit.model.service.ChallengeService;
 import com.example.ssafit.model.service.user.UserService;

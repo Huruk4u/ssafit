@@ -1,6 +1,6 @@
 package com.example.ssafit.model.dao;
 
-import com.example.ssafit.model.dto.User.User;
+import com.example.ssafit.model.dto.user.User;
 import org.apache.ibatis.annotations.Param;
 
 import java.time.LocalDateTime;

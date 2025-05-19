@@ -1,8 +1,8 @@
 package com.example.ssafit.controller;
 
-import com.example.ssafit.model.dto.User.RegistForm;
-import com.example.ssafit.model.dto.User.UpdatePasswordRequestForm;
-import com.example.ssafit.model.dto.User.User;
+import com.example.ssafit.model.dto.user.RegistForm;
+import com.example.ssafit.model.dto.user.UpdatePasswordRequestForm;
+import com.example.ssafit.model.dto.user.User;
 import com.example.ssafit.model.service.user.JwtUserDetailsService;
 import com.example.ssafit.model.service.inbody.OcrService;
 import com.example.ssafit.model.service.user.UserService;
