@@ -32,7 +32,7 @@ public class NotificationServiceImpl implements NotificationService {
         }
 
         // 자신의 게시글에 자신이 댓글을 남긴 경우에는 알림을 생성하지 않음
-        if (articleAuthorId.equals(commentAuthorId)) {
+        if (articleAuthorId == commentAuthorId) {
             return 0;
         }
 

@@ -135,4 +135,9 @@ public class ArticleServiceImpl implements ArticleService {
     public void increaseViewCount(int articleId) {
         articleDao.increaseViewCount(articleId);
     }
+
+    @Override
+    public int getTotalCount(SearchCondition condition) {
+        return articleDao.getTotalCount(condition);
+    }
 }

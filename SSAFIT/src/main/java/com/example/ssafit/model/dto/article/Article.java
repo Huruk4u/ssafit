@@ -14,9 +14,11 @@ public class Article {
     private int dislikeCount;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private int commentCount;
 
     // 추가 (조회용, DB와 매핑되지 않음)
     private String username;
+    private String nickname;
 
     public Article() {
     }
@@ -131,6 +133,22 @@ public class Article {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public int getCommentCount() {
+        return commentCount;
+    }
+
+    public void setCommentCount(int commentCount) {
+        this.commentCount = commentCount;
     }
 
     @Override

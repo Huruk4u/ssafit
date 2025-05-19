@@ -7,6 +7,7 @@ import com.example.ssafit.model.dto.article.Article;
 import com.example.ssafit.model.dto.SearchCondition;
 import com.example.ssafit.model.service.BadgeService;
 import com.example.ssafit.model.service.user.UserService;
+import com.example.ssafit.util.PageNavigation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -63,7 +64,6 @@ public class ArticleController {
         else return ResponseEntity.ok(articleList);
     }
 
-    // 향상된 category 검색 기능 - SearchCondition 사용
     @GetMapping("/get/category/{category}")
     public ResponseEntity getArticleListByCategory(
             @PathVariable("category") String category,
@@ -72,7 +72,8 @@ public class ArticleController {
             @RequestParam(required = false) String tag,
             @RequestParam(required = false, defaultValue = "created_at") String orderBy,
             @RequestParam(required = false, defaultValue = "desc") String orderByDir,
-            @RequestParam(required = false, defaultValue = "1") int currentPage) {
+            @RequestParam(required = false, defaultValue = "1") int currentPage,
+            @RequestParam(required = false, defaultValue = "10") int countPerPage) {
 
         // SearchCondition 객체 생성 및 파라미터 설정
         SearchCondition condition = new SearchCondition();
@@ -97,12 +98,18 @@ public class ArticleController {
 
         // 페이지네이션 설정
         condition.setCurrentPage(currentPage);
+        condition.setCountPerPage(countPerPage);
 
-        List<Article> articleList = articleService.searchArticleListByCondition(condition);
-        if (articleList == null || articleList.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.ok(articleList);
+        List<Article> articles = articleService.searchArticleListByCondition(condition);
+        int totalCount = articleService.getTotalCount(condition);
+
+        // 페이지 계산
+        PageNavigation pageNav = new PageNavigation(currentPage, totalCount, countPerPage); // Use the parameter
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("articles", articles);
+        response.put("totalPages", pageNav.getTotalPageCount());
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/post/write")

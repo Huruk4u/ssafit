@@ -63,4 +63,6 @@ public interface ArticleDao {
     void decreaseDislikeCount(int articleId);
 
     void increaseViewCount(int articleId);
+
+    int getTotalCount(SearchCondition condition);
 }

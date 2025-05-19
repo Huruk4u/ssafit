@@ -2,7 +2,7 @@ package com.example.ssafit.model.dto;
 
 public class SearchCondition {
     // 한 페이지에 몇개나 보여줄 것인지 결정한다.
-    public final int countPerPage = 10;
+    private int countPerPage = 10;
 
     // 검색 컬럼 (예: title, content, username). 기본은 검색하지 않음
     private String key = "none";
@@ -114,6 +114,10 @@ public class SearchCondition {
 
     public void setLimit(boolean limit) {
         this.limit = limit;
+    }
+
+    public void setCountPerPage(int countPerPage) {
+        this.countPerPage = countPerPage;
     }
 
     @Override
