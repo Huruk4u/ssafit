@@ -2,10 +2,7 @@ package com.example.ssafit.config;
 
 import com.example.ssafit.interceptor.SuspensionInterceptor;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistration;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.config.annotation.*;
 
 /**
  * 설정 1. Image Source 매핑 경로 설정
@@ -39,4 +36,13 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addInterceptor(new SuspensionInterceptor())
                 .addPathPatterns("/api_article/**");
     }
+
+    // 프론트와 연결시키기 위한 configure 설정
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedOrigins("http://localhost:5173") // Vue dev 서버 주소
+                .allowedMethods("GET", "POST", "PUT", "DELETE");
+    }
+
 }

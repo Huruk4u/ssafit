@@ -3,9 +3,11 @@ package com.example.ssafit.filter;
 import java.io.IOException;
 import java.util.Arrays;
 
+import com.example.ssafit.model.dto.jwt.ErrorResponse;
 import com.example.ssafit.model.dto.jwt.TokenBlacklist;
 import com.example.ssafit.util.JwtTokenUtil;
 import com.example.ssafit.model.service.user.JwtUserDetailsService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -79,7 +81,13 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             } catch (IllegalArgumentException e) {
                 System.out.println("Unable to get JWT Token");
             } catch (ExpiredJwtException e) {
-                System.out.println("JWT Token has expired");
+                ErrorResponse error = new ErrorResponse("Token Expired", "JWT Token has expired");
+
+                response.setStatus(HttpStatus.UNAUTHORIZED.value());
+                response.setContentType("application/json;charset=UTF-8");
+
+                new ObjectMapper().writeValue(response.getWriter(), error);
+                return;
             }
         } else {
             logger.warn("JWT Token does not begin with Bearer String");
