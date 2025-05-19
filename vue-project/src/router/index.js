@@ -4,7 +4,10 @@ import Login from '../views/Login.vue';
 import Signup from '../views/Signup.vue';
 import Main from '../views/Main.vue';
 import MyPage from '../views/MyPage.vue';
-import Board from '../components/Header.vue';
+import Board from '../views/Board.vue';
+import BoardDetail from '../views/BoardDetail.vue';
+import BoardCreate from '../views/BoardCreate.vue';
+import BoardEdit from '../views/BoardEdit.vue';
 import Notification from '../views/Notification.vue';
 
 const routes = [
@@ -14,6 +17,10 @@ const routes = [
   { path: '/main', component: Main},
   { path: '/mypage', component: MyPage},
   { path: '/board', component: Board},
+  { path: '/board', component: Board},
+  { path: '/board/create', component: BoardCreate},
+  { path: '/board/detail/:articleId', component: BoardDetail, props: true },
+  { path: '/board/edit/:articleId', component: BoardEdit, props: true },
   { path: '/notification', component: Notification }
 ]
 
@@ -27,7 +34,7 @@ router.beforeEach((to, from, next) => {
   const publicPages = ['/', '/api_auth/authenticate', '/api_auth/signup']
   
   const authRequired = !publicPages.includes(to.path)
-  if (authRequired && !token && to.path !== '/login') {
+  if (authRequired && !token &&to.path !== '/login') {
     return next('/login')
   }
 
