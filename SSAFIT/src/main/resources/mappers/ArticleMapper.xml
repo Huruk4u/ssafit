@@ -5,7 +5,7 @@
 
     <!--1. 모든 글들을 조회 (사용자명 포함)-->
     <select id="selectAllArticle" resultMap="ArticleWithUsernameResultMap">
-        SELECT a.*, u.username
+        SELECT a.*, u.nickname
         FROM articles a
                  LEFT JOIN users u ON a.user_id = u.user_id
         ORDER BY a.created_at DESC
@@ -13,7 +13,7 @@
 
     <!--2. articleId가 일치하는 글을 조회 (사용자명 포함)-->
     <select id="selectArticleByArticleId" resultMap="ArticleWithUsernameResultMap">
-        SELECT a.*, u.username
+        SELECT a.*, u.nickname
         FROM articles a
                  LEFT JOIN users u ON a.user_id = u.user_id
         WHERE a.article_id = #{articleId}
@@ -40,7 +40,11 @@
 
     <!--5. boardId(category)가 일치하는 글들을 조회 (사용자명 포함)-->
     <select id="selectArticleListByBoardId" resultMap="ArticleWithUsernameResultMap">
-        SELECT a.*, u.username
+        SELECT a.*, (
+            SELECT COUNT(*)
+            FROM comments
+            WHERE article_id = a.id
+        ), u.nickname
         FROM articles a
                  LEFT JOIN users u ON a.user_id = u.user_id
         WHERE a.category = #{category}
@@ -49,7 +53,11 @@
 
     <!--6. searchForm으로 글들을 조회 (사용자명 포함) - articles 테이블의 tag 컬럼만 사용-->
     <select id="selectArticleListByCondition" parameterType="SearchCondition" resultMap="ArticleWithUsernameResultMap">
-        SELECT a.*, u.username
+        SELECT a.*, (
+        SELECT COUNT(*)
+        FROM comments
+        WHERE article_id = a.article_id
+        ) AS comment_count, u.nickname
         FROM articles a
         LEFT JOIN users u ON a.user_id = u.user_id
         <where>
@@ -64,8 +72,8 @@
                     <when test="key == 'content'">
                         AND a.content LIKE CONCAT('%', #{word}, '%')
                     </when>
-                    <when test="key == 'username'">
-                        AND u.username LIKE CONCAT('%', #{word}, '%')
+                    <when test="key == 'nickname'">
+                        AND u.nickname LIKE CONCAT('%', #{word}, '%')
                     </when>
                 </choose>
             </if>
@@ -110,6 +118,7 @@
         <result property="createdAt" column="created_at" />
         <result property="updatedAt" column="updated_at" />
         <result property="username" column="username" />
+        <result property="nickname" column="nickname" />
         <result property="tag" column="tag"/>
     </resultMap>
 
@@ -215,4 +224,28 @@
         SET view_count = view_count + 1
         WHERE article_id = #{articleId}
     </update>
+
+    <select id="getTotalCount" parameterType="SearchCondition" resultType="int">
+        SELECT COUNT(*)
+        FROM articles
+        <where>
+            category = #{category}
+            <if test="tag != null and tag != ''">
+                AND tag = #{tag}
+            </if>
+            <if test="key != null and key != '' and word != null and word != ''">
+                <choose>
+                    <when test="key == 'title'">
+                        AND title LIKE CONCAT('%', #{word}, '%')
+                    </when>
+                    <when test="key == 'content'">
+                        AND content LIKE CONCAT('%', #{word}, '%')
+                    </when>
+                    <when test="key == 'nickname'">
+                        AND nickname LIKE CONCAT('%', #{word}, '%')
+                    </when>
+                </choose>
+            </if>
+        </where>
+    </select>
 </mapper>

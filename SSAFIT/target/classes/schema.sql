@@ -206,10 +206,10 @@ VALUES
     ('STREAK_30_DAYS', '30일 연속 챌린지', '/badges/streak_30.png', '30일 연속으로 챌린지를 완료했습니다!'),
     ('STREAK_100_DAYS', '100일 연속 챌린지', '/badges/streak_100.png', '100일 연속으로 챌린지를 완료했습니다!');
 
-select  * from inbody_data;
+
 select * from users;
 select * from reports;
-
+select * from articles;
 INSERT INTO users(user_id, username, password, email, nickname, role)
 VALUES (987654321, "root", "fhqjxmtms26!",
         "sungmin915_@naver.com", "im_admin", "ROLE_ADMIN");

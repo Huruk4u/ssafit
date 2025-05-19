@@ -51,4 +51,6 @@ public interface ArticleService {
     void increaseViewCount(int articleId);
     int getLikeCount(int articleId);
     int getDislikeCount(int articleId);
+
+    int getTotalCount(SearchCondition condition);
 }

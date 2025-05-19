@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.Objects;
 
 import com.example.ssafit.model.dto.jwt.TokenBlacklist;
+import com.example.ssafit.model.service.user.UserService;
 import com.example.ssafit.util.JwtTokenUtil;
 import com.example.ssafit.model.dto.jwt.JwtRequest;
 import com.example.ssafit.model.dto.jwt.JwtResponse;
@@ -20,7 +21,7 @@ import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-
+import com.example.ssafit.model.dto.user.User;
 
 /**
  * User 동작 관련 Controller
@@ -46,6 +47,9 @@ public class JwtAuthenticationController {
     @Autowired
     private TokenBlacklist tokenBlacklist;
 
+    @Autowired
+    private UserService userService;
+
     /**
      * User 토큰 발급
      * @param authenticationRequest
@@ -58,10 +62,11 @@ public class JwtAuthenticationController {
         authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
 
         final UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(authenticationRequest.getUsername());
-
         final String token = jwtTokenUtil.generateToken(userDetails);
 
-        return ResponseEntity.ok(new JwtResponse(token));
+        User user = userService.searchByUsername(authenticationRequest.getUsername());
+
+        return ResponseEntity.ok(new JwtResponse(token, user));
     }
 
     // 토큰 blacklist에 토큰을 추가하는 방식으로 로그아웃 진행

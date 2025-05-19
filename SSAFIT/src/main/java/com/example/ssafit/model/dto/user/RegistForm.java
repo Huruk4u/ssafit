@@ -29,18 +29,6 @@ public class RegistForm {
     @NotBlank
     private String email;
 
-    @NotNull
-    private Double weight;
-
-    @NotNull
-    private Double height;
-
-    @NotNull
-    private Double muscleMass;
-
-    @NotNull
-    private Double bodyFat;
-
     public RegistForm() {}
 
     public RegistForm(String userName, String password, String checkPassword, String nickname, String email) {
@@ -89,10 +77,6 @@ public class RegistForm {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public Double getBmi() {
-        return (this.weight / Math.pow(this.height / 100, 2));
     }
 
     @Override
