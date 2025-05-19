@@ -95,13 +95,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public void modifyUserPasswordByUsername(String userName, UpdatePasswordRequestForm requestForm) {
         User user = userDao.selectByUsername(userName);
+        System.out.println("입력된 정보 : " + requestForm);
         if (user == null)
             throw new RuntimeException("존재하지 않는 유저입니다.");
 
         if (!passwordEncoder.matches(requestForm.getCurrentPassword(), user.getPassword()))
             throw new RuntimeException("현재 비밀번호가 일치하지 않습니다.");
 
-        if (requestForm.getNewPassword().equals(requestForm.getCheckNewPassword()))
+        if (!requestForm.getNewPassword().equals(requestForm.getCheckNewPassword()))
             throw new RuntimeException("비밀번호가 일치하지 않습니다.");
 
         String encodedPassword = passwordEncoder.encode(requestForm.getNewPassword());

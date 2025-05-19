@@ -6,7 +6,7 @@
             <label>유저 이메일</label>
             <input v-model="email" type="text" value="{{ user.email }}">
         </form>
-        <button @click=editPassword>비밀번호 변경하기</button>
+        <router-link to="/editPassword">비밀번호 변경하기</router-link>
     </div>
 </template>
 
@@ -20,8 +20,11 @@
     const rawUser = localStorage.getItem('user')
     const user = rawUser ? JSON.parse(rawUser) : {nickname: '', email: ''}
 
+    const nickname = ref(user.nickname);
+    const email = ref(user.email);
+
     const update = () => {
-        api.put(`/api_user/put/userInfo/userName/${user.username}`, {
+        api.put(`/api_user/put/userInfo/userName/${user.userName}`, {
             username: user.username,
             nickname: nickname.value,
             email: email.value
@@ -40,6 +43,7 @@
             alert('수정에 실패했습니다.')
         })
     }
+
 
 </script>
 

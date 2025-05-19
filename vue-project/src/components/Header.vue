@@ -1,14 +1,16 @@
 <template>
-    <header class="header">
-        <h1 @click="goHome">SSAFIT</h1>
-    </header>
-    <nav>
-        <router-link to="/mypage">홈</router-link>
-        <router-link to="/board">게시판</router-link>
-        <router-link to="/notification">알림</router-link>
-        <button v-if="isLogin" @click="logout">로그아웃</button>
-        <router-link v-else to="/login">로그인</router-link>
-    </nav>
+    <div>
+        <header class="header">
+            <h1 @click="goHome">SSAFIT</h1>
+        </header>
+        <nav>
+            <router-link to="/mypage">홈</router-link>
+            <router-link to="/board">게시판</router-link>
+            <router-link to="/notification">알림</router-link>
+            <button v-if="isLogin" @click="logout">로그아웃</button>
+            <router-link v-else to="/login">로그인</router-link>
+        </nav>
+    </div>
 
 </template>
 
