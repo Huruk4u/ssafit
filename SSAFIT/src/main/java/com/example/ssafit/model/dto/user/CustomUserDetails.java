@@ -1,4 +1,4 @@
-package com.example.ssafit.model.dto.User;
+package com.example.ssafit.model.dto.user;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

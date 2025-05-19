@@ -1,4 +1,4 @@
-package com.example.ssafit.model.dto.User;
+package com.example.ssafit.model.dto.user;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
