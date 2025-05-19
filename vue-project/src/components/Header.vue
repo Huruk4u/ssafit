@@ -15,6 +15,7 @@
 <script setup>
     import {computed} from 'vue'
     import {useRouter} from 'vue-router'
+    import api from '@/api/axiosInstance'
 
     const router = useRouter()
 
@@ -22,8 +23,15 @@
 
     // user 로그아웃
     const logout = () => {
-        localStorage.clear()
-        router.push('/login')
+        api.post('/api_auth/logout')
+            .then(() => {
+                localStorage.clear()
+                router.push('/login')
+            .catch((err) => {
+                console.error("로그아웃 실패", err)
+                alert("로그아웃 중 문제가 발생했습니다.")
+            })
+        })
     }
 
     const goHome = () => {

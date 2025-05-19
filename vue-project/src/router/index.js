@@ -14,12 +14,24 @@ const routes = [
   { path: '/main', component: Main},
   { path: '/mypage', component: MyPage},
   { path: '/board', component: Board},
-  { path: '/notification', comopnent: Notification }
+  { path: '/notification', component: Notification }
 ]
 
 const router = createRouter({
   history: createWebHistory(),
   routes
 });
+
+router.beforeEach((to, from, next) => {
+  const token=localStorage.getItem('token')
+  const publicPages = ['/', '/api_auth/authenticate', '/api_auth/signup']
+  
+  const authRequired = !publicPages.includes(to.path)
+  if (authRequired && !token && to.path !== '/login') {
+    return next('/login')
+  }
+
+  next()
+})
 
 export default router;

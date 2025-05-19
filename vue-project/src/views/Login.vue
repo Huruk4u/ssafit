@@ -42,6 +42,11 @@ const login = () => {
     const user = res.data.user
 
     localStorage.setItem("token", token)
+
+    console.log(token)
+
+    api.defaults.headers.common['Authorization'] = `Bearer ${token}`
+    
     localStorage.setItem("user", JSON.stringify(user))
     
     router.push("/mypage")
