@@ -10,6 +10,7 @@ import BoardCreate from '../views/BoardCreate.vue';
 import BoardEdit from '../views/BoardEdit.vue';
 import Notification from '../views/Notification.vue';
 import EditPassword from '@/views/EditPassword.vue';
+import UserEdit from '@/views/UserEdit.vue';
 
 const routes = [
   { path: '/', redirect: '/login' },    // 기본 경로는 로그인 페이지로 리디렉션
@@ -23,7 +24,8 @@ const routes = [
   { path: '/board/detail/:articleId', component: BoardDetail, props: true },
   { path: '/board/edit/:articleId', component: BoardEdit, props: true },
   { path: '/notification', component: Notification },
-  { path: '/editPassword', component: EditPassword}
+  { path: '/editPassword', component: EditPassword},
+  { path: '/editProfile', component: UserEdit}
 ]
 
 const router = createRouter({

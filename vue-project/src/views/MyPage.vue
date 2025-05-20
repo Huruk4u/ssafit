@@ -5,8 +5,12 @@
     <div class="mypage-container">
       <section class="user-info">
         <div>
-            <img :src="userProfileImage" alt="프로필이미지" class="profile-img">
-            <img :src="userBackgroundImage" alt="배경이미지" class="background-img">
+          <img :src="userProfileImage" alt="프로필이미지" class="profile-img" />
+          <img
+            :src="userBackgroundImage"
+            alt="배경이미지"
+            class="background-img"
+          />
         </div>
         <p>
           <strong>{{ user.nickname }}</strong> ({{ user.userName }})
@@ -25,9 +29,7 @@
         <button @click="activeTab = 3" :class="{ active: activeTab === 3 }">
           내가 쓴 글
         </button>
-        <button @click="activeTab = 4" :class="{ active: activeTab === 4 }">
-          유저 정보 변경
-        </button>
+        <button @click="goToEditProfile">유저 정보 변경</button>
       </div>
 
       <div v-if="activeTab === 1" class="tab-content">
@@ -56,10 +58,6 @@
           </li>
         </ul>
       </div>
-
-      <div v-if="activeTab === 4" class="tab-content">
-        <UserEdit/>
-      </div>
     </div>
   </div>
 </template>
@@ -74,7 +72,6 @@ import StreakCalendarVue from "../components/StreakCalendar.vue";
 import Header from "@/components/Header.vue";
 import UserProfile from "@/components/UserProfile.vue";
 import ChallengeRegister from "@/components/ChallengeRegister.vue";
-import UserEdit from "@/components/UserEdit.vue";
 
 const router = useRouter();
 
@@ -92,16 +89,16 @@ if (rawUser) {
 
 // user 프로필 이미지를 로드하기 위한 computed 변수
 const userProfileImage = computed(() =>
-    user.value?.profileImage
+  user.value?.profileImage
     ? `http://localhost:8080/images/profile/${user.value.profileImage}`
-    : ''
-)
+    : ""
+);
 
-const userBackgroundImage = computed (() => 
-    user.value?.backgroundImage
+const userBackgroundImage = computed(() =>
+  user.value?.backgroundImage
     ? `http://localhost:8080/images/background/${user.value.backgroundImage}`
-    : ''
-)
+    : ""
+);
 
 const activeTab = ref(1);
 
@@ -112,6 +109,11 @@ const streakCalendar = ref("");
 const badges = ref("");
 const representBadge = ref("");
 const myArticles = ref([]);
+
+// 유저 정보 수정 페이지로 이동
+const goToEditProfile = () => {
+  router.push("/editProfile");
+};
 
 onMounted(() => {
   api
@@ -127,6 +129,7 @@ onMounted(() => {
       console.error("유저 정보 불러오기 실패:", err);
     });
 
+  // 유저의 게시글 조회
   if (user.value?.userId) {
     api
       .get(`/api_article/get/user_id/${user.value.userId}`)

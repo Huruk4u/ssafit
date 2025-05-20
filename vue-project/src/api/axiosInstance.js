@@ -7,7 +7,7 @@ const api = axios.create({
 
 api.interceptors.request.use((config) => {
     
-    const whiteList = ['/', '/api_auth/authenticate', '/api_auth/signup']
+    const whiteList = ['/', '/api_auth/authenticate', '/api_auth/signup', '/images/profile/', '/images/background/']
     const requestUrl = new URL(config.url, config.baseURL).pathname
 
 
