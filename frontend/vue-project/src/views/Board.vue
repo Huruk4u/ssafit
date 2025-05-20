@@ -129,7 +129,7 @@ const isLoading = ref(false);
 
 const searchCondition = reactive({
   category: 'video',
-  key: '',
+  key: 'title',
   word: '',
   tagLabel: '',
   tag: '',

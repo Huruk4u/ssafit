@@ -132,7 +132,8 @@
         UPDATE articles
         SET title = #{article.title},
             content = #{article.content},
-            tag = #{article.tag}
+            tag = #{article.tag},
+            url = #{article.url}
         WHERE article_id = #{articleId}
     </update>
 

@@ -1,19 +1,19 @@
 <template>
   <div class="board-edit-container">
     <Header />
-    
+
     <div class="form-container">
       <h2>게시글 수정</h2>
-      
+
       <div v-if="loading" class="loading">
         <p>게시글을 불러오는 중...</p>
       </div>
-      
+
       <div v-else-if="error" class="error">
         <p>{{ error }}</p>
         <button @click="goToBoard">게시판으로 돌아가기</button>
       </div>
-      
+
       <div v-else class="edit-form">
         <div class="form-group">
           <label for="category">카테고리</label>
@@ -23,7 +23,7 @@
             <option value="info">정보</option>
           </select>
         </div>
-        
+
         <div class="form-group">
           <label for="tag">태그 (부위)</label>
           <select id="tag" v-model="article.tag">
@@ -41,7 +41,7 @@
             <option value="abs">복부</option>
           </select>
         </div>
-        
+
         <div class="form-group">
           <label for="title">제목</label>
           <input 
@@ -52,7 +52,18 @@
             required
           />
         </div>
-        
+
+        <div class="form-group">
+          <label for="url">영상 URL</label>
+          <input 
+            type="url" 
+            id="url" 
+            v-model="article.url" 
+            placeholder="영상 URL을 입력하세요" 
+            :disabled="article.category !== 'video'"
+          />
+        </div>
+
         <div class="form-group">
           <label for="content">내용</label>
           <textarea 
@@ -62,7 +73,7 @@
             rows="10"
           ></textarea>
         </div>
-        
+
         <div class="button-group">
           <button class="cancel-btn" @click="cancel">취소</button>
           <button class="submit-btn" @click="updateArticle" :disabled="isSubmitting">
@@ -92,26 +103,27 @@ const article = reactive({
   category: '',
   title: '',
   content: '',
-  tag: ''
+  tag: '',
+  url: ''
 });
 
 // 게시글 정보 가져오기
 const fetchArticle = async () => {
   try {
     loading.value = true;
-    
+
     const response = await api.get(`/api_article/get/article_id/${articleId}`);
     const fetchedArticle = response.data;
-    
-    // 응답 데이터를 article 객체에 설정
+
     article.category = fetchedArticle.category;
     article.title = fetchedArticle.title;
     article.content = fetchedArticle.content;
     article.tag = fetchedArticle.tag || '';
-    
+    article.url = fetchedArticle.url || '';
+
   } catch (err) {
     console.error('게시글을 불러오는데 실패했습니다:', err);
-    
+
     if (err.response && err.response.status === 404) {
       error.value = '게시글을 찾을 수 없습니다.';
     } else if (err.response && err.response.status === 403) {
@@ -126,25 +138,28 @@ const fetchArticle = async () => {
 
 // 게시글 수정
 const updateArticle = async () => {
-  // 제목 필수 검증
   if (!article.title.trim()) {
     alert('제목은 필수 입력 항목입니다.');
     return;
   }
-  
+
+  if (article.category === 'video' && !article.url.trim()) {
+    alert('영상 게시판은 URL을 입력해야 합니다.');
+    return;
+  }
+
   try {
     isSubmitting.value = true;
-    
-    // 토큰 가져오기
+
     const token = localStorage.getItem('token');
     if (!token) {
       alert('로그인이 필요합니다.');
       router.push('/login');
       return;
     }
-    
+
     const response = await api.put(`/api_article/put/modify/article_id/${articleId}`, article);
-    
+
     if (response.data === 1) {
       alert('게시글이 성공적으로 수정되었습니다.');
       router.push(`/board/detail/${articleId}`);
@@ -153,7 +168,7 @@ const updateArticle = async () => {
     }
   } catch (err) {
     console.error('게시글 수정 중 오류 발생:', err);
-    
+
     if (err.response && err.response.status === 401) {
       alert('로그인이 필요하거나 세션이 만료되었습니다.');
       router.push('/login');
@@ -239,6 +254,11 @@ input, select, textarea {
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 16px;
+}
+
+input:disabled {
+  background-color: #f5f5f5;
+  cursor: not-allowed;
 }
 
 textarea {
