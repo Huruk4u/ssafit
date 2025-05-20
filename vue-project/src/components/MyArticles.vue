@@ -35,5 +35,13 @@ onMounted(() => {
 });
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
+.article-link {
+  text-decoration: none;
+  color: #007bff;
+}
+
+.article-link:hover {
+  text-decoration: underline;
+}
 </style>
