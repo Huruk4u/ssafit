@@ -12,6 +12,7 @@ import Notification from '../views/Notification.vue';
 import EditPassword from '@/views/EditPassword.vue';
 import UserEdit from '@/views/UserEdit.vue';
 import AdminPage from '@/views/AdminPage.vue';
+import MyArticles from '@/components/MyArticles.vue';
 
 const routes = [
   { path: '/', redirect: '/login' },    // 기본 경로는 로그인 페이지로 리디렉션
@@ -28,6 +29,7 @@ const routes = [
   { path: '/editPassword', component: EditPassword},
   { path: '/editProfile', component: UserEdit},
   { path: '/admin', component: AdminPage},
+  { path: '/myarticles', component: MyArticles},
 ]
 
 const router = createRouter({

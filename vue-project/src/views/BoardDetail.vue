@@ -8,7 +8,25 @@
         <span>작성일: {{ formatDate(article.createdAt) }}</span>
         <span>조회수: {{ article.viewCount }}</span>
       </div>
-      <div class="content" v-html="article.content"></div>
+      <!-- Video Embed / Thumbnail -->
+      <div v-if="article.category === 'video'" class="video-embed">
+        <iframe
+          v-if="isYoutubeUrl(article.url)"
+          :src="youtubeEmbedUrl(article.url)"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen
+          class="video-player"
+        ></iframe>
+        <img
+          v-else
+          :src="article.url"
+          alt="Video Thumbnail"
+          class="video-thumbnail"
+        />
+      </div>
+
+      <div v-else class="content" v-html="article.content"></div>
       <div class="actions">
         <button @click="toggleLike">
           좋아요 {{ liked ? '취소' : '' }} ({{ article.likeCount }})
@@ -74,6 +92,12 @@ const isLoading = ref(true);
 
 const editingId = ref(null);
 const editContent = ref('');
+
+const isYoutubeUrl = (url) => /youtu/gi.test(url);
+const youtubeEmbedUrl = (url) => {
+  const idMatch = url.match(/(?:\?v=|youtu\.be\/)([\w-]+)/);
+  return idMatch ? `https://www.youtube.com/embed/${idMatch[1]}` : url;
+};
 
 const isAuthor = computed(() => {
   return user.value && article.value.userId === user.value.userId;
@@ -160,6 +184,8 @@ onMounted(async () => {
 </script>
 
 <style scoped>
+.video-player { width: 100%; height: 450px; margin-bottom: 20px; }
+.video-thumbnail { width: 100%; height: auto; margin-bottom: 20px; }
 .board-detail-container { max-width: 800px; margin: 0 auto; padding: 20px; }
 .title { font-size: 24px; margin-bottom: 10px; }
 .meta { display: flex; gap: 15px; color: #666; margin-bottom: 20px; }

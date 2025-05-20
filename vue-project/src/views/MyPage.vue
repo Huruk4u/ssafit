@@ -24,39 +24,29 @@
           활동 정보
         </button>
         <button @click="activeTab = 2" :class="{ active: activeTab === 2 }">
-          빈 탭
+          챌린지
         </button>
         <button @click="activeTab = 3" :class="{ active: activeTab === 3 }">
           내가 쓴 글
         </button>
-        <button @click="goToEditProfile">유저 정보 변경</button>
+        <button @click="goEditUser">유저 정보 변경</button>
       </div>
 
       <div v-if="activeTab === 1" class="tab-content">
         <p>현재 연속일: {{ currentStreak }}일</p>
         <p>최대 연속일: {{ longestStreak }}일</p>
-        <!-- 향후 streakCalendar 표시 가능 -->
       </div>
 
-      <div v-if="activeTab === 2" class="tab-content">
-        <p>추후 콘텐츠 추가 예정</p>
+      <div v-if="activeTab === 2" class="tab-content challenge-tab">
+        <ChallengeRegister />
       </div>
 
       <div v-if="activeTab === 3" class="tab-content">
-        <div v-if="myArticles.length === 0">
-          <p>작성한 글이 없습니다.</p>
-        </div>
-        <ul v-else>
-          <li v-for="article in myArticles" :key="article.articleId">
-            <router-link
-              :to="`/board/detail/${article.articleId}`"
-              class="article-link"
-            >
-              <strong>{{ article.title }}</strong>
-            </router-link>
-            <span> - {{ article.createdAt }}</span>
-          </li>
-        </ul>
+        <MyArticles />
+      </div>
+
+      <div v-if="activeTab === 4" class="tab-content">
+        <UserEdit />
       </div>
     </div>
   </div>
@@ -66,83 +56,46 @@
 import { ref, onMounted, computed } from "vue";
 import { useRouter } from "vue-router";
 import api from "@/api/axiosInstance";
-
-// 하위 컴포넌트
-import StreakCalendarVue from "../components/StreakCalendar.vue";
 import Header from "@/components/Header.vue";
-import UserProfile from "@/components/UserProfile.vue";
 import ChallengeRegister from "@/components/ChallengeRegister.vue";
+import MyArticles from "@/components/MyArticles.vue";
 
 const router = useRouter();
+const user = ref(JSON.parse(localStorage.getItem("user") || "{}"));
 
-const token = ref(localStorage.getItem("token"));
-const user = ref(null);
-const rawUser = localStorage.getItem("user");
-if (rawUser) {
-  try {
-    user.value = JSON.parse(rawUser);
-  } catch (e) {
-    console.error("user 파싱 실패:", e);
-    router.push("/login");
-  }
-}
-
-// user 프로필 이미지를 로드하기 위한 computed 변수
 const userProfileImage = computed(() =>
-  user.value?.profileImage
+  user.value.profileImage
     ? `http://localhost:8080/images/profile/${user.value.profileImage}`
     : ""
 );
-
 const userBackgroundImage = computed(() =>
-  user.value?.backgroundImage
+  user.value.backgroundImage
     ? `http://localhost:8080/images/background/${user.value.backgroundImage}`
     : ""
 );
 
 const activeTab = ref(1);
+const userProfileInfo = ref({});
 
-const isLoading = ref(true);
-const currentStreak = ref("");
-const longestStreak = ref("");
-const streakCalendar = ref("");
-const badges = ref("");
-const representBadge = ref("");
-const myArticles = ref([]);
-
-// 유저 정보 수정 페이지로 이동
-const goToEditProfile = () => {
+const goEditUser = () => {
   router.push("/editProfile");
 };
 
 onMounted(() => {
+  if (!user.value.userId) {
+    alert("로그인 후 이용해주세요.");
+    router.push("/login");
+  }
   api
-    .get("/api_mypage/profile")
+    .get(`/api_mypage/profile`)
     .then((res) => {
-      currentStreak.value = res.data.currentStreak;
-      longestStreak.value = res.data.longestStreak;
-      streakCalendar.value = res.data.streakCalendar;
-      badges.value = res.data.badges;
-      representBadge.value = res.data.representBadge;
+      console.log(res.data);
+      userProfileInfo.value = res.data;
     })
     .catch((err) => {
-      console.error("유저 정보 불러오기 실패:", err);
+      console.error(err);
+      alert("프로필 정보를 불러오는 데 실패했습니다.");
     });
-
-  // 유저의 게시글 조회
-  if (user.value?.userId) {
-    api
-      .get(`/api_article/get/user_id/${user.value.userId}`)
-      .then((res) => {
-        myArticles.value = res.data;
-      })
-      .catch((err) => {
-        console.error("내 글 목록 불러오기 실패:", err);
-      })
-      .finally(() => {
-        isLoading.value = false;
-      });
-  }
 });
 </script>
 
@@ -166,5 +119,231 @@ onMounted(() => {
 }
 .tab-content {
   margin-top: 20px;
+}
+
+/* 챌린지 탭 스타일 */
+.challenge-tab {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.challenge-status {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+h3 {
+  margin-top: 0;
+  color: #333;
+  border-bottom: 2px solid #42b983;
+  padding-bottom: 8px;
+  margin-bottom: 20px;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+}
+
+.challenge-completed,
+.challenge-incomplete {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.success-message {
+  background-color: #d4edda;
+  border: 1px solid #c3e6cb;
+  border-radius: 6px;
+  padding: 15px;
+  color: #155724;
+}
+
+.challenge-prompt {
+  background-color: #cce5ff;
+  border: 1px solid #b8daff;
+  border-radius: 6px;
+  padding: 15px;
+  color: #004085;
+}
+
+.streak-info {
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.recommended-tags {
+  margin-top: 10px;
+}
+
+.tag-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.tag-button {
+  background-color: #42b983;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.tag-button:hover {
+  background-color: #3a9d70;
+}
+
+.inbody-info {
+  margin-top: 20px;
+}
+
+.inbody-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.inbody-item {
+  background-color: #f1f1f1;
+  border-radius: 6px;
+  padding: 12px;
+  text-align: center;
+}
+
+.inbody-label {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 5px;
+}
+
+.inbody-value {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+  margin: 0;
+}
+
+.upload-section {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.file-input-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.file-input {
+  display: none;
+}
+
+.file-input-label {
+  background-color: #6c757d;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.file-input-label:hover {
+  background-color: #5a6268;
+}
+
+.file-name {
+  color: #495057;
+  font-size: 14px;
+}
+
+.preview-container {
+  position: relative;
+  width: 100%;
+  max-width: 300px;
+  margin: 10px 0;
+}
+
+.image-preview {
+  width: 100%;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+}
+
+.clear-preview {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.upload-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-weight: bold;
+}
+
+.upload-button:hover:not(:disabled) {
+  background-color: #0069d9;
+}
+
+.upload-button:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  .inbody-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* 프로필 이미지 스타일 */
+.profile-img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.background-img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+/* 내가 쓴 글 스타일 */
+.article-link {
+  text-decoration: none;
+  color: #007bff;
+}
+
+.article-link:hover {
+  text-decoration: underline;
 }
 </style>

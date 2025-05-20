@@ -33,4 +33,30 @@ public class UserProfileResponseForm {
     public void setBadge(Badge badge) {
         this.badge = badge;
     }
+
+    public ChallengeSummary getChallengeSummary() {
+        return challengeSummary;
+    }
+
+    public List<Inbody> getInbody() {
+        return inbody;
+    }
+
+    public List<Badge> getBadges() {
+        return badges;
+    }
+
+    public Badge getBadge() {
+        return badge;
+    }
+
+    @Override
+    public String toString() {
+        return "UserProfileResponseForm{" +
+                "challengeSummary=" + challengeSummary +
+                ", inbody=" + inbody +
+                ", badges=" + badges +
+                ", badge=" + badge +
+                '}';
+    }
 }

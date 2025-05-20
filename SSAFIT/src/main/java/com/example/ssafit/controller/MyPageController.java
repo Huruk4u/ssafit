@@ -129,6 +129,7 @@ public class MyPageController {
         List<Inbody> userInbodyData = inbodyService.findInbodyListByUserId(user.getUserId());
 
         UserProfileResponseForm response = new UserProfileResponseForm(summary, userInbodyData, badges, representedBadge);
+        System.out.println(response);
 
         return ResponseEntity.ok(response);
     }
