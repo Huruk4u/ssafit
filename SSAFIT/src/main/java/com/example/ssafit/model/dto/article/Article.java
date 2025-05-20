@@ -9,6 +9,7 @@ public class Article {
     private String title;
     private String content;
     private String tag;
+    private String url;
     private int viewCount;
     private int likeCount;
     private int dislikeCount;
@@ -151,6 +152,13 @@ public class Article {
         this.commentCount = commentCount;
     }
 
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
     @Override
     public String toString() {
         return "Article{" +

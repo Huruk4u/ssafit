@@ -119,12 +119,13 @@
         <result property="updatedAt" column="updated_at" />
         <result property="username" column="username" />
         <result property="nickname" column="nickname" />
+        <result property="url" column="url" />
         <result property="tag" column="tag"/>
     </resultMap>
 
     <insert id="insertArticle" parameterType="Article">
-        INSERT INTO articles(user_id, category, title, content, tag)
-        VALUES (#{userId}, #{category}, #{title}, #{content}, #{tag})
+        INSERT INTO articles(user_id, category, title, content, tag, url)
+        VALUES (#{userId}, #{category}, #{title}, #{content}, #{tag}, #{url})
     </insert>
 
     <update id="updateArticle">

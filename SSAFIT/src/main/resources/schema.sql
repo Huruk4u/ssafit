@@ -86,6 +86,7 @@ CREATE TABLE articles (
                           view_count BIGINT DEFAULT 0,
                           like_count    BIGINT NOT NULL DEFAULT 0,
                           dislike_count    BIGINT NOT NULL DEFAULT 0,
+                          url         VARCHAR(255),
                           created_at  TIMESTAMP  DEFAULT CURRENT_TIMESTAMP,
                           updated_at  TIMESTAMP  DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                           FOREIGN KEY (user_id)  REFERENCES users(user_id) ON DELETE CASCADE
@@ -151,28 +152,6 @@ CREATE TABLE notifications (
                                is_read         BOOLEAN    DEFAULT FALSE,
                                created_at      TIMESTAMP  DEFAULT CURRENT_TIMESTAMP,
                                FOREIGN KEY (user_id) REFERENCES users(user_id)
-) ENGINE=InnoDB;
-
--- ========================================
--- 7. 동영상 / 동영상-태그 / 즐겨찾기
--- ========================================
-CREATE TABLE videos (
-                        video_id     BIGINT    PRIMARY KEY AUTO_INCREMENT,
-                        title        VARCHAR(255),
-                        url          VARCHAR(255),
-                        thumbnail    VARCHAR(255),
-                        uploaded_by  BIGINT,
-                        created_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                        FOREIGN KEY (uploaded_by) REFERENCES users(user_id)
-) ENGINE=InnoDB;
-
-CREATE TABLE user_favorite_videos (
-                                      user_id      BIGINT    NOT NULL,
-                                      video_id     BIGINT    NOT NULL,
-                                      favorited_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                                      PRIMARY KEY (user_id, video_id),
-                                      FOREIGN KEY (user_id)  REFERENCES users(user_id),
-                                      FOREIGN KEY (video_id) REFERENCES videos(video_id)
 ) ENGINE=InnoDB;
 
 -- ========================================

@@ -2,19 +2,20 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.ssafit.model.dao.UserDao">
 
-<!--    &lt;!&ndash; Result mapping &ndash;&gt;-->
-<!--    <resultMap id="UserResultMap" type="User">-->
-<!--        <id property="id" column="id" />-->
-<!--        <result property="userName" column="userName" />-->
-<!--        <result property="password" column="password" />-->
-<!--        <result property="enabled" column="enabled" />-->
-<!--    </resultMap>-->
+    <!--    &lt;!&ndash; Result mapping &ndash;&gt;-->
+    <!--    <resultMap id="UserResultMap" type="User">-->
+    <!--        <id property="id" column="id" />-->
+    <!--        <result property="userName" column="userName" />-->
+    <!--        <result property="password" column="password" />-->
+    <!--        <result property="enabled" column="enabled" />-->
+    <!--    </resultMap>-->
 
     <!-- userName으로 user조회 -->
     <select id="selectByUsername" resultType="User">
         SELECT *
         FROM users
         WHERE username = #{userName}
+            LIMIT 1
     </select>
 
     <select id="selectByUserId" resultType="User">
@@ -83,6 +84,15 @@
         SET suspend_start=#{suspendStart},
             suspend_end=#{suspendEnd}
         WHERE user_id=#{userId}
+    </update>
+
+    <!-- 추천 부위(3개) 필드 업데이트 -->
+    <update id="updateUserExerciseByUser">
+        UPDATE users
+        SET first_exercise  = #{firstExercise},
+            second_exercise = #{secondExercise},
+            third_exercise  = #{thirdExercise}
+        WHERE user_id = #{userId}
     </update>
 
 </mapper>

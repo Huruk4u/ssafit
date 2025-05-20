@@ -130,6 +130,7 @@ public class ArticleController {
         article.setTitle(articleData.getTitle());
         article.setContent(articleData.getContent());
         article.setTag(articleData.getTag());
+        if (articleData.getUrl() != null) article.setUrl(articleData.getUrl());
 
         // 필수 필드 검증
         if (article.getTitle() == null || article.getTitle().trim().isEmpty()) {

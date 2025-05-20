@@ -1,10 +1,13 @@
 package com.example.ssafit.controller;
 
 import com.example.ssafit.model.dto.Badge;
+import com.example.ssafit.model.dto.Inbody;
 import com.example.ssafit.model.dto.user.ChallengeSummary;
 import com.example.ssafit.model.dto.user.User;
+import com.example.ssafit.model.dto.user.UserProfileResponseForm;
 import com.example.ssafit.model.service.BadgeService;
 import com.example.ssafit.model.service.ChallengeService;
+import com.example.ssafit.model.service.inbody.InbodyService;
 import com.example.ssafit.model.service.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -31,6 +34,9 @@ public class MyPageController {
 
     @Autowired
     private BadgeService badgeService;
+
+    @Autowired
+    private InbodyService inbodyService;
 
     @GetMapping("/summary/userId/{userId}")
     @Operation(summary = "사용자의 요약 정보 조회", description = "현재 연속 스트릭과 최장 스트릭, 스트릭 캘린더 정보를 반환합니다.")
@@ -120,17 +126,10 @@ public class MyPageController {
                 .findFirst()
                 .orElse(null);
 
-        Map<String, Object> profile = new HashMap<>();
-        profile.put("userId", userId);
-        profile.put("username", user.getUserName());
-        profile.put("nickname", user.getNickname());
-        profile.put("email", user.getEmail());
-        profile.put("currentStreak", summary.getCurrentStreak());
-        profile.put("longestStreak", summary.getLongestStreak());
-        profile.put("streakCalendar", summary.getStreakCalendar());
-        profile.put("badges", badges);
-        profile.put("representedBadge", representedBadge);
+        List<Inbody> userInbodyData = inbodyService.findInbodyListByUserId(user.getUserId());
 
-        return ResponseEntity.ok(profile);
+        UserProfileResponseForm response = new UserProfileResponseForm(summary, userInbodyData, badges, representedBadge);
+
+        return ResponseEntity.ok(response);
     }
 }

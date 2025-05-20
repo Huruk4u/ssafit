@@ -52,4 +52,7 @@ public interface UserService {
     void modifyUserPasswordByUsername(String userName, UpdatePasswordRequestForm requestForm);
 
     int suspendUserByUserId(int userId, int durationDays);
+
+    //11. user 추천운동
+    void updateUserExerciseByUser(User user);
 }

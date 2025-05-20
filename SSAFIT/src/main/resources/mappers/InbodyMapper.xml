@@ -5,6 +5,24 @@
 
 <mapper namespace="com.example.ssafit.model.dao.InbodyDao">
 
+    <!-- 최신 한 건 조회 -->
+    <select id="findLatestByUserId" parameterType="long" resultType="com.example.ssafit.model.dto.Inbody">
+        SELECT
+            inbody_id      AS inbodyId,
+            user_id        AS userId,
+            weight         AS weight,
+            muscle_mass    AS muscleMass,
+            body_fat       AS bodyFat,
+            body_fat_percentage AS bodyFatPercentage,
+            bmi            AS bmi,
+            uploaded_at    AS uploadedAt,
+            updated_at     AS updatedAt
+        FROM inbody_data
+        WHERE user_id = #{userId}
+        ORDER BY uploaded_at DESC
+            LIMIT 1
+    </select>
+
     <update id="updateInbody">
         INSERT INTO inbody_data (user_id, weight, muscle_mass, body_fat, body_fat_percentage, bmi)
         VALUES (#{userId}, #{weight}, #{muscleMass}, #{bodyFat}, #{bodyFatPercentage}, #{bmi}) ON DUPLICATE KEY
@@ -20,6 +38,15 @@
         SELECT *
         FROM inbody_data
         WHERE user_id = #{userId}
+        ORDER BY uploaded_at DESC
+            LIMIT 1
+    </select>
+
+    <select id="findInbodyListByUserId" resultType="Inbody">
+        SELECT *
+        FROM inbody_data
+        WHERE user_id = #{userId}
+        ORDER BY uploaded_at DESC
     </select>
 
 </mapper>

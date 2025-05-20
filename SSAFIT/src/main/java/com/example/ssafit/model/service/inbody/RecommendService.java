@@ -65,6 +65,8 @@ public class RecommendService {
                         "bmi": 31.5,
                         "body_fat_percentage": 42.7
                         }
+                        4.recommended_parts는 다음 후보 중에서만 선택해서 반환해줘 :
+                        "상체", "하체", "코어", "유산소", "복부", "등", "가슴", "어깨", "팔", "다리", "전신"
                 다른 말은 절대 하지 말고, 위 예시의 형식을 정확히 지켜서 JSON 객체 하나만 정확히 응답해.
                 """, ocrText
         );

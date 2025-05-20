@@ -65,7 +65,12 @@ public class ChallengeController {
             String ocrText = ocrService.extractTextFromImage(tempFile);
             recommend = recommendService.recommendParts(ocrText, tempFile);
 
-            System.out.println(recommend);
+//            // 텍스트 추출/추천 후
+//            System.out.println("OCR Text: " + ocrText);
+//            System.out.println("RecommendResult: " + recommend);
+//            System.out.println("recommended_parts size: " +
+//                    (recommend.getRecommended_parts() == null ? "null" : recommend.getRecommended_parts().size()));
+
 
         } catch (IOException e) {
             System.out.println("텍스트 추출 중 오류 발생 : RecommendController.recommend()");
@@ -96,6 +101,8 @@ public class ChallengeController {
         user.setFirstExercise(exercisePart.get(0));
         user.setSecondExercise(exercisePart.get(1));
         user.setThirdExercise(exercisePart.get(2));
+        userService.updateUserExerciseByUser(user);
+        System.out.println("사고지점 5");
 
         // 인바디 업데이트 시 오늘 날짜로 챌린지 기록 생성
         LocalDate today = LocalDate.now();
@@ -113,20 +120,7 @@ public class ChallengeController {
         response.put("longestStreak", streakInfo.getLongestStreak());
         response.put("newBadges", newBadges);
 
+
         return ResponseEntity.ok(response);
-    }
-
-    // 인바디 기반 운동 태그 추천 (상위 3개 부위)
-    @GetMapping("/recommend/{loginUserId}")
-    public ResponseEntity recommendTags(@PathVariable("loginUserId") int loginUserId, Principal principal) {
-        String username = principal.getName();
-        User user = userService.searchByUsername(username);
-
-        if (user.getUserId() != loginUserId) {
-            return ResponseEntity.status(403).body("접근 권한이 없습니다.");
-        }
-
-        List tags = inbodyService.recommendTagsByInbody(loginUserId);
-        return ResponseEntity.ok(tags);
     }
 }
