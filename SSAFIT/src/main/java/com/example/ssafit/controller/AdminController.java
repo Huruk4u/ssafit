@@ -43,7 +43,6 @@ public class AdminController {
     // 모든 user 조회하기
     @GetMapping("/get/user")
     public ResponseEntity getAllUser() {
-        System.out.println("요청 도착");
         List<User> userList = userService.searchAllUser();
 
         if (userList == null) return ResponseEntity.noContent().build();
@@ -92,8 +91,9 @@ public class AdminController {
     // 신고 내역 조회
     @GetMapping("/get/report")
     public ResponseEntity getAllReports() {
-
+        System.out.println("요청들어옴");
         List<Report> reportList = reportService.searchAllReports();
+        System.out.println(reportList);
 
         if (reportList == null) return ResponseEntity.noContent().build();
         else return ResponseEntity.ok(reportList);
