@@ -261,12 +261,6 @@ const handleFileChange = (event) => {
   reader.readAsDataURL(file);
 };
 
-// 미리보기 초기화
-const clearPreview = () => {
-  selectedFile.value = null;
-  previewUrl.value = '';
-  document.getElementById('inbody-upload').value = '';
-};
 
 // 인바디 업로드
 const uploadInbody = async () => {
@@ -282,7 +276,6 @@ const uploadInbody = async () => {
       todayChallengeCompleted.value = true;
       currentStreak.value = res.data.currentStreak;
       await fetchLatestInbody();
-      clearPreview();
       alert('인바디 등록이 완료되었습니다!');
       if (res.data.newBadges?.length) {
         alert(`축하합니다! 새로운 뱃지를 획득했습니다: ${res.data.newBadges.map(b => b.name).join(', ')}`);

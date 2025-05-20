@@ -87,7 +87,18 @@
             :key="article.articleId"
             @click="goToDetail(article.articleId)"
           >
-            <td>{{ article.articleId }}</td>
+            <td>
+            <template v-if="currentCategory === 'video'">
+              <img
+                :src="getThumbnailUrl(article.url)"
+                alt="thumbnail"
+                style="width: 120px; height: auto; object-fit: cover;"
+              />
+            </template>
+            <template v-else>
+              {{ article.articleId }}
+            </template>
+          </td>
             <td>{{ article.title }}</td>
             <td>{{ article.nickname }}</td>
             <td>{{ formatDate(article.createdAt) }}</td>
@@ -148,6 +159,22 @@ watch(
     fetchArticles();
   }
 );
+
+const getThumbnailUrl = (url) => {
+  if (!url) return '';
+
+  try {
+    const youtubeRegex = /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&?/]+)/;
+    const match = url.match(youtubeRegex);
+    if (match && match[1]) {
+      return `https://img.youtube.com/vi/${match[1]}/0.jpg`;
+    }
+  } catch (e) {
+    console.warn('URL 파싱 실패:', e);
+  }
+
+  return url;
+};
 
 const fetchArticles = async () => {
   try {

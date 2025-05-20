@@ -31,6 +31,17 @@
           <option value="abs">복부</option>
         </select>
       </div>
+
+      <div class="form-group" v-if="article.category === 'video'">
+        <label for="url">유튜브 URL</label>
+        <input
+          type="text"
+          id="url"
+          v-model="article.url"
+          placeholder="유튜브 영상 URL을 입력하세요"
+          required
+        />
+      </div>
       
       <div class="form-group">
         <label for="title">제목</label>
@@ -107,6 +118,11 @@ const submitArticle = async () => {
   // 제목 필수 검증
   if (!article.title.trim()) {
     alert('제목은 필수 입력 항목입니다.');
+    return;
+  }
+
+  if (article.category === 'video' && !article.url.trim()) {
+    alert('영상 URL을 입력해주세요.');
     return;
   }
   
