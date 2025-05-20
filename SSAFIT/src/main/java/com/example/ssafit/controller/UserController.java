@@ -76,11 +76,12 @@ public class UserController {
     }
 
     // User의 프로필 이미지를 업데이트 하기
-    @PutMapping("/put/profileImage")
+    @PostMapping("/post/profileImage")
     public ResponseEntity modifyProfileImageByUsername(@RequestParam("userName") String userName, @RequestParam("file") MultipartFile file) {
         try {
             userService.modifyUserProfileImageByUserName(userName, file);
-            return new ResponseEntity(HttpStatus.OK);
+            User user = userService.searchByUsername(userName);
+            return new ResponseEntity(user.getProfileImage(), HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
@@ -88,11 +89,12 @@ public class UserController {
     }
 
     // User의 배경 이미지를 업데이트하기
-    @PutMapping("/put/backgroundImage")
+    @PostMapping("/post/backgroundImage")
     public ResponseEntity modifyBackgroundImageByUsername(@RequestParam("userName") String userName, @RequestParam("file") MultipartFile file) {
         try {
             userService.modifyUserBackgroundImageByUserName(userName, file);
-            return new ResponseEntity(HttpStatus.OK);
+            User user = userService.searchByUsername(userName);
+            return new ResponseEntity(user.getBackgroundImage(), HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity(HttpStatus.BAD_REQUEST);

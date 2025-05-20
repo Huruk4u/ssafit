@@ -214,6 +214,10 @@ INSERT INTO users(user_id, username, password, email, nickname, role)
 VALUES (987654321, "root", "fhqjxmtms26!",
         "sungmin915_@naver.com", "im_admin", "ROLE_ADMIN");
 
+INSERT INTO users(user_id, username, password, checkPassword, nickname, email)
+VALUES (1, "robo", "$2a$10$BSTy3.gRRCOYkQX6dapqg.5fAriwypedkQKQx6TyZ/8q8ikaWQx3u", "$2a$10$BSTy3.gRRCOYkQX6dapqg.5fAriwypedkQKQx6TyZ/8q8ikaWQx3u", "robo", "robo@gmail.com"),
+       (2, "dijk", "$2a$10$BSTy3.gRRCOYkQX6dapqg.5fAriwypedkQKQx6TyZ/8q8ikaWQx3u", "$2a$10$BSTy3.gRRCOYkQX6dapqg.5fAriwypedkQKQx6TyZ/8q8ikaWQx3u", "dijk", "dijk@gmail.com")
+
 UPDATE users
 SET role="ROLE_ADMIN"
 WHERE username="root";

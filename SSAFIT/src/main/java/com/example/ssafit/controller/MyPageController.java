@@ -125,10 +125,6 @@ public class MyPageController {
         profile.put("username", user.getUserName());
         profile.put("nickname", user.getNickname());
         profile.put("email", user.getEmail());
-        profile.put("profileImage", user.getProfileImage());
-        profile.put("backgroundImage", user.getBackgroundImage());
-//        profile.put("height", user.getHeight());
-//        profile.put("weight", user.getWeight());
         profile.put("currentStreak", summary.getCurrentStreak());
         profile.put("longestStreak", summary.getLongestStreak());
         profile.put("streakCalendar", summary.getStreakCalendar());
