@@ -83,10 +83,10 @@ CREATE TABLE articles (
                           title       VARCHAR(255) NOT NULL,
                           content     TEXT,
                           tag    VARCHAR(255),
-                          url    VARCHAR(255),
                           view_count BIGINT DEFAULT 0,
                           like_count    BIGINT NOT NULL DEFAULT 0,
                           dislike_count    BIGINT NOT NULL DEFAULT 0,
+                          url         VARCHAR(255),
                           created_at  TIMESTAMP  DEFAULT CURRENT_TIMESTAMP,
                           updated_at  TIMESTAMP  DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                           FOREIGN KEY (user_id)  REFERENCES users(user_id) ON DELETE CASCADE
@@ -187,15 +187,72 @@ VALUES
 
 
 select * from users;
-select * from articles;
 select * from reports;
-select * from challenges;
 delete from challenges;
 
-INSERT INTO users(user_id, username, password, email, nickname, role)
-VALUES (987654321, "root", "fhqjxmtms26!",
-        "sungmin915_@naver.com", "im_admin", "ROLE_ADMIN");
+INSERT INTO users(user_id, username, password, checkPassword, nickname, email)
+VALUES (1, "robo", "$2a$10$BSTy3.gRRCOYkQX6dapqg.5fAriwypedkQKQx6TyZ/8q8ikaWQx3u", "$2a$10$BSTy3.gRRCOYkQX6dapqg.5fAriwypedkQKQx6TyZ/8q8ikaWQx3u", "robo", "robo@gmail.com"),
+       (2, "dijk", "$2a$10$BSTy3.gRRCOYkQX6dapqg.5fAriwypedkQKQx6TyZ/8q8ikaWQx3u", "$2a$10$BSTy3.gRRCOYkQX6dapqg.5fAriwypedkQKQx6TyZ/8q8ikaWQx3u", "dijk", "dijk@gmail.com")
 
 UPDATE users
 SET role="ROLE_ADMIN"
-WHERE username="root";
+WHERE username="robo";
+
+-- articles
+INSERT INTO articles (user_id, category, title, content, tag) VALUES
+                                                                  (1, '운동', '로보의 첫 운동일지', '오늘도 열심히 운동했습니다.', '운동,헬스'),
+                                                                  (1, '후기', '로보의 식단공유', '단백질 위주 식단방식입니다.', '식단,영양'),
+                                                                  (2, '운동', '다이크의 하체루틴', '스쿼트 100개 성공했어요!', '하체,스쿼트'),
+                                                                  (2, '질문', '다이크의 운동질문', '러닝머신 몇 분이 적당한가요?', '러닝,유산소');
+-- comments
+-- robo -> dijk 게시글(3,4)에 댓글
+INSERT INTO comments (article_id, user_id, content) VALUES
+                                                        (3, 1, '대단하세요! 하체 불꽃입니다.'),
+                                                        (4, 1, '저도 궁금해요. 전문가 답변 부탁드려요.');
+-- dijk -> robo 게시글(1,2)에 댓글
+INSERT INTO comments (article_id, user_id, content) VALUES
+                                                        (1, 2, '운동 꿀팁 감사합니다!'),
+                                                        (2, 2, '식단 참고할게요~');
+
+-- inbody_data
+-- robo (user_id=1)
+INSERT INTO inbody_data (user_id, weight, muscle_mass, body_fat, body_fat_percentage, bmi, uploaded_at) VALUES
+                                                                                                            (1, 70.2, 35.1, 16.0, 22.8, 23.1, '2024-05-01'),
+                                                                                                            (1, 70.1, 35.2, 15.9, 22.7, 23.0, '2024-05-02'),
+                                                                                                            (1, 70.0, 35.3, 15.8, 22.6, 22.9, '2024-05-03'),
+                                                                                                            (1, 69.8, 35.4, 15.5, 22.2, 22.7, '2024-05-04'),
+                                                                                                            (1, 69.7, 35.6, 15.4, 22.1, 22.6, '2024-05-05'),
+                                                                                                            (1, 69.5, 35.7, 15.2, 22.0, 22.5, '2024-05-06'),
+                                                                                                            (1, 69.9, 35.5, 15.3, 22.3, 22.7, '2024-05-07'),
+                                                                                                            (1, 69.4, 35.6, 15.0, 21.9, 22.4, '2024-05-08'),
+                                                                                                            (1, 69.2, 35.8, 14.9, 21.7, 22.3, '2024-05-09'),
+                                                                                                            (1, 69.1, 36.0, 14.6, 21.2, 22.2, '2024-05-10'),
+                                                                                                            (1, 69.0, 36.1, 14.5, 21.1, 22.1, '2024-05-11'),
+                                                                                                            (1, 68.9, 36.2, 14.3, 20.9, 22.0, '2024-05-12'),
+                                                                                                            (1, 68.8, 36.3, 14.2, 20.8, 21.9, '2024-05-13'),
+                                                                                                            (1, 68.7, 36.4, 14.1, 20.7, 21.8, '2024-05-14');
+
+-- dijk (user_id=2)
+INSERT INTO inbody_data (user_id, weight, muscle_mass, body_fat, body_fat_percentage, bmi, uploaded_at) VALUES
+                                                                                                            (2, 83.5, 38.2, 17.9, 21.5, 25.1, '2024-05-01'),
+                                                                                                            (2, 83.2, 38.2, 17.7, 21.3, 25.0, '2024-05-02'),
+                                                                                                            (2, 83.0, 38.3, 17.5, 21.1, 24.9, '2024-05-03'),
+                                                                                                            (2, 82.8, 38.4, 17.3, 20.9, 24.8, '2024-05-04'),
+                                                                                                            (2, 82.7, 38.5, 17.1, 20.7, 24.7, '2024-05-05'),
+                                                                                                            (2, 82.5, 38.6, 17.0, 20.6, 24.6, '2024-05-06'),
+                                                                                                            (2, 82.3, 38.7, 16.8, 20.4, 24.5, '2024-05-07'),
+                                                                                                            (2, 82.0, 38.8, 16.6, 20.2, 24.4, '2024-05-08'),
+                                                                                                            (2, 81.9, 38.9, 16.5, 20.1, 24.3, '2024-05-09'),
+                                                                                                            (2, 82.0, 39.0, 16.3, 19.9, 24.2, '2024-05-10'),
+                                                                                                            (2, 81.8, 39.2, 16.2, 19.7, 24.1, '2024-05-11'),
+                                                                                                            (2, 81.7, 39.2, 16.1, 19.7, 24.1, '2024-05-12'),
+                                                                                                            (2, 81.6, 39.3, 16.0, 19.6, 24.0, '2024-05-13'),
+                                                                                                            (2, 81.5, 39.4, 15.9, 19.5, 23.9, '2024-05-14');
+
+-- reports
+-- robo가 dijk의 글(article_id=3)을 신고
+INSERT INTO reports (report_category, reporter_id, reportee_id, type, article_id, content) VALUES
+    ('욕설', 1, 2, 'article', 3, '욕설 및 비방성 글 신고합니다');
+-- dijk가 robo의 글(article_id=1)을 신고
+INSERT INTO reports (report_category, reporter_id, reportee_id, type, article_id, content) VALUES
+    ('광고', 2, 1, 'article', 1, '홍보성 게시글로 의심');

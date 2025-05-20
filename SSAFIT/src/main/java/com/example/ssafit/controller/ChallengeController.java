@@ -101,7 +101,7 @@ public class ChallengeController {
         user.setFirstExercise(exercisePart.get(0));
         user.setSecondExercise(exercisePart.get(1));
         user.setThirdExercise(exercisePart.get(2));
-        userService.updateUser(user);
+        userService.updateUserExerciseByUser(user);
         System.out.println("사고지점 5");
 
         // 인바디 업데이트 시 오늘 날짜로 챌린지 기록 생성

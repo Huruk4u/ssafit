@@ -137,7 +137,6 @@
         WHERE article_id = #{articleId}
     </update>
 
-
     <delete id="deleteArticle">
         DELETE
         FROM articles

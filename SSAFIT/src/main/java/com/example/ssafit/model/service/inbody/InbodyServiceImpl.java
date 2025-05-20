@@ -18,9 +18,14 @@ public class InbodyServiceImpl implements InbodyService {
         inbodyDao.updateInbody(data);
     }
 
-
     @Override
     public Inbody findLatestByUserId(int userId) {
         return inbodyDao.findLatestInbodyByUserId(userId);
     }
+
+    @Override
+    public List<Inbody> findInbodyListByUserId(int userId) {
+        return inbodyDao.findInbodyListByUserId(userId);
+    }
+
 }

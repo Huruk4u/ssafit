@@ -42,4 +42,11 @@
             LIMIT 1
     </select>
 
+    <select id="findInbodyListByUserId" resultType="Inbody">
+        SELECT *
+        FROM inbody_data
+        WHERE user_id = #{userId}
+        ORDER BY uploaded_at DESC
+    </select>
+
 </mapper>
