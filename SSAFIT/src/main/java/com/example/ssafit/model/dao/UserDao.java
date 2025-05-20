@@ -47,4 +47,6 @@ public interface UserDao {
 
     // 10. user에게 정지 기간 부여
     void updateSuspendTimeByUserId(int userId, LocalDateTime suspendStart, LocalDateTime suspendEnd);
+
+    void updateUser(User user);
 }

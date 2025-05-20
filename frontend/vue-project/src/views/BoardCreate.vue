@@ -22,6 +22,13 @@
           <option value="lower">하체</option>
           <option value="core">코어</option>
           <option value="cardio">유산소</option>
+          <option value="back">등</option>
+          <option value="chest">가슴</option>
+          <option value="shoulder">어깨</option>
+          <option value="arm">팔</option>
+          <option value="leg">다리</option>
+          <option value="full">전신</option>
+          <option value="abs">복부</option>
         </select>
       </div>
       

@@ -208,8 +208,11 @@ VALUES
 
 
 select * from users;
+select * from articles;
 select * from reports;
-select * from notifications;
+select * from challenges;
+delete from challenges;
+
 INSERT INTO users(user_id, username, password, email, nickname, role)
 VALUES (987654321, "root", "fhqjxmtms26!",
         "sungmin915_@naver.com", "im_admin", "ROLE_ADMIN");

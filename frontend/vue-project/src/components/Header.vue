@@ -1,21 +1,23 @@
-<!--components/Header.vue-->
 <template>
-    <header class="header">
-        <h1 @click="goHome">SSAFIT</h1>
-    </header>
-    <nav>
-        <router-link to="/mypage">홈</router-link>
-        <router-link to="/board">게시판</router-link>
-        <router-link to="/notification">알림</router-link>
-        <button v-if="isLogin" @click="logout">로그아웃</button>
-        <router-link v-else to="/login">로그인</router-link>
-    </nav>
+    <div>
+        <header class="header">
+            <h1 @click="goHome">SSAFIT</h1>
+        </header>
+        <nav>
+            <router-link to="/mypage">홈</router-link>
+            <router-link to="/board">게시판</router-link>
+            <router-link to="/notification">알림</router-link>
+            <button v-if="isLogin" @click="logout">로그아웃</button>
+            <router-link v-else to="/login">로그인</router-link>
+        </nav>
+    </div>
 
 </template>
 
 <script setup>
     import {computed} from 'vue'
     import {useRouter} from 'vue-router'
+    import api from '@/api/axiosInstance'
 
     const router = useRouter()
 
@@ -23,8 +25,15 @@
 
     // user 로그아웃
     const logout = () => {
-        localStorage.clear()
-        router.push('/login')
+        api.post('/api_auth/logout')
+            .then(() => {
+                localStorage.clear()
+                router.push('/login')
+            .catch((err) => {
+                console.error("로그아웃 실패", err)
+                alert("로그아웃 중 문제가 발생했습니다.")
+            })
+        })
     }
 
     const goHome = () => {

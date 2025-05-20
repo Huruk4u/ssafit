@@ -6,9 +6,24 @@ const api = axios.create({
 })
 
 api.interceptors.request.use((config) => {
+    
+    const whiteList = ['/', '/api_auth/authenticate', '/api_auth/signup']
+    const requestUrl = new URL(config.url, config.baseURL).pathname
+
+
+    
+    if (whiteList.some(path => requestUrl.startsWith(path))) {
+        return config
+    }
+
     const token = localStorage.getItem('token')
+    
     if (token) {
         config.headers.Authorization = `Bearer ${token}`
+    } else {
+        window.location.href = '/login'
+
+        throw new axios.Cancel("로그인하지 않으면 해당 서비스를 이용할 수 없습니다.")
     }
 
     return config

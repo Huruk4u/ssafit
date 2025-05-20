@@ -15,6 +15,7 @@
         SELECT *
         FROM users
         WHERE username = #{userName}
+        LIMIT 1
     </select>
 
     <select id="selectByUserId" resultType="User">
@@ -83,6 +84,15 @@
         SET suspend_start=#{suspendStart},
             suspend_end=#{suspendEnd}
         WHERE user_id=#{userId}
+    </update>
+
+    <!-- 추천 부위(3개) 필드 업데이트 -->
+    <update id="updateUser">
+        UPDATE users
+        SET first_exercise  = #{firstExercise},
+            second_exercise = #{secondExercise},
+            third_exercise  = #{thirdExercise}
+        WHERE user_id = #{userId}
     </update>
 
 </mapper>

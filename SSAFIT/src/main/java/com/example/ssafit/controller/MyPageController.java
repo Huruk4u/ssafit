@@ -129,6 +129,9 @@ public class MyPageController {
         profile.put("backgroundImage", user.getBackgroundImage());
 //        profile.put("height", user.getHeight());
 //        profile.put("weight", user.getWeight());
+        profile.put("firstExercise", user.getFirstExercise());
+        profile.put("secondExercise", user.getSecondExercise());
+        profile.put("thirdExercise", user.getThirdExercise());
         profile.put("currentStreak", summary.getCurrentStreak());
         profile.put("longestStreak", summary.getLongestStreak());
         profile.put("streakCalendar", summary.getStreakCalendar());

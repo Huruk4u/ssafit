@@ -5,5 +5,5 @@ import java.util.List;
 
 public interface InbodyService {
     void updateInbodyData(Inbody data);
-    List<String> recommendTagsByInbody(int userId);
+    Inbody findLatestByUserId(int userId);
 }

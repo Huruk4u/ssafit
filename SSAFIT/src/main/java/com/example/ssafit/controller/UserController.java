@@ -66,6 +66,7 @@ public class UserController {
     public ResponseEntity modifyUserPasswordByUsername(@PathVariable("userName") String userName,
                                                        @RequestBody UpdatePasswordRequestForm requestForm) {
         try {
+            System.out.println(requestForm);
             userService.modifyUserPasswordByUsername(userName, requestForm);
         } catch (Exception e) {
             e.printStackTrace();

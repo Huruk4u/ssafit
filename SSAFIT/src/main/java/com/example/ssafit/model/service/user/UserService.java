@@ -51,5 +51,10 @@ public interface UserService {
     // 9. User의 비밀번호를 업데이트하는 기능
     void modifyUserPasswordByUsername(String userName, UpdatePasswordRequestForm requestForm);
 
+    //10. user에게 정지 기간 부여
     int suspendUserByUserId(int userId, int durationDays);
+
+    //11. user 추천운동
+    void updateUser(User user);
+
 }
