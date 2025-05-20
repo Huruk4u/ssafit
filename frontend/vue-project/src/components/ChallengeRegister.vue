@@ -21,7 +21,7 @@
               @click="goToBoardWithTag(tag.value)"
               class="tag-button"
             >
-              {{ tag.value }}
+              {{ tag.label }}
             </button>
           </div>
         </div>

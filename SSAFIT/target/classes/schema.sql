@@ -188,6 +188,7 @@ VALUES
 
 select * from users;
 select * from reports;
+delete from challenges;
 
 INSERT INTO users(user_id, username, password, checkPassword, nickname, email)
 VALUES (1, "robo", "$2a$10$BSTy3.gRRCOYkQX6dapqg.5fAriwypedkQKQx6TyZ/8q8ikaWQx3u", "$2a$10$BSTy3.gRRCOYkQX6dapqg.5fAriwypedkQKQx6TyZ/8q8ikaWQx3u", "robo", "robo@gmail.com"),

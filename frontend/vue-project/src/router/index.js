@@ -22,7 +22,6 @@ const routes = [
   { path: '/main', component: Main},
   { path: '/mypage', component: MyPage},
   { path: '/board', component: Board},
-  { path: '/board', component: Board},
   { path: '/board/create', component: BoardCreate},
   { path: '/board/detail/:articleId', component: BoardDetail, props: true },
   { path: '/board/edit/:articleId', component: BoardEdit, props: true },
@@ -41,7 +40,7 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const token=localStorage.getItem('token')
-  const publicPages = ['/', '/api_auth/authenticate', '/api_auth/signup']
+  const publicPages = ['/login', '/signup'];
   
   const authRequired = !publicPages.includes(to.path)
   if (authRequired && !token &&to.path !== '/login') {
