@@ -1,6 +1,7 @@
 package com.example.ssafit.controller;
 
 import com.example.ssafit.model.dto.Report;
+import com.example.ssafit.model.service.NotificationService;
 import com.example.ssafit.model.service.ReportService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,11 +23,16 @@ public class ReportController {
     @Autowired
     private ReportService reportService;
 
+    @Autowired
+    private NotificationService notificationService;
+
     // Report 생성 기능
     @PostMapping("/post")
     public ResponseEntity reportUser(@RequestBody @Valid Report report) {
         int result = reportService.addReport(report);
-
+        if (result == 1) {
+            notificationService.createReportNotification(report.getReportId(), report.getReporteeId(), report.getReporterId());
+        }
         return new ResponseEntity(result == 1? HttpStatus.ACCEPTED : HttpStatus.BAD_REQUEST);
     }
 

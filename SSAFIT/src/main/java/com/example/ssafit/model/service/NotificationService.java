@@ -9,6 +9,9 @@ public interface NotificationService {
     // 댓글 알림 생성
     int createCommentNotification(int articleId, int commentId, int commentAuthorId);
 
+    // 신고 알림 생성
+    int createReportNotification(int reportId, int reporteeId, int reporterId);
+
     // 일반 알림 생성
     int addNotification(Notification notification);
 

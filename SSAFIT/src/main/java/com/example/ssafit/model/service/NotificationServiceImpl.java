@@ -62,6 +62,36 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
+    @Transactional
+    public int createReportNotification(int reportId, int reporteeId, int reporterId) {
+        // 자신의 게시글에 자신이 댓글을 남긴 경우에는 알림을 생성하지 않음
+        if (reporterId == reporteeId) {
+            return 0;
+        }
+
+        // 알림 페이로드 생성 (JSON 형태로 저장)
+        Map<String, Object> payload = new HashMap<>();
+        payload.put("reporterId", reporterId);
+        payload.put("reporteeId", reporteeId);
+
+        String payloadJson;
+        try {
+            payloadJson = objectMapper.writeValueAsString(payload);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            return 0;
+        }
+
+        Notification notification = new Notification();
+        notification.setUserId((long) reporteeId);
+        notification.setPayload(payloadJson);
+        notification.setType("report");
+        notification.setIsRead(false);
+
+        return notificationDao.insertNotification(notification);
+    }
+
+    @Override
     public int addNotification(Notification notification) {
         return notificationDao.insertNotification(notification);
     }
