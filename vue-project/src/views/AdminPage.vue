@@ -4,7 +4,7 @@
 
 <script setup>
 import { useRouter } from "vue-router";
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import api from "@/api/axiosInstance";
 
 const user = ref(
