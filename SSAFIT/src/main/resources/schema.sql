@@ -260,5 +260,5 @@ INSERT INTO reports (report_category, reporter_id, reporter_name, reportee_id, r
 
 select * from articles;
 select * from users;
-select * from reports;
 select * from notifications;
+select * from reports;
