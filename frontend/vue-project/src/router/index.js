@@ -13,6 +13,7 @@ import EditPassword from '@/views/EditPassword.vue';
 import UserEdit from '@/views/UserEdit.vue';
 import AdminPage from '@/views/AdminPage.vue';
 import MyArticles from '@/components/MyArticles.vue';
+import MyLikedArticles from '@/components/MyLikedArticles.vue';
 import ActivityInfo from '@/components/ActivityInfo.vue';
 
 const routes = [
@@ -30,6 +31,7 @@ const routes = [
   { path: '/editProfile', component: UserEdit},
   { path: '/admin', component: AdminPage},
   { path: '/myarticles', component: MyArticles},
+  { path: '/mylikedarticles', component: MyLikedArticles},
   { path: '/activityInfo', component: ActivityInfo}
 ]
 

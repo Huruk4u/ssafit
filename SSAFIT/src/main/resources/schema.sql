@@ -173,22 +173,26 @@ CREATE TABLE reports (
 
 -- badge 기본 설정
 INSERT INTO badges (badge_id, name, icon_url, description)
-VALUES ('ARTICLE_POSTER_LV1', '게시글 작성자 Lv.1', '/assets/badges/article_poster_lv1.png', '게시글 3개 작성 배지'),
-       ('ARTICLE_POSTER_LV2', '게시글 작성자 Lv.2', '/assets/badges/article_poster_lv2.png', '게시글 10개 작성 배지'),
-       ('ARTICLE_POSTER_LV3', '게시글 작성자 Lv.3', '/assets/badges/article_poster_lv3.png', '게시글 50개 작성 배지')
+VALUES ('ARTICLE_POSTER_LV1', '게시글 작성자 Lv.1', '/images/badges/article_poster_lv1.png', '게시글 3개 작성 배지'),
+       ('ARTICLE_POSTER_LV2', '게시글 작성자 Lv.2', '/images/badges/article_poster_lv2.png', '게시글 10개 작성 배지'),
+       ('ARTICLE_POSTER_LV3', '게시글 작성자 Lv.3', '/images/badges/article_poster_lv3.png', '게시글 50개 작성 배지')
 ;
 
 INSERT INTO badges (badge_id, name, icon_url, description)
 VALUES
-    ('STREAK_3_DAYS', '3일 연속 챌린지', '/badges/streak_3.png', '3일 연속으로 챌린지를 완료했습니다!'),
-    ('STREAK_7_DAYS', '7일 연속 챌린지', '/badges/streak_7.png', '7일 연속으로 챌린지를 완료했습니다!'),
-    ('STREAK_30_DAYS', '30일 연속 챌린지', '/badges/streak_30.png', '30일 연속으로 챌린지를 완료했습니다!'),
-    ('STREAK_100_DAYS', '100일 연속 챌린지', '/badges/streak_100.png', '100일 연속으로 챌린지를 완료했습니다!');
+    ('STREAK_3_DAYS', '3일 연속 챌린지', '/images/badges/streak_3.png', '3일 연속으로 챌린지를 완료했습니다!'),
+    ('STREAK_7_DAYS', '7일 연속 챌린지', '/images/badges/streak_7.png', '7일 연속으로 챌린지를 완료했습니다!'),
+    ('STREAK_30_DAYS', '30일 연속 챌린지', '/images/badges/streak_30.png', '30일 연속으로 챌린지를 완료했습니다!'),
+    ('STREAK_100_DAYS', '100일 연속 챌린지', '/images/badges/streak_100.png', '100일 연속으로 챌린지를 완료했습니다!');
 
 
 select * from users;
-select * from reports;
-delete from challenges;
+select * from challenges;
+delete from challenges where challenge_id = 8;
+INSERT INTO challenges (user_id, record_date)
+VALUES
+    (3, DATE_SUB(CURDATE(), INTERVAL 1 DAY)), -- 어제
+    (3, DATE_SUB(CURDATE(), INTERVAL 2 DAY)); -- 그제
 
 INSERT INTO users(user_id, username, password, nickname, email)
 VALUES (1, "robo", "$2a$10$BSTy3.gRRCOYkQX6dapqg.5fAriwypedkQKQx6TyZ/8q8ikaWQx3u","robo", "robo@gmail.com"),
@@ -223,7 +227,7 @@ INSERT INTO inbody_data (user_id, weight, muscle_mass, body_fat, body_fat_percen
                                                                                                             (1, 69.8, 35.4, 15.5, 22.2, 22.7, '2024-05-04'),
                                                                                                             (1, 69.7, 35.6, 15.4, 22.1, 22.6, '2024-05-05'),
                                                                                                             (1, 69.5, 35.7, 15.2, 22.0, 22.5, '2024-05-06'),
-                                                                                                            (1, 69.9, 35.5, 15.3, 22.3, 22.7, '2024-05-07'),
+                                                                                (1, 69.9, 35.5, 15.3, 22.3, 22.7, '2024-05-07'),
                                                                                                             (1, 69.4, 35.6, 15.0, 21.9, 22.4, '2024-05-08'),
                                                                                                             (1, 69.2, 35.8, 14.9, 21.7, 22.3, '2024-05-09'),
                                                                                                             (1, 69.1, 36.0, 14.6, 21.2, 22.2, '2024-05-10'),
@@ -231,7 +235,9 @@ INSERT INTO inbody_data (user_id, weight, muscle_mass, body_fat, body_fat_percen
                                                                                                             (1, 68.9, 36.2, 14.3, 20.9, 22.0, '2024-05-12'),
                                                                                                             (1, 68.8, 36.3, 14.2, 20.8, 21.9, '2024-05-13'),
                                                                                                             (1, 68.7, 36.4, 14.1, 20.7, 21.8, '2024-05-14');
-
+SELECT * FROM badges;
+INSERT INTO challenges (user_id, record_date)
+VALUES (1, DATE_SUB(CURDATE(), INTERVAL 2 DAY));
 -- dijk (user_id=2)
 INSERT INTO inbody_data (user_id, weight, muscle_mass, body_fat, body_fat_percentage, bmi, uploaded_at) VALUES
                                                                                                             (2, 83.5, 38.2, 17.9, 21.5, 25.1, '2024-05-01'),
@@ -248,7 +254,19 @@ INSERT INTO inbody_data (user_id, weight, muscle_mass, body_fat, body_fat_percen
                                                                                                             (2, 81.7, 39.2, 16.1, 19.7, 24.1, '2024-05-12'),
                                                                                                             (2, 81.6, 39.3, 16.0, 19.6, 24.0, '2024-05-13'),
                                                                                                             (2, 81.5, 39.4, 15.9, 19.5, 23.9, '2024-05-14');
-
+INSERT INTO inbody_data
+(user_id, weight, muscle_mass, body_fat, body_fat_percentage, bmi, uploaded_at, updated_at)
+VALUES
+    (
+        1,
+        70.25,
+        30.50,
+        15.75,
+        22.50,
+        23.15,
+        DATE_SUB(NOW(), INTERVAL 2 DAY),
+        DATE_SUB(NOW(), INTERVAL 2 DAY)
+    );
 -- reports
 -- robo가 dijk의 글(article_id=3)을 신고
 INSERT INTO reports (report_category, reporter_id, reportee_id, type, article_id, content) VALUES
@@ -256,3 +274,10 @@ INSERT INTO reports (report_category, reporter_id, reportee_id, type, article_id
 -- dijk가 robo의 글(article_id=1)을 신고
 INSERT INTO reports (report_category, reporter_id, reportee_id, type, article_id, content) VALUES
     ('광고', 2, 1, 'article', 1, '홍보성 게시글로 의심');
+
+INSERT INTO articles (user_id, category, title, content) VALUES
+                                                             (1, 'info', '로보의 첫 운동일지', '오늘도 열심히 운동했습니다.'),
+                                                             (1, 'info', '로보의 첫 운동일지', '오늘도 열심히 운동했습니다.'),
+                                                             (1, 'info', '로보의 첫 운동일지', '오늘도 열심히 운동했습니다.'),
+                                                             (1, 'info', '로보의 첫 운동일지', '오늘도 열심히 운동했습니다.'),
+                                                             (1, 'info', '로보의 첫 운동일지', '오늘도 열심히 운동했습니다.');

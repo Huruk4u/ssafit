@@ -30,7 +30,7 @@
 
     <!--4. ArticleLike의 userId가 일치하는 글들을 조회 (사용자명 포함)-->
     <select id="selectArticleListByArticleLikeUserId" resultMap="ArticleWithUsernameResultMap">
-        SELECT DISTINCT a.*, u.username
+        SELECT DISTINCT a.*, u.nickname
         FROM articles a
                  LEFT JOIN users u ON a.user_id = u.user_id
                  INNER JOIN article_likes al ON a.article_id = al.article_id

@@ -5,6 +5,7 @@
         <tr>
           <th>번호</th>
           <th class="title-column">제목</th>
+          <th>작성자</th>
           <th>작성일</th>
           <th>조회수</th>
           <th>좋아요</th>
@@ -12,7 +13,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="article in myArticles" :key="article.articleId">
+        <tr v-for="article in likedArticles" :key="article.articleId">
           <td>{{ article.articleId }}</td>
           <td class="title-column">
             <router-link
@@ -22,13 +23,14 @@
               {{ article.title }}
             </router-link>
           </td>
+          <td>{{ article.nickname }}</td>
           <td>{{ formatDate(article.createdAt) }}</td>
           <td>{{ article.viewCount }}</td>
           <td>{{ article.likeCount }}</td>
           <td>{{ article.commentCount }}</td>
         </tr>
-        <tr v-if="myArticles.length === 0">
-          <td colspan="6" class="no-data">작성한 글이 없습니다.</td>
+        <tr v-if="likedArticles.length === 0">
+          <td colspan="7" class="no-data">좋아요를 누른 글이 없습니다.</td>
         </tr>
       </tbody>
     </table>
@@ -40,7 +42,7 @@ import api from "@/api/axiosInstance";
 import { ref, onMounted } from "vue";
 
 const user = ref(JSON.parse(localStorage.getItem("user") || "{}"));
-const myArticles = ref([]);
+const likedArticles = ref([]);
 
 const formatDate = (dateString) => {
   if (!dateString) return '';
@@ -51,14 +53,14 @@ const formatDate = (dateString) => {
 onMounted(() => {
   if (user.value.userId) {
     api
-      .get(`/api_article/get/user_id/${user.value.userId}`)
+      .get(`/api_article/get/like/user_id/${user.value.userId}`)
       .then((res) => {
         console.log(res.data);
-        myArticles.value = res.data;
+        likedArticles.value = res.data;
       })
       .catch((err) => {
         console.error(err);
-        alert("내가 쓴 글을 불러오는 데 실패했습니다.");
+        alert("내가 좋아요 한 글을 불러오는 데 실패했습니다.");
       });
   }
 });
@@ -125,10 +127,12 @@ onMounted(() => {
     padding: 8px;
   }
   
-  .articles-table th:nth-child(4),
+  .articles-table th:nth-child(3),
   .articles-table th:nth-child(5),
-  .articles-table td:nth-child(4),
-  .articles-table td:nth-child(5) {
+  .articles-table th:nth-child(6),
+  .articles-table td:nth-child(3),
+  .articles-table td:nth-child(5),
+  .articles-table td:nth-child(6) {
     display: none;
   }
 }
