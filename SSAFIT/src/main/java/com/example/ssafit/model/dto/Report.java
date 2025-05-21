@@ -12,7 +12,13 @@ public class Report {
     private int reporterId;
 
     @NotNull
+    private String reporterName;
+
+    @NotNull
     private int reporteeId;
+
+    @NotNull
+    private String reporteeName;
 
     @NotNull
     private String reportCategory;
@@ -47,12 +53,28 @@ public class Report {
         this.reporterId = reporterId;
     }
 
+    public String getReporterName() {
+        return reporterName;
+    }
+
+    public void setReporterName(String reporterName) {
+        this.reporterName = reporterName;
+    }
+
     public int getReporteeId() {
         return reporteeId;
     }
 
     public void setReporteeId(int reporteeId) {
         this.reporteeId = reporteeId;
+    }
+
+    public String getReporteeName() {
+        return reporteeName;
+    }
+
+    public void setReporteeName(String reporteeName) {
+        this.reporteeName = reporteeName;
     }
 
     public String getReportCategory() {
@@ -79,9 +101,21 @@ public class Report {
         this.articleId = articleId;
     }
 
-    public String getContent() { return content; }
+    public boolean isHandled() {
+        return isHandled;
+    }
 
-    public void setContent(String content) { this.content = content; }
+    public void setHandled(boolean handled) {
+        isHandled = handled;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
 
     public String getAction() {
         return action;
@@ -99,20 +133,14 @@ public class Report {
         this.createdAt = createdAt;
     }
 
-    public boolean isHandled() {
-        return isHandled;
-    }
-
-    public void setHandled(boolean handled) {
-        isHandled = handled;
-    }
-
     @Override
     public String toString() {
         return "Report{" +
                 "reportId=" + reportId +
                 ", reporterId=" + reporterId +
+                ", reporterName='" + reporterName + '\'' +
                 ", reporteeId=" + reporteeId +
+                ", reporteeName='" + reporteeName + '\'' +
                 ", reportCategory='" + reportCategory + '\'' +
                 ", type='" + type + '\'' +
                 ", articleId=" + articleId +

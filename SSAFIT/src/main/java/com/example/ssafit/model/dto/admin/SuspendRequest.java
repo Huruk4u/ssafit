@@ -11,6 +11,8 @@ public class SuspendRequest {
 
     private String userName;
 
+    private String action;
+
     @NotNull
     private int durationDays;
 
@@ -28,6 +30,14 @@ public class SuspendRequest {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public String getAction() {
+        return action;
+    }
+
+    public void setAction(String action) {
+        this.action = action;
     }
 
     public int getDurationDays() {

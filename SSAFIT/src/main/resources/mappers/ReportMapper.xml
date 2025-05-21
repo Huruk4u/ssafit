@@ -17,8 +17,8 @@
 
     <!--report 생성-->
     <insert id="insertReport">
-        INSERT INTO reports(reporter_id, reportee_id, article_id, report_category, type, content)
-        VALUES (#{reporterId}, #{reporteeId}, #{articleId}, #{reportCategory}, #{type}, #{reportContent})
+        INSERT INTO reports(reporter_id, reporter_name, reportee_id, reportee_name, article_id, report_category, type, content)
+        VALUES (#{reporterId}, #{reporterName}, #{reporteeId}, #{reporteeName}, #{articleId}, #{reportCategory}, #{type}, #{content})
     </insert>
 
     <!--특정 user에 대한 report조회-->

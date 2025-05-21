@@ -3,6 +3,7 @@ package com.example.ssafit.controller;
 import com.example.ssafit.model.dto.user.User;
 import com.example.ssafit.model.dto.Report;
 import com.example.ssafit.model.dto.admin.SuspendRequest;
+import com.example.ssafit.model.service.NotificationService;
 import com.example.ssafit.model.service.ReportService;
 import com.example.ssafit.model.service.user.UserService;
 import jakarta.validation.Valid;
@@ -39,6 +40,9 @@ public class AdminController {
 
     @Autowired
     private ReportService reportService;
+
+    @Autowired
+    private NotificationService notificationService;
 
     // 모든 user 조회하기
     @GetMapping("/get/user")
@@ -80,12 +84,18 @@ public class AdminController {
         System.out.println();
 
         int result = userService.suspendUserByUserId(requestForm.getUserId(), requestForm.getDurationDays());
+        if (result == 0) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("요청 실패");
         System.out.println("유저 정지 기간 부여 완료.");
-        
+
+        // 정지당한 유저에게 알림 전송
+        Report report = reportService.searchReportByReportId(reportId);
         reportService.modifyReportAction(reportId, requestForm.getDurationDays() + "일 정지");
+
+        notificationService.createSuspendNotification(report);
+
         System.out.println("조치 내용 업데이트");
         
-        return new ResponseEntity(result, result == 1 ? HttpStatus.ACCEPTED : HttpStatus.BAD_REQUEST);
+        return ResponseEntity.ok().build();
     }
 
     // 신고 내역 조회

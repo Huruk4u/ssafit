@@ -2,6 +2,9 @@ package com.example.ssafit.model.service;
 
 import com.example.ssafit.model.dao.NotificationDao;
 import com.example.ssafit.model.dto.Notification;
+import com.example.ssafit.model.dto.Report;
+import com.example.ssafit.model.dto.user.User;
+import com.example.ssafit.model.service.user.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +22,9 @@ public class NotificationServiceImpl implements NotificationService {
     private NotificationDao notificationDao;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
+
+    @Autowired
+    private UserService userService;
 
     @Override
     @Transactional
@@ -63,16 +69,19 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     @Transactional
-    public int createReportNotification(int reportId, int reporteeId, int reporterId) {
-        // 자신의 게시글에 자신이 댓글을 남긴 경우에는 알림을 생성하지 않음
-        if (reporterId == reporteeId) {
-            return 0;
-        }
+    public int createSuspendNotification(Report report) {
+
+        // 신고당한 유저 조회
+        User reportee = userService.searchByUserId(report.getReporteeId());
+        if (reportee == null) return 0;
+
+        // 셀프 신고 방지
+        if (report.getReporterId() == report.getReporteeId()) return 0;
 
         // 알림 페이로드 생성 (JSON 형태로 저장)
         Map<String, Object> payload = new HashMap<>();
-        payload.put("reporterId", reporterId);
-        payload.put("reporteeId", reporteeId);
+        payload.put("content", report.getContent());
+        payload.put("action", report.getAction());
 
         String payloadJson;
         try {
@@ -82,12 +91,14 @@ public class NotificationServiceImpl implements NotificationService {
             return 0;
         }
 
+        // 알림 객체 생성
         Notification notification = new Notification();
-        notification.setUserId((long) reporteeId);
-        notification.setPayload(payloadJson);
+        notification.setUserId((long) report.getReporteeId()); // 게시글 작성자에게 알림
         notification.setType("report");
-        notification.setIsRead(false);
+        notification.setPayload(payloadJson);
+        notification.setIsRead(false); // 읽음 상태 명시적으로 설정
 
+        // 알림 저장
         return notificationDao.insertNotification(notification);
     }
 

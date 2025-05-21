@@ -161,7 +161,9 @@ CREATE TABLE reports (
                          report_id    BIGINT    PRIMARY KEY AUTO_INCREMENT,
                          report_category VARCHAR(100),
                          reporter_id      BIGINT    NOT NULL COMMENT '신고자 id',
+                         reporter_name  VARCHAR(50) NOT NULL COMMENT '신고자 name',
                          reportee_id      BIGINT    NOT NULL COMMENT '피신고자 id',
+                         reportee_name  VARCHAR(50) NOT NULL COMMENT '피신고자 name',
                          type  VARCHAR(20) NOT NULL COMMENT 'article, comment, user 등',
                          article_id    BIGINT    NOT NULL,
                          content      TEXT,
@@ -189,9 +191,9 @@ VALUES
 select * from users;
 select * from reports;
 
-INSERT INTO users(user_id, username, password, checkPassword, nickname, email)
-VALUES (1, "robo", "$2a$10$BSTy3.gRRCOYkQX6dapqg.5fAriwypedkQKQx6TyZ/8q8ikaWQx3u", "$2a$10$BSTy3.gRRCOYkQX6dapqg.5fAriwypedkQKQx6TyZ/8q8ikaWQx3u", "robo", "robo@gmail.com"),
-       (2, "dijk", "$2a$10$BSTy3.gRRCOYkQX6dapqg.5fAriwypedkQKQx6TyZ/8q8ikaWQx3u", "$2a$10$BSTy3.gRRCOYkQX6dapqg.5fAriwypedkQKQx6TyZ/8q8ikaWQx3u", "dijk", "dijk@gmail.com")
+INSERT INTO users(user_id, username, password, nickname, email)
+VALUES (1, "robo", "$2a$10$BSTy3.gRRCOYkQX6dapqg.5fAriwypedkQKQx6TyZ/8q8ikaWQx3u", "robo", "robo@gmail.com"),
+       (2, "dijk", "$2a$10$BSTy3.gRRCOYkQX6dapqg.5fAriwypedkQKQx6TyZ/8q8ikaWQx3u", "dijk", "dijk@gmail.com")
 
 UPDATE users
 SET role="ROLE_ADMIN"
@@ -250,8 +252,8 @@ INSERT INTO inbody_data (user_id, weight, muscle_mass, body_fat, body_fat_percen
 
 -- reports
 -- robo가 dijk의 글(article_id=3)을 신고
-INSERT INTO reports (report_category, reporter_id, reportee_id, type, article_id, content) VALUES
-    ('욕설', 1, 2, 'article', 3, '욕설 및 비방성 글 신고합니다');
+INSERT INTO reports (report_category, reporter_id, reporter_name, reportee_id, reportee_name, type, article_id, content) VALUES
+    ('욕설', 1,'robo',  2, 'dijk', 'ARTICLE', 3, '욕설 및 비방성 글 신고합니다');
 -- dijk가 robo의 글(article_id=1)을 신고
-INSERT INTO reports (report_category, reporter_id, reportee_id, type, article_id, content) VALUES
-    ('광고', 2, 1, 'article', 1, '홍보성 게시글로 의심');
+INSERT INTO reports (report_category, reporter_id, reporter_name, reportee_id, reportee_name, type, article_id, content) VALUES
+    ('광고', 2, 'dijk', 1, 'robo', 'ARTICLE', 1, '홍보성 게시글로 의심');

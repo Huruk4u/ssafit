@@ -1,6 +1,7 @@
 package com.example.ssafit.model.service;
 
 import com.example.ssafit.model.dto.Notification;
+import com.example.ssafit.model.dto.Report;
 
 import java.util.List;
 
@@ -9,8 +10,8 @@ public interface NotificationService {
     // 댓글 알림 생성
     int createCommentNotification(int articleId, int commentId, int commentAuthorId);
 
-    // 신고 알림 생성
-    int createReportNotification(int reportId, int reporteeId, int reporterId);
+    // 정지 알림 생성
+    int createSuspendNotification(Report report);
 
     // 일반 알림 생성
     int addNotification(Notification notification);

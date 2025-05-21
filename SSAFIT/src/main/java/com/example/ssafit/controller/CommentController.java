@@ -173,38 +173,4 @@ public class CommentController {
         boolean result = commentService.dislikeComment(commentId, currentUser.getUserId());
         return ResponseEntity.ok(result);
     }
-
-    // 댓글 신고
-    @PostMapping("/report")
-    public ResponseEntity<?> reportComment(
-            @RequestParam("comment_id") int commentId,
-            @RequestBody Report reportData,
-            Principal principal) {
-
-        // 현재 로그인한 사용자 정보 확인
-        User currentUser = userService.searchByUsername(principal.getName());
-        if (currentUser == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
-        }
-
-        // 댓글 존재 여부 확인
-        Comment comment = commentService.searchCommentByCommentId(commentId);
-        if (comment == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("댓글을 찾을 수 없습니다.");
-        }
-
-        // 신고 객체 설정 - 실제 로그인한 사용자 ID로 설정
-        Report report = new Report();
-        report.setArticleId(comment.getArticleId());
-        report.setReporterId(currentUser.getUserId());
-        report.setReporteeId(comment.getUserId());
-        report.setContent(reportData.getContent());
-
-        boolean result = commentService.reportComment(report);
-        if (!result) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("이미 신고한 댓글입니다.");
-        }
-
-        return ResponseEntity.status(HttpStatus.CREATED).body("신고가 접수되었습니다.");
-    }
 }
