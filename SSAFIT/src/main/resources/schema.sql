@@ -175,17 +175,17 @@ CREATE TABLE reports (
 
 -- badge 기본 설정
 INSERT INTO badges (badge_id, name, icon_url, description)
-VALUES ('ARTICLE_POSTER_LV1', '게시글 작성자 Lv.1', '/assets/badges/article_poster_lv1.png', '게시글 3개 작성 배지'),
-       ('ARTICLE_POSTER_LV2', '게시글 작성자 Lv.2', '/assets/badges/article_poster_lv2.png', '게시글 10개 작성 배지'),
-       ('ARTICLE_POSTER_LV3', '게시글 작성자 Lv.3', '/assets/badges/article_poster_lv3.png', '게시글 50개 작성 배지')
+VALUES ('ARTICLE_POSTER_LV1', '게시글 작성자 Lv.1', '/images/badges/article_poster_lv1.png', '게시글 3개 작성 배지'),
+       ('ARTICLE_POSTER_LV2', '게시글 작성자 Lv.2', '/images/badges/article_poster_lv2.png', '게시글 10개 작성 배지'),
+       ('ARTICLE_POSTER_LV3', '게시글 작성자 Lv.3', '/images/badges/article_poster_lv3.png', '게시글 50개 작성 배지')
 ;
 
 INSERT INTO badges (badge_id, name, icon_url, description)
 VALUES
-    ('STREAK_3_DAYS', '3일 연속 챌린지', '/badges/streak_3.png', '3일 연속으로 챌린지를 완료했습니다!'),
-    ('STREAK_7_DAYS', '7일 연속 챌린지', '/badges/streak_7.png', '7일 연속으로 챌린지를 완료했습니다!'),
-    ('STREAK_30_DAYS', '30일 연속 챌린지', '/badges/streak_30.png', '30일 연속으로 챌린지를 완료했습니다!'),
-    ('STREAK_100_DAYS', '100일 연속 챌린지', '/badges/streak_100.png', '100일 연속으로 챌린지를 완료했습니다!');
+    ('STREAK_3_DAYS', '3일 연속 챌린지', '/images/badges/streak_3.png', '3일 연속으로 챌린지를 완료했습니다!'),
+    ('STREAK_7_DAYS', '7일 연속 챌린지', '/images/badges/streak_7.png', '7일 연속으로 챌린지를 완료했습니다!'),
+    ('STREAK_30_DAYS', '30일 연속 챌린지', '/images/badges/streak_30.png', '30일 연속으로 챌린지를 완료했습니다!'),
+    ('STREAK_100_DAYS', '100일 연속 챌린지', '/images/badges/streak_100.png', '100일 연속으로 챌린지를 완료했습니다!');
 
 
 select * from users;
