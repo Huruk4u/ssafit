@@ -34,7 +34,7 @@
         FROM comments c
                  LEFT JOIN users u ON c.user_id = u.user_id
         WHERE c.article_id = #{articleId}
-        ORDER BY c.created_at DESC
+        ORDER BY c.created_at
     </select>
 
     <!-- 4. 특정 사용자의 댓글 리스트 조회 (사용자명 포함) -->

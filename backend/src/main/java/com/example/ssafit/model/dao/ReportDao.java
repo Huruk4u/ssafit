@@ -31,4 +31,7 @@ public interface ReportDao {
 
     // 6. ReportId의 action수정
     void updateReportAction(int reportId, int action);
+
+    // 7. ReporterId, ReporteeId, ArticleId가 일치하는 Report의 갯수를 조회
+    int selectReportCntByReportInfo(Report report);
 }

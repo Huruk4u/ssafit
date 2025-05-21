@@ -10,10 +10,30 @@ api.interceptors.request.use((config) => {
     const whiteList = ['/api_auth/authenticate', '/api_user/post/signup', '/images/profile/', '/images/background/']
     const requestUrl = new URL(config.url, config.baseURL).pathname
 
-
-    
     if (whiteList.some(path => requestUrl.startsWith(path))) {
         return config
+    }
+
+    // 정지 기간 체크
+    const userStr = localStorage.getItem('user')
+    if (userStr) {
+        try {
+            const user = JSON.parse(userStr)
+            if (user.suspendStart && user.suspendEnd) {
+                const now = new Date()
+                const start = new Date(user.suspendStart)
+                const end = new Date(user.suspendEnd)
+                if (
+                    requestUrl.startsWith('/api_article') &&
+                    now >= start && now <= end
+                ) {
+                    alert('정지 기간 중에는 게시판 관련 기능을 이용할 수 없습니다.')
+                    throw new axios.Cancel("정지 기간 중 접근 불가")
+                }
+            }
+        } catch (e) {
+            // 파싱 에러 무시
+        }
     }
 
     const token = localStorage.getItem('token')

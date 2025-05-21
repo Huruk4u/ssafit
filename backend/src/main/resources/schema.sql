@@ -199,12 +199,13 @@ UPDATE users
 SET role="ROLE_ADMIN"
 WHERE username="robo";
 
+
 -- articles
 INSERT INTO articles (user_id, category, title, content, tag) VALUES
-                                                                  (1, '운동', '로보의 첫 운동일지', '오늘도 열심히 운동했습니다.', '운동,헬스'),
-                                                                  (1, '후기', '로보의 식단공유', '단백질 위주 식단방식입니다.', '식단,영양'),
-                                                                  (2, '운동', '다이크의 하체루틴', '스쿼트 100개 성공했어요!', '하체,스쿼트'),
-                                                                  (2, '질문', '다이크의 운동질문', '러닝머신 몇 분이 적당한가요?', '러닝,유산소');
+                                                                  (1, 'question', '로보의 첫 운동일지', '오늘도 열심히 운동했습니다.', '운동,헬스'),
+                                                                  (1, 'question', '로보의 식단공유', '단백질 위주 식단방식입니다.', '식단,영양'),
+                                                                  (2, 'question', '다이크의 하체루틴', '스쿼트 100개 성공했어요!', '하체,스쿼트'),
+                                                                  (2, 'question', '다이크의 운동질문', '러닝머신 몇 분이 적당한가요?', '러닝,유산소');
 -- comments
 -- robo -> dijk 게시글(3,4)에 댓글
 INSERT INTO comments (article_id, user_id, content) VALUES

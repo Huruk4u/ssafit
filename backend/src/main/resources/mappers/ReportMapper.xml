@@ -45,4 +45,9 @@
         WHERE report_id=#{reportId}
     </update>
 
+    <select id="selectReportCntByReportInfo">
+        SELECT COUNT(*)
+        FROM reports
+        WHERE reporter_id=#{reporterId} AND reportee_id=#{reporteeId} AND article_id=#{articleId}
+    </select>
 </mapper>
