@@ -35,6 +35,8 @@ public class NotificationController {
         }
 
         List<Notification> notifications = notificationService.getNotificationsByUserId(currentUser.getUserId());
+        System.out.println(notifications);
+
         return ResponseEntity.ok(notifications);
     }
 

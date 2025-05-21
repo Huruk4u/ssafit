@@ -1,53 +1,68 @@
 <template>
   <div>
+    <div>
+      <Header />
+    </div>
     <h2>유저 알림 처리</h2>
 
-    <div style="margin-bottom: 16px;">
+    <div class="noti-actions">
       <button @click="markAllAsRead" :disabled="notificationList.length === 0">
         모든 알림 읽음 처리
       </button>
-      <button @click="deleteAllNotifications" :disabled="notificationList.length === 0" style="margin-left: 8px;">
+      <button
+        @click="deleteAllNotifications"
+        :disabled="notificationList.length === 0"
+      >
         모든 알림 삭제
       </button>
     </div>
 
-    <ul>
-      <li
-        v-for="notification in notificationList"
-        :key="notification.notificationId"
-        :class="{ unread: !notification.isRead }"
-        style="margin-bottom: 12px;"
-      >
-        <!-- 메시지 클릭 시 게시글 상세로 이동 -->
-        <router-link
-          v-if="notification.type === 'comment' && getArticleId(notification)"
-          :to="`/board/detail/${getArticleId(notification)}`"
-          class="article-link"
-          style="cursor: pointer; text-decoration: underline; color: blue;"
+    <div class="noti-list-wrapper">
+      <ul class="noti-list">
+        <li
+          v-for="notification in notificationList"
+          :key="notification.notificationId"
+          :class="['noti-card', { unread: !notification.isRead }]"
         >
-          {{ renderMessage(notification) }}
-        </router-link>
-
-        <!-- 댓글 알림이 아닐 경우 그냥 텍스트 출력 -->
-        <span v-else>{{ renderMessage(notification) }}</span>
-
-        <div class="actions" style="margin-top: 6px;">
-          <button
-            @click="markAsRead(notification.notificationId)"
-            :disabled="notification.isRead"
-          >
-            읽음
-          </button>
-          <button @click="deleteNotification(notification.notificationId)">삭제</button>
-        </div>
-      </li>
-    </ul>
+          <div class="noti-main">
+            <router-link
+              v-if="
+                notification.type === 'comment' && getArticleId(notification)
+              "
+              :to="`/board/detail/${getArticleId(notification)}`"
+              class="noti-link"
+            >
+              {{ renderMessage(notification) }}
+            </router-link>
+            <span v-else>{{ renderMessage(notification) }}</span>
+          </div>
+          <div class="noti-meta">
+            <span class="noti-date">{{ notification.createdAt }}</span>
+            <div class="noti-actions-inline">
+              <button
+                @click="markAsRead(notification.notificationId)"
+                :disabled="notification.isRead"
+              >
+                읽음
+              </button>
+              <button @click="deleteNotification(notification.notificationId)">
+                삭제
+              </button>
+            </div>
+          </div>
+        </li>
+      </ul>
+      <div v-if="notificationList.length === 0" class="noti-empty">
+        알림이 없습니다.
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from "vue";
 import api from "@/api/axiosInstance";
+import Header from "@/components/Header.vue";
 
 const notificationList = ref([]);
 
@@ -62,16 +77,10 @@ const renderMessage = (notification) => {
     return "알림 데이터 오류";
   }
 
-  switch (notification.type) {
-    case "comment":
-      return `게시글 ${payloadObj.articleId}에 새 댓글이 달렸습니다.`;
-    case "like":
-      return `게시글 ${payloadObj.articleId}가 좋아요를 받았습니다.`;
-    case "challenge":
-      return `새로운 챌린지가 도전 가능합니다!`;
-    default:
-      return "새로운 알림이 도착했습니다.";
-  }
+  if (notification.type === "COMMENT") {
+    return `게시글 ${payloadObj.articleId}에 새 댓글이 달렸습니다.`;
+  } else
+    return `${payloadObj.category}로 인해 ${payloadObj.action}일 정지되었습니다.`;
 };
 
 // payload에서 articleId 추출 (router-link용)
@@ -92,6 +101,7 @@ const loadNotifications = () => {
     .get("/api_notification/list")
     .then((res) => {
       notificationList.value = res.data;
+      console.log("알림 목록", notificationList.value);
     })
     .catch(() => {
       alert("알림 목록을 가져오는데 실패했습니다.");

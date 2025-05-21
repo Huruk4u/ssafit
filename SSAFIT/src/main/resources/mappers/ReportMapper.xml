@@ -6,6 +6,7 @@
     <select id="selectAllReports">
         SELECT *
         FROM reports
+        ORDER BY created_at DESC
     </select>
 
     <!--조치 안 된 report만 조회-->
@@ -25,7 +26,8 @@
     <select id="selectReportByUserId" resultType="Report">
         SELECT *
         FROM reports
-        WHERE user_id=#{userId}
+        WHERE reportee_id=#{userId}
+        ORDER BY created_at DESC
     </select>
 
     <!--report id로 report 조회-->

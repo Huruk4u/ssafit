@@ -30,5 +30,5 @@ public interface ReportDao {
     Report selectReportByReportId(int reportId);
 
     // 6. ReportId의 action수정
-    void updateReportAction(int reportId, String action);
+    void updateReportAction(int reportId, int action);
 }

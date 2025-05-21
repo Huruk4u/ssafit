@@ -89,7 +89,7 @@ public class AdminController {
 
         // 정지당한 유저에게 알림 전송
         Report report = reportService.searchReportByReportId(reportId);
-        reportService.modifyReportAction(reportId, requestForm.getDurationDays() + "일 정지");
+        reportService.modifyReportAction(reportId, requestForm.getDurationDays());
 
         notificationService.createSuspendNotification(report);
 

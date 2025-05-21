@@ -32,7 +32,7 @@ public class Report {
     private boolean isHandled;
 
     private String content;
-    private String action;
+    private int action;
     private LocalDateTime createdAt;
 
     public Report() {}
@@ -117,11 +117,11 @@ public class Report {
         this.content = content;
     }
 
-    public String getAction() {
+    public int getAction() {
         return action;
     }
 
-    public void setAction(String action) {
+    public void setAction(int action) {
         this.action = action;
     }
 

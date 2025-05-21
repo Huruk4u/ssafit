@@ -30,5 +30,5 @@ public interface ReportService {
     Report searchReportByReportId(int reportId);
 
     // 6. ReportId의 action수정
-    int modifyReportAction(int reportId, String action);
+    int modifyReportAction(int reportId, int action);
 }

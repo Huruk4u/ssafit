@@ -43,7 +43,7 @@ public class ReportServiceImpl implements ReportService {
 
     @Override
     @Transactional
-    public int modifyReportAction(int reportId, String action) {
+    public int modifyReportAction(int reportId, int action) {
         System.out.println("report 처리한다! : " + reportId + " " + action);
         reportDao.updateReportAction(reportId, action);
         return 1;

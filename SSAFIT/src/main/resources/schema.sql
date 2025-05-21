@@ -167,7 +167,7 @@ CREATE TABLE reports (
                          type  VARCHAR(20) NOT NULL COMMENT 'article, comment, user 등',
                          article_id    BIGINT    NOT NULL,
                          content      TEXT,
-                         action VARCHAR(200) NULL COMMENT '조치 내용',
+                         action int NULL COMMENT '조치 내용',
                          created_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                          is_handled BOOLEAN DEFAULT FALSE,
                          FOREIGN KEY (article_id) REFERENCES articles(article_id) ON DELETE CASCADE
@@ -260,4 +260,5 @@ INSERT INTO reports (report_category, reporter_id, reporter_name, reportee_id, r
 
 select * from articles;
 select * from users;
+select * from reports;
 select * from notifications;

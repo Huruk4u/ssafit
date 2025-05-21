@@ -80,8 +80,8 @@ public class NotificationServiceImpl implements NotificationService {
 
         // 알림 페이로드 생성 (JSON 형태로 저장)
         Map<String, Object> payload = new HashMap<>();
-        payload.put("content", report.getContent());
         payload.put("action", report.getAction());
+        payload.put("category", report.getReportCategory());
 
         String payloadJson;
         try {
