@@ -198,7 +198,7 @@ public class CommentController {
         report.setArticleId(comment.getArticleId());
         report.setReporterId(currentUser.getUserId());
         report.setReporteeId(comment.getUserId());
-        report.setReportContent(reportData.getReportContent());
+        report.setContent(reportData.getContent());
 
         boolean result = commentService.reportComment(report);
         if (!result) {

@@ -25,7 +25,7 @@ public class Report {
     // Report의 처리 여부
     private boolean isHandled;
 
-    private String reportContent;
+    private String content;
     private String action;
     private LocalDateTime createdAt;
 
@@ -79,13 +79,9 @@ public class Report {
         this.articleId = articleId;
     }
 
-    public String getReportContent() {
-        return reportContent;
-    }
+    public String getContent() { return content; }
 
-    public void setReportContent(String reportContent) {
-        this.reportContent = reportContent;
-    }
+    public void setContent(String content) { this.content = content; }
 
     public String getAction() {
         return action;
@@ -120,7 +116,8 @@ public class Report {
                 ", reportCategory='" + reportCategory + '\'' +
                 ", type='" + type + '\'' +
                 ", articleId=" + articleId +
-                ", reportContent='" + reportContent + '\'' +
+                ", isHandled=" + isHandled +
+                ", content='" + content + '\'' +
                 ", action='" + action + '\'' +
                 ", createdAt=" + createdAt +
                 '}';

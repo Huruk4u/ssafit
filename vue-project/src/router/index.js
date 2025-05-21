@@ -1,7 +1,7 @@
 // src/router/index.js
 import { createRouter, createWebHistory } from 'vue-router';
 import Login from '../views/Login.vue';
-import Signup from '../views/Signup.vue';
+import Signup from '@/views/Signup.vue';
 import Main from '../views/Main.vue';
 import MyPage from '../views/MyPage.vue';
 import Board from '../views/Board.vue';
@@ -39,7 +39,7 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const token=localStorage.getItem('token')
-  const publicPages = ['/', '/api_auth/authenticate', '/api_auth/signup']
+  const publicPages = ['/signup', '/login', '/api_auth/signup']
   
   const authRequired = !publicPages.includes(to.path)
   if (authRequired && !token &&to.path !== '/login') {

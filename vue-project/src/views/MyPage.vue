@@ -63,6 +63,7 @@ import MyArticles from "@/components/MyArticles.vue";
 
 const router = useRouter();
 const user = ref(JSON.parse(localStorage.getItem("user") || "{}"));
+console.log("Mypage user", user.value);
 
 const userProfileImage = computed(() =>
   user.value.profileImage
