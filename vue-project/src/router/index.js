@@ -21,7 +21,6 @@ const routes = [
   { path: '/main', component: Main},
   { path: '/mypage', component: MyPage},
   { path: '/board', component: Board},
-  { path: '/board', component: Board},
   { path: '/board/create', component: BoardCreate},
   { path: '/board/detail/:articleId', component: BoardDetail, props: true },
   { path: '/board/edit/:articleId', component: BoardEdit, props: true },
@@ -38,15 +37,35 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  const token=localStorage.getItem('token')
-  const publicPages = ['/signup', '/login', '/api_auth/signup']
-  
-  const authRequired = !publicPages.includes(to.path)
-  if (authRequired && !token &&to.path !== '/login') {
-    return next('/login')
+  const user = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : null;
+  const token = localStorage.getItem('token');
+  const publicPages = ['/signup', '/login'];
+  const authRequired = !publicPages.includes(to.path);
+
+  // 인증 필요시 토큰 없으면 로그인으로
+  if (authRequired && !token && to.path !== '/login') {
+    return next('/login');
   }
 
-  next()
-})
+  console.log('user', user);
+
+  // 게시판 관련 경로 접근 시 정지기간 체크 (suspendStart ~ suspendEnd)
+  if (
+    to.path.startsWith('/board') &&
+    user &&
+    user.suspendStart &&
+    user.suspendEnd
+  ) {
+    const now = new Date();
+    const start = new Date(user.suspendStart);
+    const end = new Date(user.suspendEnd);
+    if (start <= now && now < end) {
+      alert('정지 기간 중에는 게시판을 이용할 수 없습니다.');
+      return next('/mypage');
+    }
+  }
+
+  next();
+});
 
 export default router;
