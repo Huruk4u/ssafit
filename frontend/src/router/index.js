@@ -13,6 +13,8 @@ import EditPassword from '@/views/EditPassword.vue';
 import UserEdit from '@/views/UserEdit.vue';
 import AdminPage from '@/views/AdminPage.vue';
 import MyArticles from '@/components/MyArticles.vue';
+import MyLikedArticles from '@/components/MyLikedArticles.vue';
+import ActivityInfo from '@/components/ActivityInfo.vue';
 
 const routes = [
   { path: '/', redirect: '/login' },    // 기본 경로는 로그인 페이지로 리디렉션
@@ -29,6 +31,8 @@ const routes = [
   { path: '/editProfile', component: UserEdit},
   { path: '/admin', component: AdminPage},
   { path: '/myarticles', component: MyArticles},
+  { path: '/mylikedarticles', component: MyLikedArticles},
+  { path: '/activityInfo', component: ActivityInfo}
 ]
 
 const router = createRouter({
