@@ -77,10 +77,16 @@ const renderMessage = (notification) => {
     return "알림 데이터 오류";
   }
 
-  if (notification.type === "COMMENT") {
+  if (notification.type === "comment" && payloadObj.articleId) {
     return `게시글 ${payloadObj.articleId}에 새 댓글이 달렸습니다.`;
-  } else
-    return `${payloadObj.category}로 인해 ${payloadObj.action}일 정지되었습니다.`;
+  } else if (notification.type === "report") {
+    // 예: 광고로 인해 0일 정지되었습니다.
+    return `${payloadObj.category || "사유없음"}로 인해 ${
+      payloadObj.action ?? "?"
+    }일 정지되었습니다.`;
+  } else {
+    return "새로운 알림이 도착했습니다.";
+  }
 };
 
 // payload에서 articleId 추출 (router-link용)
@@ -168,8 +174,9 @@ const deleteAllNotifications = () => {
 
 <style scoped>
 .unread span,
-.unread .article-link {
+.unread .noti-link {
   font-weight: bold;
+  color: #1a7f5a;
 }
 
 .actions button {

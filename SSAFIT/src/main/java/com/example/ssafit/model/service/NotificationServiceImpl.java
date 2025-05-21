@@ -26,6 +26,9 @@ public class NotificationServiceImpl implements NotificationService {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private ReportService reportService;
+
     @Override
     @Transactional
     public int createCommentNotification(int articleId, int commentId, int commentAuthorId) {
@@ -69,7 +72,8 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     @Transactional
-    public int createSuspendNotification(Report report) {
+    public int createSuspendNotification(Report reportData) {
+        Report report = reportService.searchReportByReportId(reportData.getReportId());
 
         // 신고당한 유저 조회
         User reportee = userService.searchByUserId(report.getReporteeId());
@@ -82,6 +86,8 @@ public class NotificationServiceImpl implements NotificationService {
         Map<String, Object> payload = new HashMap<>();
         payload.put("action", report.getAction());
         payload.put("category", report.getReportCategory());
+
+        System.out.println(payload);
 
         String payloadJson;
         try {
