@@ -257,3 +257,7 @@ INSERT INTO reports (report_category, reporter_id, reporter_name, reportee_id, r
 -- dijk가 robo의 글(article_id=1)을 신고
 INSERT INTO reports (report_category, reporter_id, reporter_name, reportee_id, reportee_name, type, article_id, content) VALUES
     ('광고', 2, 'dijk', 1, 'robo', 'ARTICLE', 1, '홍보성 게시글로 의심');
+
+select * from articles;
+select * from users;
+select * from notifications;
