@@ -4,16 +4,17 @@
 
     <div class="mypage-container">
       <section class="user-info">
-        <div>
-          <img :src="userProfileImage" alt="프로필이미지" class="profile-img" />
+        <div class="user-visual">
           <img
             :src="userBackgroundImage"
             alt="배경이미지"
             class="background-img"
           />
+          <img :src="userProfileImage" alt="프로필이미지" class="profile-img" />
         </div>
-        <p>
-          <strong>{{ user.nickname }}</strong> ({{ user.userName }})
+        <p class="user-nickname">
+          <strong>{{ user.nickname }}</strong>
+          <span class="user-id">({{ user.userName }})</span>
         </p>
         <div class="badge-section">
           <div
@@ -48,6 +49,9 @@
         <button @click="activeTab = 4" :class="{ active: activeTab === 4 }">
           좋아요 한 글
         </button>
+        <button @click="activeTab = 5" :class="{ active: activeTab === 5 }">
+          팔로우
+        </button>
         <button @click="goEditUser">유저 정보 변경</button>
       </div>
 
@@ -68,6 +72,9 @@
       </div>
 
       <div v-if="activeTab === 5" class="tab-content">
+        <MyFollowing />
+      </div>
+      <div v-if="activeTab === 6" class="tab-content">
         <UserEdit />
       </div>
     </div>
@@ -111,6 +118,7 @@ import ChallengeRegister from "@/components/ChallengeRegister.vue";
 import MyArticles from "@/components/MyArticles.vue";
 import MyLikedArticles from "@/components/MyLikedArticles.vue";
 import ActivityInfo from "@/components/ActivityInfo.vue";
+import MyFollowing from "@/components/MyFollowing.vue";
 
 const router = useRouter();
 const user = ref(JSON.parse(localStorage.getItem("user") || "{}"));

@@ -8,10 +8,20 @@
           <img :src="backgroundUrl" alt="배경이미지" class="background-img" />
           <img :src="profileUrl" alt="프로필이미지" class="profile-img" />
         </div>
-        <p class="user-names">
-          <strong>{{ summary.nickname }}</strong>
-          <span>({{ summary.userName }})</span>
-        </p>
+        <div class="user-names-section">
+          <p class="user-names">
+            <strong>{{ summary.nickname }}</strong>
+            <span>({{ summary.userName }})</span>
+          </p>
+          <button 
+            v-if="!isMyProfile"
+            @click="toggleFollow" 
+            :disabled="followLoading"
+            :class="['follow-button', isFollowing ? 'unfollow' : 'follow']"
+          >
+            {{ followLoading ? '처리중...' : (isFollowing ? '언팔로우' : '팔로우') }}
+          </button>
+        </div>
         <div class="badge-section">
           <div v-if="summary.representedBadge" class="represent-badge">
             <img
@@ -63,6 +73,9 @@ const route = useRoute();
 const router = useRouter();
 const userId = Number(route.params.userId);
 
+// 현재 로그인한 사용자 정보
+const currentUser = ref(JSON.parse(localStorage.getItem("user") || "{}"));
+
 const summary = ref({
   userName: "",
   nickname: "",
@@ -70,6 +83,15 @@ const summary = ref({
   backgroundImage: null,
   representedBadge: null,
   articles: [],
+});
+
+// 팔로우 관련 상태
+const isFollowing = ref(false);
+const followLoading = ref(false);
+
+// 내 프로필인지 확인
+const isMyProfile = computed(() => {
+  return currentUser.value.userId === userId;
 });
 
 const profileUrl = computed(() =>
@@ -99,10 +121,59 @@ const formatDate = (dateString) => {
   });
 };
 
+// 팔로우 상태 확인
+const checkFollowStatus = async () => {
+  if (isMyProfile.value) return;
+  
+  try {
+    const response = await api.get("/api_follow/get/follow");
+    const followingList = response.data || [];
+    isFollowing.value = followingList.some(user => user.userId === userId);
+  } catch (error) {
+    console.error("팔로우 상태 확인 실패:", error);
+    // 204 No Content인 경우 팔로우하지 않은 것으로 처리
+    if (error.response?.status === 204) {
+      isFollowing.value = false;
+    }
+  }
+};
+
+// 팔로우/언팔로우 토글
+const toggleFollow = async () => {
+  if (followLoading.value) return;
+  
+  followLoading.value = true;
+  
+  try {
+    if (isFollowing.value) {
+      // 언팔로우
+      await api.delete(`/api_follow/delete/follow/userId/${userId}`);
+      isFollowing.value = false;
+      alert("언팔로우 했습니다.");
+    } else {
+      // 팔로우
+      await api.post(`/api_follow/post/follow/userId/${userId}`);
+      isFollowing.value = true;
+      alert("팔로우 했습니다.");
+    }
+  } catch (error) {
+    console.error("팔로우/언팔로우 실패:", error);
+    alert("요청 처리에 실패했습니다. 다시 시도해주세요.");
+  } finally {
+    followLoading.value = false;
+  }
+};
+
 onMounted(async () => {
   try {
+    // 사용자 요약 정보 조회
     const res = await api.get(`/api_mypage/summary/userId/${userId}`);
     Object.assign(summary.value, res.data);
+    
+    // 팔로우 상태 확인 (내 프로필이 아닌 경우만)
+    if (!isMyProfile.value) {
+      await checkFollowStatus();
+    }
   } catch (e) {
     console.error("유저 요약 정보 조회 실패:", e);
     alert("유저 정보를 불러오지 못했습니다.");
@@ -148,11 +219,59 @@ onMounted(async () => {
   transform: translateX(-50%);
   border: 4px solid white;
 }
-.user-names {
+
+/* 사용자 이름과 팔로우 버튼을 위한 새로운 스타일 */
+.user-names-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
   margin-top: 70px;
+  flex-wrap: wrap;
+}
+
+.user-names {
   font-size: 20px;
   color: #333;
+  margin: 0;
 }
+
+.follow-button {
+  padding: 8px 20px;
+  border: none;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 90px;
+}
+
+.follow-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.follow-button.follow {
+  background-color: #007bff;
+  color: white;
+}
+
+.follow-button.follow:hover:not(:disabled) {
+  background-color: #0056b3;
+  transform: translateY(-1px);
+}
+
+.follow-button.unfollow {
+  background-color: #dc3545;
+  color: white;
+}
+
+.follow-button.unfollow:hover:not(:disabled) {
+  background-color: #c82333;
+  transform: translateY(-1px);
+}
+
 .badge-section {
   margin-top: 16px;
 }
@@ -214,5 +333,23 @@ onMounted(async () => {
   text-align: center;
   color: #777;
   padding: 20px 0;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 600px) {
+  .user-names-section {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .user-names {
+    font-size: 18px;
+    text-align: center;
+  }
+  
+  .follow-button {
+    width: 100%;
+    max-width: 200px;
+  }
 }
 </style>
