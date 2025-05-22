@@ -293,15 +293,14 @@ onBeforeUnmount(() => {
   document.removeEventListener("click", handleClickOutside);
 });
 
-// 메뉴 항목 동작
+// 유저 정보 보기
 const viewUserInfo = () => {
   showUserMenu.value = false;
-  alert(`유저 정보 보기: ${article.value.nickname || article.value.username}`);
+  router.push(`/summary/userId/${article.value.userId}`);
 };
-
 const viewCommentUserInfo = (comment) => {
   showCommentUserMenuId.value = null;
-  alert(`유저 정보 보기: ${comment.nickname || comment.username}`);
+  router.push(`/summary/userId/${comment.userId}`);
 };
 
 // 신고 모달 상태 및 동작
