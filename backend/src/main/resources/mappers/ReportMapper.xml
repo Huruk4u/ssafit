@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.ssafit.model.dao.ReportDao">
+    <!--모든 Report조회-->
+    <select id="selectAllReports">
+        SELECT *
+        FROM reports
+        ORDER BY created_at DESC
+    </select>
+
+    <!--조치 안 된 report만 조회-->
+    <select id="selectReportNotHandled">
+        SELECT *
+        FROM reports
+        WHERE is_handled=false
+    </select>
+
+    <!--report 생성-->
+    <insert id="insertReport">
+        INSERT INTO reports(reporter_id, reporter_name, reportee_id, reportee_name, article_id, report_category, type, content)
+        VALUES (#{reporterId}, #{reporterName}, #{reporteeId}, #{reporteeName}, #{articleId}, #{reportCategory}, #{type}, #{content})
+    </insert>
+
+    <!--특정 user에 대한 report조회-->
+    <select id="selectReportByUserId" resultType="Report">
+        SELECT *
+        FROM reports
+        WHERE reportee_id=#{userId}
+        ORDER BY created_at DESC
+    </select>
+
+    <!--report id로 report 조회-->
+    <select id="selectReportByReportId">
+        SELECT *
+        FROM reports
+        WHERE report_id=#{reportId}
+    </select>
+
+    <!--report id의 action수정-->
+    <update id="updateReportAction">
+        UPDATE reports
+        SET action=#{action},
+            is_handled=true
+        WHERE report_id=#{reportId}
+    </update>
+
+    <select id="selectReportCntByReportInfo">
+        SELECT COUNT(*)
+        FROM reports
+        WHERE reporter_id=#{reporterId} AND reportee_id=#{reporteeId} AND article_id=#{articleId}
+    </select>
+</mapper>
