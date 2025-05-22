@@ -34,8 +34,12 @@ public class UserController {
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
 
-    @Autowired
-    private OcrService ocrService;
+
+    @GetMapping("/get/user/userId/{userId}")
+    public ResponseEntity getUserByUserId(@PathVariable("userId") int userId) {
+        User user = userService.searchByUserId(userId);
+        return ResponseEntity.ok(user);
+    }
 
     // user회원가입
     @PostMapping(value="/post/signup")

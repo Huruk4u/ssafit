@@ -9,6 +9,8 @@
           @click="toggleUserMenu"
           ref="authorNameRef"
         >
+          <!-- 프로필 이미지(아바타) 추가 -->
+          <img :src="authorProfileImage" alt="프로필" class="author-avatar" />
           작성자:
           <span class="author-name">{{
             article.nickname || article.username
@@ -118,6 +120,7 @@ import ReportModal from "@/components/ReportModal.vue";
 const route = useRoute();
 const router = useRouter();
 const articleId = Number(route.params.articleId);
+
 const user = ref(JSON.parse(localStorage.getItem("user") || "null"));
 
 const article = ref({});
@@ -145,11 +148,25 @@ const isCommentAuthor = (comment) =>
   user.value && comment.userId === user.value.userId;
 const isEditing = (id) => editingId.value === id;
 
+const author = ref({});
+const authorProfileImage = computed(() =>
+  author.value.profileImage
+    ? `http://localhost:8080/images/profile/${author.value.profileImage}`
+    : "/default-profile.png"
+);
+
 const fetchArticle = async () => {
   const res = await api.get(`/api_article/get/article_id/${articleId}`);
   article.value = res.data;
   liked.value = false;
   disliked.value = false;
+
+  if (article.value.userId) {
+    const res = await api.get(
+      `/api_user/get/user/userId/${article.value.userId}`
+    );
+    author.value = res.data;
+  }
 };
 
 const fetchComments = async () => {
@@ -398,6 +415,12 @@ const submitReport = async ({ category, content }) => {
   position: relative;
   user-select: none;
   display: inline-block;
+}
+.author-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  margin-right: 8px;
 }
 .author-name {
   font-weight: bold;
