@@ -173,6 +173,19 @@ CREATE TABLE reports (
                          FOREIGN KEY (article_id) REFERENCES articles(article_id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
+
+CREATE TABLE follow (
+    follower_id INT NOT NULL,
+    followee_id INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (follower_id, followee_id),
+    FOREIGN KEY (follower_id) REFERENCES user(id) ON DELETE CASCADE,
+    FOREIGN KEY (followee_id) REFERENCES user(id) ON DELETE CASCADE
+);
+
+)
+
+
 -- badge 기본 설정
 INSERT INTO badges (badge_id, name, icon_url, description)
 VALUES ('ARTICLE_POSTER_LV1', '게시글 작성자 Lv.1', '/images/badges/article_poster_lv1.png', '게시글 3개 작성 배지'),
@@ -263,3 +276,5 @@ select * from articles;
 select * from users;
 select * from notifications;
 select * from reports;
+
+select * from article_dislikes

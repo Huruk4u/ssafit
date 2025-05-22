@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.ssafit.model.dao.FollowDao">
+    <select id="selectFolloweeListByUserId" resultType="User">
+        SELECT u.*
+        FROM follow f
+                 JOIN users u ON f.followee_id = u.user_id
+        WHERE f.follower_id = #{userId}
+    </select>
+
+    <insert id="insertFollow">
+        INSERT INTO follow(follower_id, followee_id, created_at)
+        VALUES (#{followerId}, #{followeeId}, NOW())
+    </insert>
+
+    <delete id="deleteFollow">
+        DELETE FROM follow
+        WHERE follower_id=#{followerId} AND followee_id=#{followeeId}
+    </delete>
+
+    <select id="selectCountByFollow">
+        SELECT COUNT(*)
+        FROM follow
+        WHERE follower_id=#{followerId} AND followee_id=#{followeeId}
+    </select>
+</mapper>
