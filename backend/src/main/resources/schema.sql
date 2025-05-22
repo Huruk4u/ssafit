@@ -175,15 +175,13 @@ CREATE TABLE reports (
 
 
 CREATE TABLE follow (
-    follower_id INT NOT NULL,
-    followee_id INT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (follower_id, followee_id),
-    FOREIGN KEY (follower_id) REFERENCES user(id) ON DELETE CASCADE,
-    FOREIGN KEY (followee_id) REFERENCES user(id) ON DELETE CASCADE
+                        follower_id BIGINT NOT NULL,
+                        followee_id BIGINT NOT NULL,
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        PRIMARY KEY (follower_id, followee_id),
+                        FOREIGN KEY (follower_id) REFERENCES users(user_id) ON DELETE CASCADE,
+                        FOREIGN KEY (followee_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
-
-)
 
 
 -- badge 기본 설정
@@ -277,4 +275,5 @@ select * from users;
 select * from notifications;
 select * from reports;
 
-select * from article_dislikes
+select * from article_dislikes;
+select * from follow;

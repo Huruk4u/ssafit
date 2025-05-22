@@ -2,11 +2,14 @@ package com.example.ssafit.controller;
 
 import com.example.ssafit.model.dto.Badge;
 import com.example.ssafit.model.dto.Inbody;
+import com.example.ssafit.model.dto.article.Article;
 import com.example.ssafit.model.dto.user.ChallengeSummary;
 import com.example.ssafit.model.dto.user.User;
 import com.example.ssafit.model.dto.user.UserProfileResponseForm;
+import com.example.ssafit.model.dto.user.UserSummaryResponse;
 import com.example.ssafit.model.service.BadgeService;
 import com.example.ssafit.model.service.ChallengeService;
+import com.example.ssafit.model.service.board.ArticleService;
 import com.example.ssafit.model.service.inbody.InbodyService;
 import com.example.ssafit.model.service.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -38,20 +41,37 @@ public class MyPageController {
     @Autowired
     private InbodyService inbodyService;
 
+    @Autowired
+    private ArticleService articleService;
+
     @GetMapping("/summary/userId/{userId}")
-    @Operation(summary = "사용자의 요약 정보 조회", description = "현재 연속 스트릭과 최장 스트릭, 스트릭 캘린더 정보를 반환합니다.")
-    public ResponseEntity<?> getUserSummary(@PathVariable("userId") int userId) {
+    @Operation(summary = "다른 사용자의 요약 정보 조회", description = "현재 연속 스트릭과 최장 스트릭, 스트릭 캘린더 정보를 반환합니다.")
+    public ResponseEntity<?> getUserSummary(@PathVariable int userId) {
+        // 1) 사용자 정보 조회
         User user = userService.searchByUserId(userId);
-        if (user == null) return ResponseEntity.status(404).body("사용자를 찾을 수 없습니다.");
+        if (user == null) {
+            return ResponseEntity.notFound().build();
+        }
 
-        // 현재 연속 스트릭 일수, 최장 스트릭 일수, 스트릭 캘린더 맵 조회
-        ChallengeSummary summary = challengeService.getChallengeStreak(userId);
+        // 2) 대표 뱃지 조회
+        String username = user.getUserName();
+        String nickname = user.getNickname();
+        String profileImage = user.getProfileImage();
+        String backgroundImage = user.getBackgroundImage();
+        Badge represented = badgeService.getRepresentedBadge(userId);
 
-        // 응답 데이터에 userId 추가
-        Map<String, Object> response = Map.of(
-                "currentStreak", summary.getCurrentStreak(),
-                "longestStreak", summary.getLongestStreak(),
-                "streakCalendar", summary.getStreakCalendar()
+        // 3) 해당 사용자가 작성한 글 목록 조회
+        List<Article> articles = articleService.searchArticleListByUserId(userId);
+
+        // 4) 응답 DTO 조립
+        UserSummaryResponse response = new UserSummaryResponse(
+                userId,
+                username,
+                nickname,
+                profileImage,
+                backgroundImage,
+                represented,
+                articles
         );
 
         return ResponseEntity.ok(response);

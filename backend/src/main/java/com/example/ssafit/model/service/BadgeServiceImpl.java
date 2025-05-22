@@ -117,4 +117,16 @@ public class BadgeServiceImpl implements BadgeService {
         }
     }
 
+    @Override
+    public Badge getRepresentedBadge(int userId) {
+        // 대표 뱃지는 대표로 설정된 뱃지 1개만 있다고 가정
+        List<Badge> badges = badgeDao.selectUserBadges(userId);
+        for (Badge badge : badges) {
+            if (badge.isRepresented()) {
+                return badge;
+            }
+        }
+        return null; // 대표 뱃지가 없을 수도 있음
+    }
+
 }

@@ -21,4 +21,6 @@ public interface BadgeService {
     void checkAndAwardStreakBadges(int userId, int currentStreak);
 
     List<Badge> getRecentlyAwardedBadges(int userId);
+
+    Badge getRepresentedBadge(int userId);
 }
