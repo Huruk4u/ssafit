@@ -16,6 +16,7 @@ import MyArticles from '@/components/MyArticles.vue';
 import MyLikedArticles from '@/components/MyLikedArticles.vue';
 import ActivityInfo from '@/components/ActivityInfo.vue';
 import UserSummary from '@/components/UserSummary.vue';
+import MyFollowing from '@/components/MyFollowing.vue';
 
 const routes = [
   { path: '/', redirect: '/login' },    // 기본 경로는 로그인 페이지로 리디렉션
@@ -34,7 +35,8 @@ const routes = [
   { path: '/myarticles', component: MyArticles},
   { path: '/mylikedarticles', component: MyLikedArticles},
   { path: '/activityInfo', component: ActivityInfo},
-  { path: '/summary/userId/:userId', name: 'UserSummary', component: UserSummary, props: true}
+  { path: '/summary/userId/:userId', component: UserSummary, props: true },
+  { path: '/myfollowing', component: MyFollowing }
 ]
 
 const router = createRouter({

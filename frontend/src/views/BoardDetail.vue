@@ -9,6 +9,8 @@
           @click="toggleUserMenu"
           ref="authorNameRef"
         >
+          <!-- 프로필 이미지(아바타) 추가 -->
+          <img :src="authorProfileImage" alt="프로필" class="author-avatar" />
           작성자:
           <span class="author-name">{{
             article.nickname || article.username
@@ -26,7 +28,6 @@
         <span>작성일: {{ formatDate(article.createdAt) }}</span>
         <span>조회수: {{ article.viewCount }}</span>
       </div>
-
       <div v-if="article.category === 'video'" class="video-embed">
         <iframe
           v-if="isYoutubeUrl(article.url)"
@@ -44,7 +45,6 @@
         />
       </div>
       <div v-else class="content" v-html="article.content"></div>
-
       <div class="actions">
         <button @click="toggleLike">
           좋아요 {{ liked ? "취소" : "" }} ({{ article.likeCount }})
@@ -56,7 +56,6 @@
         <button v-if="isAuthor" @click="deleteArticle">삭제</button>
       </div>
     </div>
-
     <div v-if="isLoading" class="loading">로딩 중...</div>
 
     <div class="comment-section" v-if="!isLoading">
@@ -97,6 +96,7 @@
       </div>
     </div>
 
+    <!-- 신고 모달 분리 적용 -->
     <ReportModal
       :show="showReportModal"
       :target="reportTarget"
@@ -113,13 +113,14 @@
 import { ref, computed, onMounted, onBeforeUnmount } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import Header from "@/components/Header.vue";
+import api from "@/api/axiosInstance";
 import Comment from "@/components/CommentItem.vue";
 import ReportModal from "@/components/ReportModal.vue";
-import api from "@/api/axiosInstance";
 
 const route = useRoute();
 const router = useRouter();
 const articleId = Number(route.params.articleId);
+
 const user = ref(JSON.parse(localStorage.getItem("user") || "null"));
 
 const article = ref({});
@@ -132,21 +133,40 @@ const isLoading = ref(true);
 const editingId = ref(null);
 const editContent = ref("");
 
+console.log(article.value);
+
 const isYoutubeUrl = (url) => /youtu/gi.test(url);
 const youtubeEmbedUrl = (url) => {
   const idMatch = url.match(/(?:\?v=|youtu\.be\/)([\w-]+)/);
   return idMatch ? `https://www.youtube.com/embed/${idMatch[1]}` : url;
 };
 
-const isAuthor = computed(() => user.value && article.value.userId === user.value.userId);
-const isCommentAuthor = (comment) => user.value && comment.userId === user.value.userId;
+const isAuthor = computed(
+  () => user.value && article.value.userId === user.value.userId
+);
+const isCommentAuthor = (comment) =>
+  user.value && comment.userId === user.value.userId;
 const isEditing = (id) => editingId.value === id;
+
+const author = ref({});
+const authorProfileImage = computed(() =>
+  author.value.profileImage
+    ? `http://localhost:8080/images/profile/${author.value.profileImage}`
+    : "/default-profile.png"
+);
 
 const fetchArticle = async () => {
   const res = await api.get(`/api_article/get/article_id/${articleId}`);
   article.value = res.data;
   liked.value = false;
   disliked.value = false;
+
+  if (article.value.userId) {
+    const res = await api.get(
+      `/api_user/get/user/userId/${article.value.userId}`
+    );
+    author.value = res.data;
+  }
 };
 
 const fetchComments = async () => {
@@ -170,14 +190,14 @@ const toggleLike = async () => {
   await api.post("/api_article/like", null, {
     params: { article_id: articleId },
   });
-  await fetchArticle();
+  await fetchArticle(); // 항상 최신 데이터로 동기화
 };
 
 const toggleDislike = async () => {
   await api.post("/api_article/disLike", null, {
     params: { article_id: articleId },
   });
-  await fetchArticle();
+  await fetchArticle(); // 항상 최신 데이터로 동기화
 };
 
 const goToEdit = () => router.push(`/board/edit/${articleId}`);
@@ -186,30 +206,74 @@ const deleteArticle = async () => {
   router.push("/board");
 };
 
-const formatDate = (dateString) => {
-  const date = new Date(dateString);
-  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(
-    date.getDate()
-  ).padStart(2, "0")} ${String(date.getHours()).padStart(2, "0")}:${String(
-    date.getMinutes()
-  ).padStart(2, "0")}`;
+const reportCategories = ["욕설/비방", "광고", "도배", "음란물", "기타"];
+
+const toggleCommentLike = async (comment) => {
+  const res = await api.post("/api_comment/like", null, {
+    params: { comment_id: comment.commentId },
+  });
+  await fetchComments();
 };
 
-// User Menu
+const toggleCommentDislike = async (comment) => {
+  const res = await api.post("/api_comment/dislike", null, {
+    params: { comment_id: comment.commentId },
+  });
+  await fetchComments();
+};
+
+const startEditing = (comment) => {
+  editingId.value = comment.commentId;
+  editContent.value = comment.content;
+};
+
+const confirmEdit = async (comment) => {
+  await api.put(`/api_comment/put/comment_id/${comment.commentId}`, {
+    content: editContent.value,
+  });
+  editingId.value = null;
+  fetchComments();
+};
+
+const deleteComment = async (commentId) => {
+  await api.delete(`/api_comment/delete/comment_id/${commentId}`);
+  fetchComments();
+};
+
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
+    2,
+    "0"
+  )}-${String(date.getDate()).padStart(2, "0")} ${String(
+    date.getHours()
+  ).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
+};
+
+// 게시글 작성자 옵션 메뉴
 const showUserMenu = ref(false);
 const authorNameRef = ref(null);
+
 const toggleUserMenu = () => {
   showUserMenu.value = !showUserMenu.value;
 };
 
+// 댓글 작성자 옵션 메뉴
 const showCommentUserMenuId = ref(null);
+
 const toggleCommentUserMenu = (commentId, event) => {
-  showCommentUserMenuId.value = showCommentUserMenuId.value === commentId ? null : commentId;
+  showCommentUserMenuId.value =
+    showCommentUserMenuId.value === commentId ? null : commentId;
   if (event) event.stopPropagation();
 };
 
+// 메뉴 외부 클릭 시 닫기
 const handleClickOutside = (e) => {
-  if (showUserMenu.value && authorNameRef.value && !authorNameRef.value.contains(e.target)) {
+  if (
+    showUserMenu.value &&
+    authorNameRef.value &&
+    !authorNameRef.value.contains(e.target)
+  ) {
     showUserMenu.value = false;
   }
   if (showCommentUserMenuId.value) {
@@ -219,48 +283,15 @@ const handleClickOutside = (e) => {
     }
   }
 };
-
 onMounted(async () => {
   await fetchArticle();
   await fetchComments();
   isLoading.value = false;
   document.addEventListener("click", handleClickOutside);
 });
-
 onBeforeUnmount(() => {
   document.removeEventListener("click", handleClickOutside);
 });
-
-// 댓글 수정
-const startEditing = (comment) => {
-  editingId.value = comment.commentId;
-  editContent.value = comment.content;
-};
-const confirmEdit = async (comment) => {
-  await api.put(`/api_comment/put/comment_id/${comment.commentId}`, {
-    content: editContent.value,
-  });
-  editingId.value = null;
-  fetchComments();
-};
-const deleteComment = async (commentId) => {
-  await api.delete(`/api_comment/delete/comment_id/${commentId}`);
-  fetchComments();
-};
-
-// 좋아요/싫어요 댓글
-const toggleCommentLike = async (comment) => {
-  await api.post("/api_comment/like", null, {
-    params: { comment_id: comment.commentId },
-  });
-  fetchComments();
-};
-const toggleCommentDislike = async (comment) => {
-  await api.post("/api_comment/dislike", null, {
-    params: { comment_id: comment.commentId },
-  });
-  fetchComments();
-};
 
 // 유저 정보 보기
 const viewUserInfo = () => {
@@ -272,12 +303,11 @@ const viewCommentUserInfo = (comment) => {
   router.push(`/summary/userId/${comment.userId}`);
 };
 
-// 신고 처리
+// 신고 모달 상태 및 동작
 const showReportModal = ref(false);
 const selectedReportCategory = ref("");
 const reportContent = ref("");
 const reportTarget = ref(null);
-const reportCategories = ["욕설/비방", "광고", "도배", "음란물", "기타"];
 
 const reportUser = () => {
   showUserMenu.value = false;
@@ -318,21 +348,29 @@ const submitReport = async ({ category, content }) => {
     return;
   }
   try {
-    const data = {
-      reporterId: user.value.userId,
-      reporterName: user.value.nickname || user.value.username,
-      reporteeId: reportTarget.value.userId,
-      reporteeName: reportTarget.value.nickname,
-      reportCategory: category,
-      content,
-      articleId: reportTarget.value.articleId,
-      type: reportTarget.value.type,
-    };
-    if (reportTarget.value.type === "COMMENT") {
-      data.commentId = reportTarget.value.commentId;
-      await api.post("/api_report/post/comment", data);
-    } else {
-      await api.post("/api_report/post/article", data);
+    if (reportTarget.value.type === "ARTICLE") {
+      await api.post(`/api_report/post/article`, {
+        reporterId: user.value.userId,
+        reporterName: user.value.nickname || user.value.username,
+        reporteeId: reportTarget.value.userId,
+        reporteeName: reportTarget.value.nickname,
+        reportCategory: category,
+        articleId: reportTarget.value.articleId,
+        type: "ARTICLE",
+        content,
+      });
+    } else if (reportTarget.value.type === "COMMENT") {
+      await api.post(`/api_report/post/comment`, {
+        reporterId: user.value.userId,
+        reporterName: user.value.nickname || user.value.username,
+        reporteeId: reportTarget.value.userId,
+        reporteeName: reportTarget.value.nickname,
+        reportCategory: category,
+        articleId: reportTarget.value.articleId,
+        commentId: reportTarget.value.commentId,
+        type: "COMMENT",
+        content,
+      });
     }
     alert("신고가 접수되었습니다.");
     closeReportModal();
@@ -342,8 +380,6 @@ const submitReport = async ({ category, content }) => {
   }
 };
 </script>
-
-
 
 <style scoped>
 .video-player {
@@ -378,6 +414,12 @@ const submitReport = async ({ category, content }) => {
   position: relative;
   user-select: none;
   display: inline-block;
+}
+.author-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  margin-right: 8px;
 }
 .author-name {
   font-weight: bold;
