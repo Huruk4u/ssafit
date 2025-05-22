@@ -10,11 +10,13 @@ import com.example.ssafit.model.service.user.UserService;
 import com.example.ssafit.util.PageNavigation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +37,9 @@ public class ArticleController {
     @Autowired
     private BadgeService badgeService;
 
+    @Autowired
+    private RedisTemplate<String, String> redisTemplate;
+
     @GetMapping("/get")
     public ResponseEntity getAllArticle() {
         List<Article> articleList = articleService.searchAllArticle();
@@ -43,10 +48,20 @@ public class ArticleController {
     }
 
     @GetMapping("/get/article_id/{articleId}")
-    public ResponseEntity getArticleByArticleId(@PathVariable("articleId") int articleId) {
+    public ResponseEntity getArticleByArticleId(@PathVariable("articleId") int articleId, Principal principal) {
+
         Article article = articleService.searchArticleByArticleId(articleId);
         if (article == null) return ResponseEntity.noContent().build();
-        articleService.increaseViewCount(articleId);
+
+        // 사용자 viewCnt무한으로 올라가는 거 처리해줌.
+        String username = principal.getName();
+        String key = "article_viewed:" + username + ":" + articleId;
+
+        if (!redisTemplate.hasKey(key)) {
+            articleService.increaseViewCount(articleId);
+            redisTemplate.opsForValue().set(key, "1", Duration.ofMinutes(30));
+        }
+
         return ResponseEntity.ok(article);
     }
 

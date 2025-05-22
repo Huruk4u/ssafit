@@ -4,19 +4,29 @@
     <div class="detail-content" v-if="!isLoading">
       <h2 class="title">{{ article.title }}</h2>
       <div class="meta">
-        <span class="author-name-wrapper" @click="toggleUserMenu" ref="authorNameRef">
-          작성자: <span class="author-name">{{ article.nickname || article.username }}</span>
+        <span
+          class="author-name-wrapper"
+          @click="toggleUserMenu"
+          ref="authorNameRef"
+        >
+          작성자:
+          <span class="author-name">{{
+            article.nickname || article.username
+          }}</span>
           <span class="dropdown-arrow">▼</span>
           <div v-if="showUserMenu" class="user-menu" @click.stop>
             <ul>
               <li @click="viewUserInfo">유저 정보 보기</li>
-              <li v-if="user.userId !== article.userId" @click="reportUser">유저 신고하기</li>
+              <li v-if="user.userId !== article.userId" @click="reportUser">
+                유저 신고하기
+              </li>
             </ul>
           </div>
         </span>
         <span>작성일: {{ formatDate(article.createdAt) }}</span>
         <span>조회수: {{ article.viewCount }}</span>
       </div>
+
       <div v-if="article.category === 'video'" class="video-embed">
         <iframe
           v-if="isYoutubeUrl(article.url)"
@@ -34,22 +44,26 @@
         />
       </div>
       <div v-else class="content" v-html="article.content"></div>
+
       <div class="actions">
         <button @click="toggleLike">
-          좋아요 {{ liked ? '취소' : '' }} ({{ article.likeCount }})
+          좋아요 {{ liked ? "취소" : "" }} ({{ article.likeCount }})
         </button>
         <button @click="toggleDislike">
-          싫어요 {{ disliked ? '취소' : '' }} ({{ article.dislikeCount }})
+          싫어요 {{ disliked ? "취소" : "" }} ({{ article.dislikeCount }})
         </button>
         <button v-if="isAuthor" @click="goToEdit">수정</button>
         <button v-if="isAuthor" @click="deleteArticle">삭제</button>
       </div>
     </div>
+
     <div v-if="isLoading" class="loading">로딩 중...</div>
 
     <div class="comment-section" v-if="!isLoading">
       <h3>댓글 ({{ comments.length }})</h3>
-      <div v-if="comments.length === 0" class="no-comments">등록된 댓글이 없습니다.</div>
+      <div v-if="comments.length === 0" class="no-comments">
+        등록된 댓글이 없습니다.
+      </div>
       <ul class="comment-list">
         <Comment
           v-for="comment in comments"
@@ -73,12 +87,16 @@
         />
       </ul>
       <div class="new-comment">
-        <textarea v-model="newComment" placeholder="댓글을 입력하세요..."></textarea>
-        <button @click="submitComment" :disabled="!newComment.trim()">등록</button>
+        <textarea
+          v-model="newComment"
+          placeholder="댓글을 입력하세요..."
+        ></textarea>
+        <button @click="submitComment" :disabled="!newComment.trim()">
+          등록
+        </button>
       </div>
     </div>
 
-    <!-- 신고 모달 분리 적용 -->
     <ReportModal
       :show="showReportModal"
       :target="reportTarget"
@@ -92,29 +110,27 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
-import Header from '@/components/Header.vue';
-import api from '@/api/axiosInstance';
-import Comment from '@/components/CommentItem.vue';
-import ReportModal from '@/components/ReportModal.vue';
+import { ref, computed, onMounted, onBeforeUnmount } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import Header from "@/components/Header.vue";
+import Comment from "@/components/CommentItem.vue";
+import ReportModal from "@/components/ReportModal.vue";
+import api from "@/api/axiosInstance";
 
 const route = useRoute();
 const router = useRouter();
 const articleId = Number(route.params.articleId);
-const user = ref(JSON.parse(localStorage.getItem('user') || 'null'));
+const user = ref(JSON.parse(localStorage.getItem("user") || "null"));
 
 const article = ref({});
 const comments = ref([]);
-const newComment = ref('');
+const newComment = ref("");
 const liked = ref(false);
 const disliked = ref(false);
 const isLoading = ref(true);
 
 const editingId = ref(null);
-const editContent = ref('');
-
-console.log(article.value);
+const editContent = ref("");
 
 const isYoutubeUrl = (url) => /youtu/gi.test(url);
 const youtubeEmbedUrl = (url) => {
@@ -134,127 +150,134 @@ const fetchArticle = async () => {
 };
 
 const fetchComments = async () => {
-  const res = await api.get('/api_comment/list', { params: { article_id: articleId } });
+  const res = await api.get("/api_comment/list", {
+    params: { article_id: articleId },
+  });
   comments.value = res.data || [];
 };
 
 const submitComment = async () => {
-  await api.post('/api_comment/write', { content: newComment.value }, { params: { article_id: articleId } });
-  newComment.value = '';
+  await api.post(
+    "/api_comment/write",
+    { content: newComment.value },
+    { params: { article_id: articleId } }
+  );
+  newComment.value = "";
   fetchComments();
 };
 
 const toggleLike = async () => {
-  const res = await api.post('/api_article/like', null, { params: { article_id: articleId } });
-  liked.value = res.data;
-  article.value.likeCount += liked.value ? 1 : -1;
+  await api.post("/api_article/like", null, {
+    params: { article_id: articleId },
+  });
+  await fetchArticle();
 };
 
 const toggleDislike = async () => {
-  const res = await api.post('/api_article/disLike', null, { params: { article_id: articleId } });
-  disliked.value = res.data;
-  article.value.dislikeCount += disliked.value ? 1 : -1;
+  await api.post("/api_article/disLike", null, {
+    params: { article_id: articleId },
+  });
+  await fetchArticle();
 };
 
 const goToEdit = () => router.push(`/board/edit/${articleId}`);
 const deleteArticle = async () => {
   await api.delete(`/api_article/delete/article_id/${articleId}`);
-  router.push('/board');
-};
-
-const reportCategories = [
-  '욕설/비방', '광고', '도배', '음란물', '기타'
-];
-
-const toggleCommentLike = async (comment) => {
-  const res = await api.post('/api_comment/like', null, { params: { comment_id: comment.commentId } });
-  comment.likeCount += res.data ? 1 : -1;
-};
-
-const toggleCommentDislike = async (comment) => {
-  const res = await api.post('/api_comment/dislike', null, { params: { comment_id: comment.commentId } });
-  comment.dislikeCount += res.data ? 1 : -1;
-};
-
-const startEditing = (comment) => {
-  editingId.value = comment.commentId;
-  editContent.value = comment.content;
-};
-
-const confirmEdit = async (comment) => {
-  await api.put(`/api_comment/put/comment_id/${comment.commentId}`, { content: editContent.value });
-  editingId.value = null;
-  fetchComments();
-};
-
-const deleteComment = async (commentId) => {
-  await api.delete(`/api_comment/delete/comment_id/${commentId}`);
-  fetchComments();
+  router.push("/board");
 };
 
 const formatDate = (dateString) => {
   const date = new Date(dateString);
-  return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')} ${String(date.getHours()).padStart(2,'0')}:${String(date.getMinutes()).padStart(2,'0')}`;
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(
+    date.getDate()
+  ).padStart(2, "0")} ${String(date.getHours()).padStart(2, "0")}:${String(
+    date.getMinutes()
+  ).padStart(2, "0")}`;
 };
 
-// 게시글 작성자 옵션 메뉴
+// User Menu
 const showUserMenu = ref(false);
 const authorNameRef = ref(null);
-
 const toggleUserMenu = () => {
   showUserMenu.value = !showUserMenu.value;
 };
 
-// 댓글 작성자 옵션 메뉴
 const showCommentUserMenuId = ref(null);
-
 const toggleCommentUserMenu = (commentId, event) => {
   showCommentUserMenuId.value = showCommentUserMenuId.value === commentId ? null : commentId;
   if (event) event.stopPropagation();
 };
 
-// 메뉴 외부 클릭 시 닫기
 const handleClickOutside = (e) => {
-  if (
-    showUserMenu.value &&
-    authorNameRef.value &&
-    !authorNameRef.value.contains(e.target)
-  ) {
+  if (showUserMenu.value && authorNameRef.value && !authorNameRef.value.contains(e.target)) {
     showUserMenu.value = false;
   }
   if (showCommentUserMenuId.value) {
-    const menu = document.querySelector('.comment-list .user-menu');
+    const menu = document.querySelector(".comment-list .user-menu");
     if (menu && !menu.contains(e.target)) {
       showCommentUserMenuId.value = null;
     }
   }
 };
+
 onMounted(async () => {
   await fetchArticle();
   await fetchComments();
   isLoading.value = false;
-  document.addEventListener('click', handleClickOutside);
-});
-onBeforeUnmount(() => {
-  document.removeEventListener('click', handleClickOutside);
+  document.addEventListener("click", handleClickOutside);
 });
 
-// 메뉴 항목 동작
+onBeforeUnmount(() => {
+  document.removeEventListener("click", handleClickOutside);
+});
+
+// 댓글 수정
+const startEditing = (comment) => {
+  editingId.value = comment.commentId;
+  editContent.value = comment.content;
+};
+const confirmEdit = async (comment) => {
+  await api.put(`/api_comment/put/comment_id/${comment.commentId}`, {
+    content: editContent.value,
+  });
+  editingId.value = null;
+  fetchComments();
+};
+const deleteComment = async (commentId) => {
+  await api.delete(`/api_comment/delete/comment_id/${commentId}`);
+  fetchComments();
+};
+
+// 좋아요/싫어요 댓글
+const toggleCommentLike = async (comment) => {
+  await api.post("/api_comment/like", null, {
+    params: { comment_id: comment.commentId },
+  });
+  fetchComments();
+};
+const toggleCommentDislike = async (comment) => {
+  await api.post("/api_comment/dislike", null, {
+    params: { comment_id: comment.commentId },
+  });
+  fetchComments();
+};
+
+// 유저 정보 보기
 const viewUserInfo = () => {
   showUserMenu.value = false;
-  alert(`유저 정보 보기: ${article.value.nickname || article.value.username}`);
+  router.push(`/summary/userId/${article.value.userId}`);
 };
-
 const viewCommentUserInfo = (comment) => {
   showCommentUserMenuId.value = null;
-  alert(`유저 정보 보기: ${comment.nickname || comment.username}`);
+  router.push(`/summary/userId/${comment.userId}`);
 };
 
-// 신고 모달 상태 및 동작
+// 신고 처리
 const showReportModal = ref(false);
-const selectedReportCategory = ref('');
-const reportContent = ref('');
+const selectedReportCategory = ref("");
+const reportContent = ref("");
 const reportTarget = ref(null);
+const reportCategories = ["욕설/비방", "광고", "도배", "음란물", "기타"];
 
 const reportUser = () => {
   showUserMenu.value = false;
@@ -262,10 +285,10 @@ const reportUser = () => {
     userId: article.value.userId,
     nickname: article.value.nickname || article.value.username,
     articleId: article.value.articleId,
-    type: 'ARTICLE'
+    type: "ARTICLE",
   };
-  selectedReportCategory.value = '';
-  reportContent.value = '';
+  selectedReportCategory.value = "";
+  reportContent.value = "";
   showReportModal.value = true;
 };
 
@@ -276,64 +299,79 @@ const reportCommentUser = (comment) => {
     nickname: comment.nickname || comment.username,
     articleId: article.value.articleId,
     commentId: comment.commentId,
-    type: 'COMMENT'
+    type: "COMMENT",
   };
-  selectedReportCategory.value = '';
-  reportContent.value = '';
+  selectedReportCategory.value = "";
+  reportContent.value = "";
   showReportModal.value = true;
 };
 
 const closeReportModal = () => {
   showReportModal.value = false;
-  selectedReportCategory.value = '';
-  reportContent.value = '';
+  selectedReportCategory.value = "";
+  reportContent.value = "";
 };
 
 const submitReport = async ({ category, content }) => {
   if (!category) {
-    alert('신고 사유를 선택하세요.');
+    alert("신고 사유를 선택하세요.");
     return;
   }
   try {
-    if (reportTarget.value.type === 'ARTICLE') {
-      await api.post(`/api_report/post/article`, {
-        reporterId: user.value.userId,
-        reporterName: user.value.nickname || user.value.username,
-        reporteeId: reportTarget.value.userId,
-        reporteeName: reportTarget.value.nickname,
-        reportCategory: category,
-        articleId: reportTarget.value.articleId,
-        type: 'ARTICLE',
-        content
-      });
-    } else if (reportTarget.value.type === 'COMMENT') {
-      await api.post(`/api_report/post/comment`, {
-        reporterId: user.value.userId,
-        reporterName: user.value.nickname || user.value.username,
-        reporteeId: reportTarget.value.userId,
-        reporteeName: reportTarget.value.nickname,
-        reportCategory: category,
-        articleId: reportTarget.value.articleId,
-        commentId: reportTarget.value.commentId,
-        type: 'COMMENT',
-        content
-      });
+    const data = {
+      reporterId: user.value.userId,
+      reporterName: user.value.nickname || user.value.username,
+      reporteeId: reportTarget.value.userId,
+      reporteeName: reportTarget.value.nickname,
+      reportCategory: category,
+      content,
+      articleId: reportTarget.value.articleId,
+      type: reportTarget.value.type,
+    };
+    if (reportTarget.value.type === "COMMENT") {
+      data.commentId = reportTarget.value.commentId;
+      await api.post("/api_report/post/comment", data);
+    } else {
+      await api.post("/api_report/post/article", data);
     }
-    alert('신고가 접수되었습니다.');
+    alert("신고가 접수되었습니다.");
     closeReportModal();
   } catch (e) {
-    alert('신고 처리 중 오류가 발생했습니다.');
+    alert("신고 처리 중 오류가 발생했습니다.");
     closeReportModal();
   }
 };
 </script>
 
+
+
 <style scoped>
-.video-player { width: 100%; height: 450px; margin-bottom: 20px; }
-.video-thumbnail { width: 100%; height: auto; margin-bottom: 20px; }
-.board-detail-container { max-width: 800px; margin: 0 auto; padding: 20px; }
-.title { font-size: 24px; margin-bottom: 10px; }
-.meta { display: flex; gap: 15px; color: #666; margin-bottom: 20px; position: relative; }
+.video-player {
+  width: 100%;
+  height: 450px;
+  margin-bottom: 20px;
+}
+.video-thumbnail {
+  width: 100%;
+  height: auto;
+  margin-bottom: 20px;
+}
+.board-detail-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+.title {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+.meta {
+  display: flex;
+  gap: 15px;
+  color: #666;
+  margin-bottom: 20px;
+  position: relative;
+}
 .author-name-wrapper {
   cursor: pointer;
   color: #2d8cf0;
@@ -353,7 +391,7 @@ const submitReport = async ({ category, content }) => {
   background: #fff;
   border: 1px solid #ddd;
   border-radius: 6px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   min-width: 140px;
   position: absolute;
   left: 0;
@@ -375,20 +413,64 @@ const submitReport = async ({ category, content }) => {
 .user-menu li:hover {
   background: #f5f7fa;
 }
-.content { line-height: 1.6; margin-bottom: 20px; }
-.actions button { margin-right: 10px; }
-.loading { text-align: center; padding: 50px; font-size: 18px; color: #666; }
-.comment-section { border-top: 1px solid #ddd; padding-top: 20px; }
-.comment-list { list-style: none; padding: 0; margin: 0 0 20px; }
-.comment-list li { border-bottom: 1px solid #eee; padding: 10px 0; }
-.comment-meta { font-size: 12px; color: #999; margin-bottom: 5px; }
-.comment-actions button { margin-right: 5px; }
-.new-comment textarea { width: 100%; height: 80px; padding: 8px; border: 1px solid #ddd; border-radius: 4px; resize: vertical; margin-bottom: 10px; }
-.new-comment button { padding: 8px 16px; background-color: #42b983; color: white; border: none; border-radius: 4px; cursor: pointer; }
+.content {
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+.actions button {
+  margin-right: 10px;
+}
+.loading {
+  text-align: center;
+  padding: 50px;
+  font-size: 18px;
+  color: #666;
+}
+.comment-section {
+  border-top: 1px solid #ddd;
+  padding-top: 20px;
+}
+.comment-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 20px;
+}
+.comment-list li {
+  border-bottom: 1px solid #eee;
+  padding: 10px 0;
+}
+.comment-meta {
+  font-size: 12px;
+  color: #999;
+  margin-bottom: 5px;
+}
+.comment-actions button {
+  margin-right: 5px;
+}
+.new-comment textarea {
+  width: 100%;
+  height: 80px;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  resize: vertical;
+  margin-bottom: 10px;
+}
+.new-comment button {
+  padding: 8px 16px;
+  background-color: #42b983;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
 .modal-overlay {
   position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.4);
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -399,7 +481,7 @@ const submitReport = async ({ category, content }) => {
   border-radius: 8px;
   padding: 32px 24px;
   min-width: 280px;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.18);
   text-align: center;
 }
 .modal-actions {
