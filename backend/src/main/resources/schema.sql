@@ -23,7 +23,6 @@ CREATE TABLE users (
                        email            VARCHAR(255),
                        profile_image    VARCHAR(255),
                        background_image VARCHAR(255),
-                       badge_id         VARCHAR(100),
                        height           DECIMAL(5,2),
                        weight           DECIMAL(5,2),
                        enabled          BOOLEAN      DEFAULT TRUE,
@@ -34,7 +33,6 @@ CREATE TABLE users (
                        second_exercise VARCHAR(50) NULL,
                        third_exercise VARCHAR(50) NULL,
                        role VARCHAR(20) DEFAULT 'ROLE_USER',
-                       FOREIGN KEY (badge_id) REFERENCES badges(badge_id)
 ) ENGINE=InnoDB;
 
 CREATE TABLE user_badges (

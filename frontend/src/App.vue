@@ -6,13 +6,14 @@
 </template>
 <script>
 export default {
-  name: 'App'
-}
+  name: "App",
+};
 </script>
 <style>
 /* 글로벌 기본 스타일 예시 */
 body {
-  font-family: Arial, sans-serif;
+  font-family: "Pretendard Variable", "Pretendard", "Noto Sans KR", Arial,
+    sans-serif;
   margin: 0;
   padding: 0;
 }

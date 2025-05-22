@@ -2,79 +2,118 @@
   <div class="root">
     <Header />
 
-    <div class="mypage-container">
-      <section class="user-info">
-        <div>
-          <img :src="userProfileImage" alt="프로필이미지" class="profile-img" />
+    <div class="mypage-container container py-4">
+      <section class="user-info card p-4 mb-4">
+        <div class="user-visual position-relative mb-5">
           <img
             :src="userBackgroundImage"
             alt="배경이미지"
-            class="background-img"
+            class="background-img card-img-top"
           />
-        </div>
-        <p>
-          <strong>{{ user.nickname }}</strong> ({{ user.userName }})
-        </p>
-        <div class="badge-section">
-          <div
-            v-if="representBadge"
-            class="represent-badge"
-            @click="openBadgeModal"
-          >
+          <div class="profile-row-wrap">
             <img
-              :src="representBadge.iconUrl"
-              :alt="representBadge.name"
-              class="badge-icon"
+              :src="userProfileImage"
+              alt="프로필이미지"
+              class="profile-img-overlap rounded-circle border border-white shadow"
             />
-            <p>대표 뱃지: {{ representBadge.name }}</p>
-            <span class="change-badge-text">(변경하려면 클릭하세요)</span>
-          </div>
-          <div v-else class="represent-badge no-badge" @click="openBadgeModal">
-            <p>대표 뱃지가 없습니다. 클릭하여 선택하세요.</p>
+            <div class="profile-meta-side">
+              <div class="info-section">
+                <span class="user-nickname">{{ user.nickname }}</span>
+                <span class="user-id">@{{ user.userName }}</span>
+              </div>
+              <div
+                v-if="representBadge"
+                class="represent-badge-inline"
+                @click="openBadgeModal"
+                title="대표 뱃지 변경"
+                style="cursor: pointer"
+              >
+                <img
+                  :src="representBadge.iconUrl"
+                  :alt="representBadge.name"
+                  class="badge-icon-inline"
+                />
+                <span class="badge-name-inline text-secondary small">
+                  {{ representBadge.name }}
+                </span>
+              </div>
+            </div>
           </div>
         </div>
+        <div class="badge-section mt-3"></div>
       </section>
 
-      <div class="tabs">
-        <button @click="activeTab = 1" :class="{ active: activeTab === 1 }">
+      <div class="tabs d-flex flex-wrap gap-2 mb-4">
+        <button
+          @click="activeTab = 1"
+          :class="[
+            'btn',
+            activeTab === 1 ? 'btn-primary' : 'btn-outline-primary',
+          ]"
+        >
           활동 정보
         </button>
-        <button @click="activeTab = 2" :class="{ active: activeTab === 2 }">
+        <button
+          @click="activeTab = 2"
+          :class="[
+            'btn',
+            activeTab === 2 ? 'btn-primary' : 'btn-outline-primary',
+          ]"
+        >
           챌린지
         </button>
-        <button @click="activeTab = 3" :class="{ active: activeTab === 3 }">
+        <button
+          @click="activeTab = 3"
+          :class="[
+            'btn',
+            activeTab === 3 ? 'btn-primary' : 'btn-outline-primary',
+          ]"
+        >
           내가 쓴 글
         </button>
-        <button @click="activeTab = 4" :class="{ active: activeTab === 4 }">
+        <button
+          @click="activeTab = 4"
+          :class="[
+            'btn',
+            activeTab === 4 ? 'btn-primary' : 'btn-outline-primary',
+          ]"
+        >
           좋아요 한 글
         </button>
-        <button @click="activeTab = 5" :class="{ active: activeTab === 5 }">
+        <button
+          @click="activeTab = 5"
+          :class="[
+            'btn',
+            activeTab === 5 ? 'btn-primary' : 'btn-outline-primary',
+          ]"
+        >
           팔로우
         </button>
-        <button @click="goEditUser">유저 정보 변경</button>
+        <button @click="goEditUser" class="btn btn-secondary ms-auto">
+          유저 정보 변경
+        </button>
       </div>
 
-      <div v-if="activeTab === 1" class="tab-content">
+      <div v-if="activeTab === 1" class="tab-content card p-4">
         <ActivityInfo />
       </div>
 
-      <div v-if="activeTab === 2" class="tab-content challenge-tab">
+      <div v-if="activeTab === 2" class="tab-content card p-4">
         <ChallengeRegister />
       </div>
 
-      <div v-if="activeTab === 3" class="tab-content">
+      <div v-if="activeTab === 3" class="tab-content card p-4">
         <MyArticles />
       </div>
 
-      <div v-if="activeTab === 4" class="tab-content">
+      <div v-if="activeTab === 4" class="tab-content card p-4">
         <MyLikedArticles />
       </div>
 
-      <div v-if="activeTab === 5" class="tab-content">
+      <div v-if="activeTab === 5" class="tab-content card p-4">
         <MyFollowing />
       </div>
-
-      <div v-if="activeTab === 6" class="tab-content">
+      <div v-if="activeTab === 6" class="tab-content card p-4">
         <UserEdit />
       </div>
     </div>
@@ -101,8 +140,10 @@
             <p class="badge-earned">획득일: {{ formatDate(badge.earnedAt) }}</p>
           </div>
         </div>
-        <div class="modal-actions">
-          <button @click="closeBadgeModal" class="cancel-button">취소</button>
+        <div class="modal-actions d-flex justify-content-end gap-2">
+          <button @click="closeBadgeModal" class="btn btn-secondary">
+            취소
+          </button>
         </div>
       </div>
     </div>
@@ -203,275 +244,293 @@ onMounted(() => {
 });
 </script>
 
+
 <style scoped>
-/* 기존 스타일 코드는 동일하게 유지 */
-.mypage-container {
-  padding: 20px;
+/* 필요 없는 스타일 삭제 후, 핵심만 남긴 예시 */
+
+/* 폰트 및 전체 배경 */
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css");
+
+:root,
+body,
+.root {
+  font-family: "Pretendard Variable", "Pretendard", "Noto Sans KR", Arial,
+    sans-serif;
+  font-size: 16px;
+  color: #222;
+  background: #fafbfc;
+  letter-spacing: 0.01em;
 }
+
+/* 상단 카드 */
 .user-info {
   background-color: #f4f4f4;
   padding: 15px;
   margin-bottom: 20px;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
 }
-.tabs {
+
+/* 배경/프로필 이미지 */
+.user-visual {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  margin-bottom: 60px;
+}
+.background-img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 12px;
+  display: block;
+}
+.profile-row-wrap {
+  position: absolute;
+  left: 5%; /* 왼쪽으로 이동 */
+  bottom: -50px; /* 더 아래로 내림 */
   display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 20px;
+  flex-direction: row; /* column에서 row로 변경 */
+  align-items: flex-start; /* 하단 정렬로 변경 */
+  z-index: 2;
 }
-.tabs button {
-  padding: 8px 16px;
-  cursor: pointer;
-  border: 1px solid #ddd;
-  background-color: #f8f8f8;
-  border-radius: 4px;
-  transition: all 0.3s ease;
+.profile-img-overlap {
+  width: 110px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  background: #fff;
 }
-.tabs .active {
-  background-color: #007bff;
-  color: white;
-  border-color: #007bff;
+.profile-meta-side {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* center에서 flex-start로 변경 */
+  margin-left: 1rem; /* 프로필 이미지와의 간격 */
+  transform: translateY(110%); /* 배경 아래로 내림 */
+  gap: 4px; /* 요소간 간격 */
 }
-.tab-content {
-  margin-top: 20px;
-  background-color: #fff;
-  border-radius: 8px;
-  padding: 20px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+.user-nickname {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #222;
+  margin: 0;
+  line-height: 1; /* 줄간격 최소화 */
 }
 
-/* 뱃지 관련 스타일 */
-.badge-section {
-  margin-top: 15px;
+.user-id {
+  font-size: 1rem;
+  color: #666;
+  margin-left: 5px;
+  line-height: 1.1; /* 줄간격 최소화 */
 }
-
-.represent-badge {
+.represent-badge-inline {
+  margin-top: 4px;
+  padding: 4px 12px;
+  background: #fff;
+  border-radius: 20px;
+  border: 1px solid #e0e0e0;
   display: flex;
   align-items: center;
-  background-color: #fff;
-  padding: 10px;
-  border-radius: 8px;
-  border: 1px solid #ddd;
-  cursor: pointer;
-  transition: all 0.3s ease;
+  gap: 6px;
 }
-
-.represent-badge:hover {
-  background-color: #f0f7ff;
-  border-color: #b8daff;
+.represent-badge-inline:hover {
+  border-color: #42b983;
+  box-shadow: 0 4px 12px rgba(66, 185, 131, 0.12);
 }
-
-.no-badge {
-  text-align: center;
-  color: #6c757d;
-  padding: 15px;
-}
-
-.badge-icon {
-  width: 100px;
-  height: 100px;
-  margin-right: 15px;
-  object-fit: contain;
+.badge-icon-inline {
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  object-fit: cover;
+  margin-right: 4px;
+  border: 1px solid #eee;
+  background: #f8f9fa;
+}
+.badge-name-inline {
+  font-size: 0.93rem;
+  font-weight: 500;
+  color: #888;
+  vertical-align: middle;
 }
 
-.change-badge-text {
-  margin-left: auto;
-  font-size: 12px;
-  color: #007bff;
-}
-
-/* 뱃지 모달 스타일 */
+/* 뱃지 모달 */
 .badge-modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.4);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
+  backdrop-filter: blur(4px);
 }
 
 .badge-modal {
-  background-color: white;
-  border-radius: 8px;
-  padding: 20px;
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px;
   width: 90%;
-  max-width: 800px;
-  max-height: 80vh;
+  max-width: 900px;
+  max-height: 85vh;
   overflow-y: auto;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
 }
 
 .badge-modal h3 {
-  margin-top: 0;
-  border-bottom: 2px solid #42b983;
-  padding-bottom: 10px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #333;
   margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #eee;
 }
 
 .badges-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 15px;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* 더 작은 카드 */
+  gap: 12px;
   margin-bottom: 20px;
 }
 
 .badge-item {
-  background-color: #f8f9fa;
-  border: 2px solid #dee2e6;
+  background: #fff;
+  border: 1px solid #e0e0e0;
   border-radius: 8px;
-  padding: 15px;
+  padding: 12px;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
 }
 
 .badge-item:hover {
-  border-color: #007bff;
-  transform: translateY(-3px);
+  border-color: #42b983;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(66, 185, 131, 0.12);
 }
 
 .badge-item.represented {
-  border-color: #28a745;
-  background-color: #d4edda;
+  border: 2px solid #42b983;
+  background: linear-gradient(to bottom, #f7fcfa, #fff);
+}
+
+.badge-item img {
+  width: 48px;
+  height: 48px;
+  margin-bottom: 8px;
+  border-radius: 8px;
+  object-fit: cover;
 }
 
 .badge-name {
-  font-weight: bold;
-  margin: 10px 0 5px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #333;
+  margin: 4px 0;
+  line-height: 1.2;
 }
 
 .badge-description {
-  font-size: 14px;
-  color: #6c757d;
-  margin-bottom: 10px;
+  font-size: 0.8rem;
+  color: #666;
+  margin: 0;
+  line-height: 1.3;
+  /* 2줄 이상일 때 말줄임표 */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .badge-earned {
-  font-size: 12px;
-  color: #495057;
+  font-size: 0.75rem;
+  color: #888;
+  margin-top: 6px;
 }
 
 .modal-actions {
   display: flex;
   justify-content: flex-end;
-  gap: 10px;
+  padding-top: 16px;
+  border-top: 1px solid #eee;
 }
 
-.cancel-button {
-  padding: 8px 16px;
-  background-color: #6c757d;
-  color: white;
+.modal-actions button {
+  padding: 6px 16px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+/* 탭 스타일 */
+.tabs {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.5rem;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid #eee;
+}
+
+.tabs button {
+  position: relative;
+  background: none;
   border: none;
-  border-radius: 4px;
+  padding: 0.75rem 1.25rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #666;
+  transition: all 0.3s ease;
   cursor: pointer;
 }
 
-/* 프로필 이미지 스타일 */
-.profile-img {
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-.background-img {
+.tabs button::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
   width: 100%;
-  height: 200px;
-  object-fit: cover;
+  height: 2px;
+  background-color: #42b983;
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
 }
 
-/* 내가 쓴 글 스타일 */
-.article-link {
-  text-decoration: none;
-  color: #007bff;
+.tabs button:hover {
+  color: #42b983;
 }
 
-.article-link:hover {
-  text-decoration: underline;
+.tabs button.btn-primary {
+  background: none;
+  color: #42b983;
+  font-weight: 600;
 }
 
-/* 챌린지 탭 스타일 */
-.challenge-tab {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+.tabs button.btn-primary::after {
+  transform: scaleX(1);
 }
 
-.challenge-status {
-  background-color: #f8f9fa;
-  border-radius: 8px;
-  padding: 20px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-}
-
-h3 {
-  margin-top: 0;
-  color: #333;
-  border-bottom: 2px solid #42b983;
-  padding-bottom: 8px;
-  margin-bottom: 20px;
-}
-
-.loading {
-  display: flex;
-  justify-content: center;
-  padding: 20px;
-}
-
-.challenge-completed,
-.challenge-incomplete {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.success-message {
-  background-color: #d4edda;
-  border: 1px solid #c3e6cb;
+/* 마지막 버튼(유저 정보 변경) 스타일 */
+.tabs button.btn-secondary {
+  margin-left: auto;
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
   border-radius: 6px;
-  padding: 15px;
-  color: #155724;
+  padding: 0.5rem 1rem;
 }
 
-.challenge-prompt {
-  background-color: #cce5ff;
-  border: 1px solid #b8daff;
-  border-radius: 6px;
-  padding: 15px;
-  color: #004085;
-}
-
-.streak-info {
-  font-weight: bold;
-  margin-top: 10px;
-}
-
-@media (max-width: 768px) {
-  .badges-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .tabs {
-    flex-direction: column;
-  }
-
-  .tabs button {
-    width: 100%;
-  }
-}
-
-@media (max-width: 480px) {
-  .badges-grid {
-    grid-template-columns: 1fr;
-  }
+.tabs button.btn-secondary:hover {
+  background: #e9ecef;
+  border-color: #ced4da;
+  color: #495057;
 }
 </style>

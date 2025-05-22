@@ -2,7 +2,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import Login from '../views/Login.vue';
 import Signup from '@/views/Signup.vue';
-import Main from '../views/Main.vue';
 import MyPage from '../views/MyPage.vue';
 import Board from '../views/Board.vue';
 import BoardDetail from '../views/BoardDetail.vue';
@@ -22,7 +21,6 @@ const routes = [
   { path: '/', redirect: '/login' },    // 기본 경로는 로그인 페이지로 리디렉션
   { path: '/login', component: Login},
   { path: '/signup', component: Signup},
-  { path: '/main', component: Main},
   { path: '/mypage', component: MyPage},
   { path: '/board', component: Board},
   { path: '/board/create', component: BoardCreate},
@@ -36,7 +34,7 @@ const routes = [
   { path: '/mylikedarticles', component: MyLikedArticles},
   { path: '/activityInfo', component: ActivityInfo},
   { path: '/summary/userId/:userId', component: UserSummary, props: true },
-  { path: '/myfollowing', component: MyFollowing }
+  { path: '/myfollowing', component: MyFollowing},
 ]
 
 const router = createRouter({
