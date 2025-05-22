@@ -119,6 +119,7 @@ public class ChallengeController {
         response.put("currentStreak", streakInfo.getCurrentStreak());
         response.put("longestStreak", streakInfo.getLongestStreak());
         response.put("newBadges", newBadges);
+        response.put("recommendedParts", exercisePart);
 
 
         return ResponseEntity.ok(response);

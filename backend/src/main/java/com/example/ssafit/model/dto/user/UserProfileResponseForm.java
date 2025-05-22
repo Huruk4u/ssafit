@@ -10,12 +10,18 @@ public class UserProfileResponseForm {
     private List<Inbody> inbody;
     private List<Badge> badges;
     private Badge badge;
+    private String firstExercise;
+    private String secondExercise;
+    private String thirdExercise;
 
-    public UserProfileResponseForm(ChallengeSummary challengeSummary, List<Inbody> inbody, List<Badge> badges, Badge badge) {
+    public UserProfileResponseForm(ChallengeSummary challengeSummary, List<Inbody> inbody, List<Badge> badges, Badge badge, String firstExercise, String secondExercise, String thirdExercise) {
         this.challengeSummary = challengeSummary;
         this.inbody = inbody;
         this.badges = badges;
         this.badge = badge;
+        this.firstExercise = firstExercise;
+        this.secondExercise = secondExercise;
+        this.thirdExercise = thirdExercise;
     }
 
     public void setChallengeSummary(ChallengeSummary challengeSummary) {
@@ -48,6 +54,25 @@ public class UserProfileResponseForm {
 
     public Badge getBadge() {
         return badge;
+    }
+
+    public void setFirstExercise(String firstExercise) {
+        this.firstExercise = firstExercise;
+    }
+    public void setSecondExercise(String secondExercise) {
+        this.secondExercise = secondExercise;
+    }
+    public void setThirdExercise(String thirdExercise) {
+        this.thirdExercise = thirdExercise;
+    }
+    public String getFirstExercise() {
+        return firstExercise;
+    }
+    public String getSecondExercise() {
+        return secondExercise;
+    }
+    public String getThirdExercise() {
+        return thirdExercise;
     }
 
     @Override
