@@ -75,6 +75,7 @@ public class JwtAuthenticationController {
         String rawHeader = request.getHeader("Authorization");
         String token = jwtTokenUtil.extractPureToken(rawHeader);
         Date expiration = jwtTokenUtil.getExpiration(token);
+
         long ttlSeconds = Duration.between(
                 LocalDateTime.now(), expiration.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime()
         ).getSeconds();
