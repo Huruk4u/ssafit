@@ -66,13 +66,13 @@
             </if>
             <if test="key != null and key != 'none' and word != null and word != ''">
                 <choose>
-                    <when test="key == 'title'">
+                    <when test='key == "title"'>
                         AND a.title LIKE CONCAT('%', #{word}, '%')
                     </when>
-                    <when test="key == 'content'">
+                    <when test='key == "content"'>
                         AND a.content LIKE CONCAT('%', #{word}, '%')
                     </when>
-                    <when test="key == 'nickname'">
+                    <when test='key == "nickname"'>
                         AND u.nickname LIKE CONCAT('%', #{word}, '%')
                     </when>
                 </choose>
@@ -228,22 +228,25 @@
 
     <select id="getTotalCount" parameterType="SearchCondition" resultType="int">
         SELECT COUNT(*)
-        FROM articles
+        FROM articles a
+        <if test="key == 'nickname'">
+            LEFT JOIN users u ON a.user_id = u.user_id
+        </if>
         <where>
-            category = #{category}
+            a.category = #{category}
             <if test="tag != null and tag != ''">
-                AND tag = #{tag}
+                AND a.tag = #{tag}
             </if>
             <if test="key != null and key != '' and word != null and word != ''">
                 <choose>
                     <when test="key == 'title'">
-                        AND title LIKE CONCAT('%', #{word}, '%')
+                        AND a.title LIKE CONCAT('%', #{word}, '%')
                     </when>
                     <when test="key == 'content'">
-                        AND content LIKE CONCAT('%', #{word}, '%')
+                        AND a.content LIKE CONCAT('%', #{word}, '%')
                     </when>
                     <when test="key == 'nickname'">
-                        AND nickname LIKE CONCAT('%', #{word}, '%')
+                        AND u.nickname LIKE CONCAT('%', #{word}, '%')
                     </when>
                 </choose>
             </if>

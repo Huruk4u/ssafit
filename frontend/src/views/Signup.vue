@@ -79,39 +79,100 @@
 
 <style scoped>
 .auth-container {
-  width: 320px;
-  margin: 50px auto;
-  padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
+  width: 350px;
+  margin: 80px auto 0 auto;
+  padding: 36px 32px 28px 32px;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 6px 32px rgba(66,185,131,0.10), 0 1.5px 6px rgba(66,185,131,0.07);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+h2 {
+  margin-bottom: 28px;
+  color: #42b983;
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
 }
 .form-group {
-  margin-bottom: 15px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 label {
-  display: block;
-  margin-bottom: 5px;
-  font-weight: bold;
+  font-size: 1rem;
+  color: #369870;
+  font-weight: 600;
+  margin-bottom: 2px;
 }
 input {
   width: 100%;
-  padding: 8px;
-  box-sizing: border-box;
+  padding: 10px 14px;
+  border: 2px solid #b2dfdb;
+  border-radius: 18px;
+  font-size: 1.05rem;
+  background: #f8f9fa;
+  transition: border 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 8px rgba(66,185,131,0.07);
 }
-button {
+input:focus {
+  border-color: #42b983;
+  outline: none;
+  background: #fff;
+  box-shadow: 0 0 0 3px #b2f2e5, 0 2px 8px rgba(66,185,131,0.13);
+}
+button[type="submit"], button {
   width: 100%;
-  padding: 10px;
-  background-color: #42b983;
-  color: white;
+  padding: 12px 0;
+  background: linear-gradient(135deg, #42b983 60%, #b2f2e5 100%);
+  color: #fff;
   border: none;
-  border-radius: 4px;
+  border-radius: 18px;
+  font-size: 1.1rem;
+  font-weight: 700;
   cursor: pointer;
+  margin-top: 8px;
+  box-shadow: 0 2px 12px rgba(66,185,131,0.13);
+  transition: background 0.2s, box-shadow 0.2s;
+  border: 2.5px solid #b2dfdb;
 }
-button:hover {
-  background-color: #369f6b;
+button[type="submit"]:hover, button:hover {
+  background: linear-gradient(135deg, #369870 60%, #42b983 100%);
+  box-shadow: 0 4px 18px rgba(66,185,131,0.18);
+  border-color: #42b983;
 }
 p {
   text-align: center;
-  margin-top: 15px;
+  margin-top: 18px;
+  color: #888;
+  font-size: 0.98rem;
+}
+a, .router-link-active {
+  color: #42b983;
+  text-decoration: underline;
+  font-weight: 600;
+  transition: color 0.2s;
+}
+a:hover, .router-link-active:hover {
+  color: #369870;
+}
+@media (max-width: 500px) {
+  .auth-container {
+    width: 98vw;
+    min-width: 0;
+    padding: 18px 4vw 18px 4vw;
+  }
+  h2 {
+    font-size: 1.3rem;
+  }
 }
 </style>

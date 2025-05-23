@@ -1,7 +1,5 @@
 <template>
   <div class="root">
-    <Header />
-
     <div class="mypage-container">
       <section class="user-info">
         <div class="user-images">
@@ -9,10 +7,10 @@
           <img :src="profileUrl" alt="프로필이미지" class="profile-img" />
         </div>
         <div class="user-names-section">
-          <p class="user-names">
-            <strong>{{ summary.nickname }}</strong>
-            <span>({{ summary.userName }})</span>
-          </p>
+          <div class="nickname-row">
+            <span class="user-nickname">{{ summary.nickname }}</span>
+            <span class="user-id">@{{ summary.userName }}</span>
+          </div>
           <button 
             v-if="!isMyProfile"
             @click="toggleFollow" 
@@ -184,29 +182,31 @@ onMounted(async () => {
 
 <style scoped>
 .root {
-  background-color: #f4f4f4;
+  background: linear-gradient(135deg, #e0f7fa 0%, #f4f4f4 100%);
   min-height: 100vh;
+  padding-top: 32px;
 }
 .mypage-container {
-  max-width: 800px;
+  max-width: 820px;
   margin: 0 auto;
-  padding: 20px;
-  background: white;
-  border-radius: 8px;
+  padding: 32px 20px 28px 20px;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 6px 32px rgba(66,185,131,0.10), 0 1.5px 6px rgba(66,185,131,0.07);
 }
 .user-info {
   position: relative;
   text-align: center;
-  margin-bottom: 32px;
+  margin-bottom: 36px;
 }
 .user-images {
   position: relative;
 }
 .background-img {
   width: 100%;
-  height: 200px;
+  height: 210px;
   object-fit: cover;
-  border-radius: 8px 8px 0 0;
+  border-radius: 14px 14px 0 0;
 }
 .profile-img {
   width: 120px;
@@ -217,34 +217,50 @@ onMounted(async () => {
   bottom: -60px;
   left: 50%;
   transform: translateX(-50%);
-  border: 4px solid white;
+  border: 5px solid #fff;
+  box-shadow: 0 2px 12px rgba(66,185,131,0.13);
+  background: #f8f9fa;
 }
 
-/* 사용자 이름과 팔로우 버튼을 위한 새로운 스타일 */
+/* 닉네임 @유저네임 한 줄 스타일 */
+.nickname-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #222;
+  margin-bottom: 6px;
+  justify-content: center;
+}
+.user-nickname {
+  color: #222;
+}
+.user-id {
+  color: #888;
+  font-weight: 500;
+  font-size: 1.1rem;
+}
+
 .user-names-section {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 16px;
-  margin-top: 70px;
+  gap: 18px;
+  margin-top: 74px;
   flex-wrap: wrap;
 }
 
-.user-names {
-  font-size: 20px;
-  color: #333;
-  margin: 0;
-}
-
 .follow-button {
-  padding: 8px 20px;
+  padding: 9px 26px;
   border: none;
-  border-radius: 20px;
-  font-size: 14px;
+  border-radius: 22px;
+  font-size: 15px;
   font-weight: bold;
   cursor: pointer;
-  transition: all 0.3s ease;
-  min-width: 90px;
+  transition: all 0.2s;
+  min-width: 100px;
+  box-shadow: 0 2px 8px rgba(66,185,131,0.07);
 }
 
 .follow-button:disabled {
@@ -253,54 +269,88 @@ onMounted(async () => {
 }
 
 .follow-button.follow {
-  background-color: #007bff;
-  color: white;
+  background: linear-gradient(135deg, #42b983 60%, #b2f2e5 100%);
+  color: #fff;
+  border: 2px solid #b2dfdb;
 }
 
 .follow-button.follow:hover:not(:disabled) {
-  background-color: #0056b3;
-  transform: translateY(-1px);
+  background: linear-gradient(135deg, #369870 60%, #42b983 100%);
+  border-color: #42b983;
 }
 
 .follow-button.unfollow {
-  background-color: #dc3545;
-  color: white;
+  background: linear-gradient(135deg, #dc3545 60%, #f8bbd0 100%);
+  color: #fff;
+  border: 2px solid #f8bbd0;
 }
 
 .follow-button.unfollow:hover:not(:disabled) {
-  background-color: #c82333;
-  transform: translateY(-1px);
+  background: linear-gradient(135deg, #c82333 60%, #dc3545 100%);
+  border-color: #dc3545;
 }
 
 .badge-section {
-  margin-top: 16px;
+  margin-top: 18px;
 }
 
-/* 대표 뱃지 스타일 수정: 둥글지 않게 */
+/* 대표 뱃지 스타일 */
 .represent-badge .badge-icon {
-  width: 100px;
-  height: 100px;
-  margin-right: 12px;
+  width: 90px;
+  height: 90px;
+  margin-right: 16px;
   object-fit: contain;
-  border-radius: 8px; /* 둥근 사각형 */
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(66,185,131,0.13);
+  background: #f8f9fa;
 }
 .represent-badge {
   display: flex;
   align-items: center;
-  background-color: #fff;
-  padding: 12px 16px;
-  border-radius: 8px;
-  border: 1px solid #ddd;
+  background: #f8f9fa;
+  padding: 14px 18px;
+  border-radius: 12px;
+  border: 1.5px solid #b2dfdb;
+  box-shadow: 0 2px 8px rgba(66,185,131,0.07);
+  margin: 0 auto;
+  max-width: 340px;
+  justify-content: center;
+}
+.represent-badge.no-badge {
+  background: #f8f9fa;
+  border: 1.5px dashed #b2dfdb;
+  color: #aaa;
+  padding: 18px 0;
+  border-radius: 12px;
+  margin: 0 auto;
+  max-width: 340px;
+  text-align: center;
+}
+.badge-info {
+  text-align: left;
+}
+.badge-label {
+  font-size: 13px;
+  color: #369870;
+  margin: 0 0 2px 0;
+  font-weight: 600;
+}
+.badge-name {
+  font-size: 16px;
+  color: #333;
+  margin: 0;
+  font-weight: 500;
 }
 
 /* 내가 쓴 글: 한 줄씩, 제목/작성일 */
 .section-title {
-  font-size: 18px;
-  margin-bottom: 12px;
+  font-size: 19px;
+  margin-bottom: 14px;
   border-bottom: 2px solid #42b983;
   padding-bottom: 4px;
   color: #333;
+  font-weight: 700;
+  letter-spacing: -0.5px;
 }
 .article-list {
   list-style: none;
@@ -308,13 +358,15 @@ onMounted(async () => {
   margin: 0;
 }
 .article-list li {
-  padding: 12px;
+  padding: 13px 0 13px 0;
   border-bottom: 1px solid #e0e0e0;
 }
 .article-title {
   font-weight: 500;
   margin: 0;
-  color: #007bff;
+  color: #42b983;
+  font-size: 16px;
+  letter-spacing: -0.2px;
 }
 .article-meta {
   font-size: 12px;
@@ -324,32 +376,50 @@ onMounted(async () => {
 .article-link {
   display: block;
   text-decoration: none;
+  transition: background 0.15s;
+  border-radius: 8px;
+  padding: 2px 8px;
 }
 .article-link:hover .article-title {
   text-decoration: underline;
+  color: #369870;
+  background: #e0f7fa;
 }
 
 .no-articles {
   text-align: center;
-  color: #777;
-  padding: 20px 0;
+  color: #aaa;
+  padding: 22px 0;
+  font-size: 15px;
 }
 
 /* 반응형 디자인 */
 @media (max-width: 600px) {
+  .mypage-container {
+    padding: 10px 2vw 18px 2vw;
+  }
   .user-names-section {
     flex-direction: column;
     gap: 12px;
   }
-  
-  .user-names {
-    font-size: 18px;
-    text-align: center;
+  .nickname-row {
+    font-size: 1.05rem;
+    flex-direction: column;
+    gap: 2px;
   }
-  
+  .user-nickname {
+    font-size: 1.1rem;
+  }
+  .user-id {
+    font-size: 0.95rem;
+  }
   .follow-button {
     width: 100%;
-    max-width: 200px;
+    max-width: 220px;
+  }
+  .represent-badge, .represent-badge.no-badge {
+    max-width: 98vw;
+    padding: 10px 0;
   }
 }
 </style>

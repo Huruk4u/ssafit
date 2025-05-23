@@ -1,7 +1,5 @@
 <template>
   <div class="board-edit-container">
-    <Header />
-
     <div class="form-container">
       <h2>게시글 수정</h2>
 
@@ -88,7 +86,6 @@
 <script setup>
 import { ref, reactive, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
-import Header from '../components/Header.vue';
 import api from '@/api/axiosInstance';
 
 const router = useRouter();
@@ -107,23 +104,18 @@ const article = reactive({
   url: ''
 });
 
-// 게시글 정보 가져오기
 const fetchArticle = async () => {
   try {
     loading.value = true;
-
     const response = await api.get(`/api_article/get/article_id/${articleId}`);
     const fetchedArticle = response.data;
-
     article.category = fetchedArticle.category;
     article.title = fetchedArticle.title;
     article.content = fetchedArticle.content;
     article.tag = fetchedArticle.tag || '';
     article.url = fetchedArticle.url || '';
-
   } catch (err) {
     console.error('게시글을 불러오는데 실패했습니다:', err);
-
     if (err.response && err.response.status === 404) {
       error.value = '게시글을 찾을 수 없습니다.';
     } else if (err.response && err.response.status === 403) {
@@ -136,30 +128,24 @@ const fetchArticle = async () => {
   }
 };
 
-// 게시글 수정
 const updateArticle = async () => {
   if (!article.title.trim()) {
     alert('제목은 필수 입력 항목입니다.');
     return;
   }
-
   if (article.category === 'video' && !article.url.trim()) {
     alert('영상 게시판은 URL을 입력해야 합니다.');
     return;
   }
-
   try {
     isSubmitting.value = true;
-
     const token = localStorage.getItem('token');
     if (!token) {
       alert('로그인이 필요합니다.');
       router.push('/login');
       return;
     }
-
     const response = await api.put(`/api_article/put/modify/article_id/${articleId}`, article);
-
     if (response.data === 1) {
       alert('게시글이 성공적으로 수정되었습니다.');
       router.push(`/board/detail/${articleId}`);
@@ -168,7 +154,6 @@ const updateArticle = async () => {
     }
   } catch (err) {
     console.error('게시글 수정 중 오류 발생:', err);
-
     if (err.response && err.response.status === 401) {
       alert('로그인이 필요하거나 세션이 만료되었습니다.');
       router.push('/login');
@@ -200,100 +185,157 @@ onMounted(() => {
 </script>
 
 <style scoped>
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css");
+
 .board-edit-container {
-  max-width: 800px;
+  max-width: 600px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 32px 0 32px 0;
+  font-family: "Pretendard Variable", "Pretendard", "Noto Sans KR", Arial, sans-serif;
 }
 
 .form-container {
   background-color: #fff;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 32px 28px 28px 28px;
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(66, 185, 131, 0.09);
+  border: 2px solid #e0e7ef; /* 테두리 추가 */
 }
 
 h2 {
-  margin-bottom: 20px;
-  color: #333;
+  margin-bottom: 28px;
+  color: #42b983;
+  font-size: 1.6rem;
+  font-weight: 800;
+  letter-spacing: -1px;
+  text-align: center;
+  font-family: inherit;
 }
 
 .loading, .error {
   text-align: center;
   padding: 40px 0;
+  font-family: inherit;
 }
 
 .error p {
   color: #e53935;
   margin-bottom: 20px;
+  font-family: inherit;
 }
 
 .error button {
-  padding: 10px 20px;
+  padding: 10px 24px;
   background-color: #42b983;
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 22px;
   cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: inherit;
+  transition: background 0.2s;
+}
+.error button:hover {
+  background: #2e8c6a;
 }
 
 .form-group {
-  margin-bottom: 20px;
+  margin-bottom: 22px;
 }
 
 label {
   display: block;
   margin-bottom: 8px;
-  font-weight: 500;
-  color: #555;
+  font-weight: 600;
+  color: #2563eb;
+  font-size: 1.05rem;
+  font-family: inherit;
 }
 
 input, select, textarea {
   width: 100%;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 16px;
+  padding: 12px;
+  border: 1.5px solid #bcd0ee; /* 입력창 테두리 색상 강조 */
+  border-radius: 8px;
+  font-size: 1.05rem;
+  font-family: inherit;
+  background: #f8f9fa;
+  transition: border 0.2s;
+  color: #222;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: #42b983;
+  outline: none;
 }
 
 input:disabled {
-  background-color: #f5f5f5;
+  background-color: #f1f3f5;
   cursor: not-allowed;
 }
 
 textarea {
   resize: vertical;
-  min-height: 200px;
+  min-height: 180px;
 }
 
 .button-group {
   display: flex;
   justify-content: flex-end;
-  gap: 10px;
-  margin-top: 20px;
+  gap: 12px;
+  margin-top: 28px;
 }
 
 .cancel-btn, .submit-btn {
-  padding: 10px 20px;
+  padding: 10px 28px;
   border: none;
-  border-radius: 4px;
+  border-radius: 22px;
   cursor: pointer;
-  font-size: 16px;
-  font-weight: 500;
+  font-size: 1.08rem;
+  font-weight: 700;
+  font-family: inherit;
+  transition: background 0.2s;
+  border: 1.5px solid #bcd0ee; /* 버튼 테두리 추가 */
 }
 
 .cancel-btn {
-  background-color: #f2f2f2;
-  color: #333;
+  background-color: #e9ecef;
+  color: #2563eb;
+}
+.cancel-btn:hover {
+  background-color: #bcd0ee;
 }
 
 .submit-btn {
-  background-color: #42b983;
+  background: linear-gradient(90deg, #42b983 60%, #5eead4 100%);
   color: white;
+  border: 1.5px solid #42b983;
 }
-
+.submit-btn:hover:not(:disabled) {
+  background: linear-gradient(90deg, #2e8c6a 60%, #42b983 100%);
+}
 .submit-btn:disabled {
   background-color: #a8e0c9;
   cursor: not-allowed;
+  border: 1.5px solid #a8e0c9;
+}
+
+@media (max-width: 700px) {
+  .board-edit-container {
+    padding: 12px 0 12px 0;
+  }
+  .form-container {
+    padding: 18px 6px 18px 6px;
+    border-radius: 10px;
+  }
+  h2 {
+    font-size: 1.2rem;
+    margin-bottom: 18px;
+  }
+  .button-group {
+    gap: 8px;
+    margin-top: 16px;
+  }
 }
 </style>

@@ -1,6 +1,5 @@
 <template>
   <div class="board-detail-wrapper">
-    <Header />
     <div class="board-detail-container">
       <!-- 로딩 상태 -->
       <div v-if="isLoading" class="loading-container">
@@ -273,9 +272,8 @@ const userProfileImage = computed(() =>
 
 const getCategoryName = (category) => {
   const categoryMap = {
-    video: '동영상',
-    notice: '공지사항',
-    free: '자유게시판',
+    video: '영상게시판',
+    info: '정보게시판',
     question: '질문게시판'
   };
   return categoryMap[category] || category;

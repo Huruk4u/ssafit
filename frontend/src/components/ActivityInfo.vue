@@ -202,45 +202,7 @@ const fetchProfileData = async () => {
         });
         
         console.log("전처리 후 인바디 샘플:", profileData.value.inbody[0]);
-      }
-      
-      // 스트릭 캘린더 데이터 처리 (LocalDate -> String 변환)
-      if (profileData.value.challengeSummary?.streakCalendar) {
-        const originalCalendar = profileData.value.challengeSummary.streakCalendar;
-        const newCalendar = {};
-        
-        console.log("스트릭 캘린더 원본:", originalCalendar);
-        
-        // 캘린더의 키(날짜)를 처리
-        Object.keys(originalCalendar).forEach(dateKey => {
-          let formattedDate = dateKey;
-          
-          try {
-            // 자바 LocalDate 객체가 JSON으로 변환된 경우 처리
-            if (dateKey.includes('[') || (typeof dateKey === 'string' && dateKey.includes('{'))) {
-              const dateObj = JSON.parse(dateKey);
-              if (Array.isArray(dateObj)) {
-                // [year, month, day] 형식
-                const [year, month, day] = dateObj;
-                formattedDate = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-              } else if (dateObj.year && dateObj.month && dateObj.day) {
-                // {year, month, day} 형식
-                formattedDate = `${dateObj.year}-${String(dateObj.month).padStart(2, '0')}-${String(dateObj.day).padStart(2, '0')}`;
-              }
-            } else {
-              // 이미 문자열 형태로 전달된 경우 형식 확인
-              formattedDate = formatDate(dateKey);
-            }
-          } catch (e) {
-            console.error("스트릭 캘린더 날짜 변환 오류:", e);
-          }
-          
-          newCalendar[formattedDate] = originalCalendar[dateKey];
-        });
-        
-        profileData.value.challengeSummary.streakCalendar = newCalendar;
-        console.log("변환된 스트릭 캘린더:", newCalendar);
-      }
+      }    
     }
   } catch (err) {
     console.error("프로필 정보 로드 실패:", err);
@@ -258,6 +220,7 @@ const sortedInbodyRecords = computed(() => {
   if (!profileData.value.inbody || profileData.value.inbody.length === 0) return [];
   
   console.log("인바디 데이터 정렬 준비:", profileData.value.inbody);
+  
   
   // 데이터 복사 및 가공
   const records = [...profileData.value.inbody].map(record => {
@@ -573,10 +536,16 @@ onMounted(() => {
 }
 
 h3 {
-  color: #333;
-  border-bottom: 2px solid #42b983;
-  padding-bottom: 8px;
-  margin-bottom: 20px;
+  color: #42b983;
+  border-bottom: 2.5px solid #42b983;
+  padding-bottom: 10px;
+  margin-bottom: 24px;
+  background: linear-gradient(90deg, #e0f7fa 60%, #fff 100%);
+  border-radius: 12px 12px 0 0;
+  box-shadow: 0 2px 8px rgba(66,185,131,0.06);
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
 }
 
 h4 {
