@@ -1,17 +1,14 @@
 package com.example.ssafit.controller;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Date;
-import java.util.Objects;
-
-import com.example.ssafit.model.dto.jwt.TokenBlacklist;
-import com.example.ssafit.model.service.user.UserService;
-import com.example.ssafit.util.JwtTokenUtil;
+import com.example.ssafit.exception.CustomUnAuthenticationException;
+import com.example.ssafit.exception.ErrorCode;
 import com.example.ssafit.model.dto.jwt.JwtRequest;
 import com.example.ssafit.model.dto.jwt.JwtResponse;
-import com.example.ssafit.model.service.user.JwtUserDetailsService;
+import com.example.ssafit.model.dto.jwt.TokenBlacklist;
+import com.example.ssafit.model.dto.user.User;
+import com.example.ssafit.model.service.jwt.JwtUserDetailsService;
+import com.example.ssafit.model.service.user.UserService;
+import com.example.ssafit.util.JwtTokenUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +18,12 @@ import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-import com.example.ssafit.model.dto.user.User;
+
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
+import java.util.Objects;
 
 /**
  * User 동작 관련 Controller
@@ -92,9 +94,9 @@ public class JwtAuthenticationController {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
         } catch (DisabledException e) {
-            throw new Exception("USER_DISABLED", e);
+            throw new CustomUnAuthenticationException(ErrorCode.USER_SUSPENDED);
         } catch (BadCredentialsException e) {
-            throw new Exception("INVALID_CREDENTIALS", e);
+            throw new CustomUnAuthenticationException(ErrorCode.INVALID_PASSWORD);
         }
     }
 }

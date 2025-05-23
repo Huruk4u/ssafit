@@ -1,7 +1,8 @@
-package com.example.ssafit.model.service.user;
+package com.example.ssafit.model.service.jwt;
 
 import com.example.ssafit.model.dto.user.CustomUserDetails;
 import com.example.ssafit.model.dto.user.User;
+import com.example.ssafit.model.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

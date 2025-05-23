@@ -6,6 +6,7 @@ import com.example.ssafit.model.dto.RecommendResult;
 import com.example.ssafit.model.dto.user.ChallengeSummary;
 import com.example.ssafit.model.dto.user.User;
 import com.example.ssafit.model.service.*;
+import com.example.ssafit.model.service.inbody.ChallengeService;
 import com.example.ssafit.model.service.inbody.InbodyService;
 import com.example.ssafit.model.service.inbody.OcrService;
 import com.example.ssafit.model.service.inbody.RecommendService;

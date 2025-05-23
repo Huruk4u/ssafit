@@ -8,7 +8,7 @@ import com.example.ssafit.model.dto.user.User;
 import com.example.ssafit.model.dto.user.UserProfileResponseForm;
 import com.example.ssafit.model.dto.user.UserSummaryResponse;
 import com.example.ssafit.model.service.BadgeService;
-import com.example.ssafit.model.service.ChallengeService;
+import com.example.ssafit.model.service.inbody.ChallengeService;
 import com.example.ssafit.model.service.board.ArticleService;
 import com.example.ssafit.model.service.inbody.InbodyService;
 import com.example.ssafit.model.service.user.UserService;

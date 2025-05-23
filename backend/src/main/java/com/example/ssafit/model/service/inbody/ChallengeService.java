@@ -1,4 +1,4 @@
-package com.example.ssafit.model.service;
+package com.example.ssafit.model.service.inbody;
 
 import com.example.ssafit.model.dto.user.Challenge;
 import com.example.ssafit.model.dto.user.ChallengeSummary;

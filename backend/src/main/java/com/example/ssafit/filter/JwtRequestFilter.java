@@ -6,7 +6,7 @@ import java.util.Arrays;
 import com.example.ssafit.model.dto.jwt.ErrorResponse;
 import com.example.ssafit.model.dto.jwt.TokenBlacklist;
 import com.example.ssafit.util.JwtTokenUtil;
-import com.example.ssafit.model.service.user.JwtUserDetailsService;
+import com.example.ssafit.model.service.jwt.JwtUserDetailsService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

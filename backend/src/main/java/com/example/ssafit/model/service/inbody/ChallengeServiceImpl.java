@@ -1,8 +1,9 @@
-package com.example.ssafit.model.service;
+package com.example.ssafit.model.service.inbody;
 
 import com.example.ssafit.model.dao.ChallengeDao;
 import com.example.ssafit.model.dto.user.Challenge;
 import com.example.ssafit.model.dto.user.ChallengeSummary;
+import com.example.ssafit.model.service.BadgeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
