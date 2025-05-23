@@ -12,14 +12,14 @@
     </insert>
 
     <!-- 사용자별 알림 조회 -->
-    <select id="selectNotificationsByUserId" resultMap="notificationResultMap">
+    <select id="selectNotificationsByUserId">
         SELECT * FROM notifications
         WHERE user_id = #{userId}
         ORDER BY created_at DESC
     </select>
 
     <!-- 알림 상세 조회 -->
-    <select id="selectNotificationById" resultMap="notificationResultMap">
+    <select id="selectNotificationById">
         SELECT * FROM notifications WHERE notification_id = #{notificationId}
     </select>
 
@@ -47,15 +47,5 @@
     <select id="selectArticleAuthorId" parameterType="int" >
         SELECT user_id FROM articles WHERE article_id = #{articleId}
     </select>
-
-    <!-- ResultMap -->
-    <resultMap id="notificationResultMap" type="com.example.ssafit.model.dto.Notification">
-        <id property="notificationId" column="notification_id"/>
-        <result property="userId" column="user_id"/>
-        <result property="type" column="type"/>
-        <result property="payload" column="payload"/>
-        <result property="isRead" column="is_read"/>
-        <result property="createdAt" column="created_at"/>
-    </resultMap>
 
 </mapper>

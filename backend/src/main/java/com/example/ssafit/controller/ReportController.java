@@ -33,7 +33,7 @@ public class ReportController {
     public ResponseEntity reportArticle(@RequestBody @Valid Report reportData) {
         reportData.setType("ARTICLE");
         int result = reportService.addReport(reportData);
-
+        System.out.println("요청 처리 완료!");
         return new ResponseEntity(result == 1? HttpStatus.ACCEPTED : HttpStatus.BAD_REQUEST);
     }
 

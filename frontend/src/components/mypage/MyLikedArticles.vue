@@ -107,7 +107,7 @@ const nextPage = () => {
 onMounted(() => {
   if (user.value.userId) {
     api
-      .get(`/api_article/get/like/user_id/${user.value.userId}`)
+      .get(`/api_mypage/get/like/user_id/${user.value.userId}`)
       .then((res) => {
         likedArticles.value = res.data;
       })

@@ -5,7 +5,6 @@
     <div v-if="isChallengeLoading" class="loading">
       <p>로딩 중...</p>
     </div>
-    
 
     <div v-else>
       <!-- 완료했을 때 -->
@@ -24,7 +23,7 @@
           <p class="streak-info">
             현재 {{ currentStreak }}일 연속 달성 중입니다.
           </p>
-        </div>       
+        </div>
 
         <div class="upload-section">
           <div class="file-input-container">
@@ -61,21 +60,21 @@
           </button>
         </div>
       </div>
-      
+
       <!-- 추천 운동 부위 -->
-        <div class="recommended-tags">
-          <h4>나의 추천 운동 부위</h4>
-          <div class="tag-buttons">
-             <button
-                v-for="(tag, index) in recommendedTags"
-                :key="index"
-                @click="goToBoardWithTag(tag)"
-                class="tag-button"
-              >
-                #{{ tag.label }}
-              </button>
-          </div>
+      <div class="recommended-tags">
+        <h4>나의 추천 운동 부위</h4>
+        <div class="tag-buttons">
+          <button
+            v-for="(tag, index) in recommendedTags"
+            :key="index"
+            @click="goToBoardWithTag(tag)"
+            class="tag-button"
+          >
+            #{{ tag.label }}
+          </button>
         </div>
+      </div>
       <!-- 최근 인바디 정보 -->
       <div v-if="latestInbody" class="inbody-info">
         <h4>최근 인바디 정보</h4>
@@ -137,20 +136,23 @@ const uploadInbody = async () => {
     formData.append("file", selectedFile.value);
     const res = await api.post("/api_challenge/post/challenge", formData, {
       headers: { "Content-Type": "multipart/form-data" },
-      timeout: 30000
+      timeout: 30000,
     });
     if (res.status === 200) {
       todayChallengeCompleted.value = true;
       currentStreak.value = res.data.currentStreak;
       if (Array.isArray(res.data.recommendedParts)) {
-        recommendedTags.value = res.data.recommendedParts.map(p => ({ value: p, label: p }));
+        recommendedTags.value = res.data.recommendedParts.map((p) => ({
+          value: p,
+          label: p,
+        }));
       }
       await fetchLatestInbody();
       alert("인바디 등록이 완료되었습니다!");
       if (res.data.newBadges?.length) {
         alert(
           `축하합니다! 새로운 뱃지를 획득했습니다: ${res.data.newBadges
-            .map(b => b.name)
+            .map((b) => b.name)
             .join(", ")}`
         );
       }
@@ -163,12 +165,12 @@ const uploadInbody = async () => {
   }
 };
 
-const handleFileChange = event => {
+const handleFileChange = (event) => {
   const file = event.target.files[0];
   if (!file) return;
   selectedFile.value = file;
   const reader = new FileReader();
-  reader.onload = e => (previewUrl.value = e.target.result);
+  reader.onload = (e) => (previewUrl.value = e.target.result);
   reader.readAsDataURL(file);
 };
 
@@ -202,31 +204,37 @@ onMounted(async () => {
     todayChallengeCompleted.value =
       data.challengeSummary?.streakCalendar?.[today] === true;
 
-    if (Array.isArray(data.recommendedParts) && data.recommendedParts.length === 3) {
-      recommendedTags.value = data.recommendedParts.map(p => ({ value: p, label: p }));
+    if (
+      Array.isArray(data.recommendedParts) &&
+      data.recommendedParts.length === 3
+    ) {
+      recommendedTags.value = data.recommendedParts.map((p) => ({
+        value: p,
+        label: p,
+      }));
     } else if (data.firstExercise) {
       recommendedTags.value = [
         data.firstExercise,
         data.secondExercise,
-        data.thirdExercise
-      ].map(p => ({ value: p, label: p }));
+        data.thirdExercise,
+      ].map((p) => ({ value: p, label: p }));
     } else {
       recommendedTags.value = [
         { value: "복부", label: "복부" },
         { value: "하체", label: "하체" },
-        { value: "유산소", label: "유산소" }
+        { value: "유산소", label: "유산소" },
       ];
     }
 
     const articlesRes = await api.get(
-      `/api_article/get/user_id/${user.value.userId}`
+      `/api_mypage/get/user_id/${user.value.userId}`
     );
     myArticles.value = articlesRes.data;
   } catch (err) {
     recommendedTags.value = [
       { value: "복부", label: "복부" },
       { value: "하체", label: "하체" },
-      { value: "유산소", label: "유산소" }
+      { value: "유산소", label: "유산소" },
     ];
   } finally {
     isChallengeLoading.value = false;
@@ -234,7 +242,7 @@ onMounted(async () => {
   }
 });
 
-const goToBoardWithTag = tag => {
+const goToBoardWithTag = (tag) => {
   router.push({ path: "/board", query: { tag: tag.value } });
 };
 </script>
@@ -244,7 +252,8 @@ const goToBoardWithTag = tag => {
 @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css");
 
 .challenge-status {
-  font-family: "Pretendard Variable", "Pretendard", "Noto Sans KR", Arial, sans-serif;
+  font-family: "Pretendard Variable", "Pretendard", "Noto Sans KR", Arial,
+    sans-serif;
   background: #f8f9fa;
   border-radius: 16px;
   padding: 32px 20px 28px 20px;
@@ -267,7 +276,7 @@ h3 {
   font-family: inherit;
   background: linear-gradient(90deg, #e0f7fa 60%, #fff 100%);
   border-radius: 12px 12px 0 0;
-  box-shadow: 0 2px 8px rgba(66,185,131,0.06);
+  box-shadow: 0 2px 8px rgba(66, 185, 131, 0.06);
 }
 
 .challenge-completed,
@@ -441,7 +450,7 @@ h3 {
   display: flex;
   flex-direction: column;
   align-items: center;
-  border: 2px solid #e0e7ef; 
+  border: 2px solid #e0e7ef;
   border-radius: 12px;
   padding: 18px 10px 14px 10px;
   background: #fafdff;

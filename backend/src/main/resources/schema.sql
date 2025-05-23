@@ -23,8 +23,6 @@ CREATE TABLE users (
                        email            VARCHAR(255),
                        profile_image    VARCHAR(255),
                        background_image VARCHAR(255),
-                       height           DECIMAL(5,2),
-                       weight           DECIMAL(5,2),
                        enabled          BOOLEAN      DEFAULT TRUE,
                        suspend_start TIMESTAMP NULL,
                        suspend_end   TIMESTAMP NULL,

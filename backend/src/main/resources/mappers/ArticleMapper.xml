@@ -4,7 +4,7 @@
 <mapper namespace="com.example.ssafit.model.dao.ArticleDao">
 
     <!--1. 모든 글들을 조회 (사용자명 포함)-->
-    <select id="selectAllArticle" resultMap="ArticleWithUsernameResultMap">
+    <select id="selectAllArticle" >
         SELECT a.*, u.nickname
         FROM articles a
                  LEFT JOIN users u ON a.user_id = u.user_id
@@ -12,7 +12,7 @@
     </select>
 
     <!--2. articleId가 일치하는 글을 조회 (사용자명 포함)-->
-    <select id="selectArticleByArticleId" resultMap="ArticleWithUsernameResultMap">
+    <select id="selectArticleByArticleId" >
         SELECT a.*, u.nickname
         FROM articles a
                  LEFT JOIN users u ON a.user_id = u.user_id
@@ -20,7 +20,7 @@
     </select>
 
     <!--3. userId가 일치하는 글들을 조회 (사용자명 포함)-->
-    <select id="selectArticleListByUserId" resultMap="ArticleWithUsernameResultMap">
+    <select id="selectArticleListByUserId" >
         SELECT a.*, u.username
         FROM articles a
                  LEFT JOIN users u ON a.user_id = u.user_id
@@ -29,7 +29,7 @@
     </select>
 
     <!--4. ArticleLike의 userId가 일치하는 글들을 조회 (사용자명 포함)-->
-    <select id="selectArticleListByArticleLikeUserId" resultMap="ArticleWithUsernameResultMap">
+    <select id="selectArticleListByArticleLikeUserId">
         SELECT DISTINCT a.*, u.nickname
         FROM articles a
                  LEFT JOIN users u ON a.user_id = u.user_id
@@ -39,7 +39,7 @@
     </select>
 
     <!--5. boardId(category)가 일치하는 글들을 조회 (사용자명 포함)-->
-    <select id="selectArticleListByBoardId" resultMap="ArticleWithUsernameResultMap">
+    <select id="selectArticleListByBoardId" >
         SELECT a.*, (
             SELECT COUNT(*)
             FROM comments
@@ -52,7 +52,7 @@
     </select>
 
     <!--6. searchForm으로 글들을 조회 (사용자명 포함) - articles 테이블의 tag 컬럼만 사용-->
-    <select id="selectArticleListByCondition" parameterType="SearchCondition" resultMap="ArticleWithUsernameResultMap">
+    <select id="selectArticleListByCondition" parameterType="SearchCondition" >
         SELECT a.*, (
         SELECT COUNT(*)
         FROM comments
@@ -105,23 +105,6 @@
         LIMIT #{countPerPage} OFFSET #{offset}
     </select>
 
-    <!-- ResultMap for Article with Username -->
-    <resultMap id="ArticleWithUsernameResultMap" type="Article">
-        <id property="articleId" column="article_id" />
-        <result property="userId" column="user_id" />
-        <result property="category" column="category" />
-        <result property="title" column="title" />
-        <result property="content" column="content" />
-        <result property="viewCount" column="view_count" />
-        <result property="likeCount" column="like_count" />
-        <result property="dislikeCount" column="dislike_count" />
-        <result property="createdAt" column="created_at" />
-        <result property="updatedAt" column="updated_at" />
-        <result property="username" column="username" />
-        <result property="nickname" column="nickname" />
-        <result property="url" column="url" />
-        <result property="tag" column="tag"/>
-    </resultMap>
 
     <insert id="insertArticle" parameterType="Article">
         INSERT INTO articles(user_id, category, title, content, tag, url)

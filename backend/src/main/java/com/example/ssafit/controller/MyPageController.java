@@ -153,4 +153,18 @@ public class MyPageController {
 
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/get/user_id/{userId}")
+    public ResponseEntity getArticleListByUserId(@PathVariable("userId") int userId) {
+        List<Article> articleList = articleService.searchArticleListByUserId(userId);
+        if (articleList == null) return ResponseEntity.noContent().build();
+        else return ResponseEntity.ok(articleList);
+    }
+
+    @GetMapping("/get/like/user_id/{userId}")
+    public ResponseEntity getArticleListByArticleLikeUserId(@PathVariable("userId") int userId) {
+        List<Article> articleList = articleService.searchArticleListByArticleLikeUserId(userId);
+        if (articleList == null) return ResponseEntity.noContent().build();
+        else return ResponseEntity.ok(articleList);
+    }
 }
