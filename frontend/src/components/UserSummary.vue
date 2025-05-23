@@ -11,13 +11,15 @@
             <span class="user-nickname">{{ summary.nickname }}</span>
             <span class="user-id">@{{ summary.userName }}</span>
           </div>
-          <button 
+          <button
             v-if="!isMyProfile"
-            @click="toggleFollow" 
+            @click="toggleFollow"
             :disabled="followLoading"
             :class="['follow-button', isFollowing ? 'unfollow' : 'follow']"
           >
-            {{ followLoading ? '처리중...' : (isFollowing ? '언팔로우' : '팔로우') }}
+            {{
+              followLoading ? "처리중..." : isFollowing ? "언팔로우" : "팔로우"
+            }}
           </button>
         </div>
         <div class="badge-section">
@@ -41,7 +43,7 @@
       <section class="tab-content">
         <h3 class="section-title">작성한 글</h3>
         <ul class="article-list">
-          <li v-for="art in summary.articles" :key="art.articleId">
+          <li v-for="art in pagedArticles" :key="art.articleId">
             <router-link
               :to="`/board/detail/${art.articleId}`"
               class="article-link"
@@ -56,6 +58,13 @@
         <div v-if="!summary.articles.length" class="no-articles">
           작성한 글이 없습니다.
         </div>
+        <div class="pagination" v-if="totalPages > 1">
+          <button @click="prevPage" :disabled="currentPage === 1">이전</button>
+          <span>{{ currentPage }} / {{ totalPages }}</span>
+          <button @click="nextPage" :disabled="currentPage === totalPages">
+            다음
+          </button>
+        </div>
       </section>
     </div>
   </div>
@@ -65,13 +74,11 @@
 import { ref, onMounted, computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import api from "@/api/axiosInstance";
-import Header from "@/components/Header.vue";
 
 const route = useRoute();
 const router = useRouter();
 const userId = Number(route.params.userId);
 
-// 현재 로그인한 사용자 정보
 const currentUser = ref(JSON.parse(localStorage.getItem("user") || "{}"));
 
 const summary = ref({
@@ -82,6 +89,23 @@ const summary = ref({
   representedBadge: null,
   articles: [],
 });
+
+// 페이지네이션 관련
+const currentPage = ref(1);
+const pageSize = 10;
+const pagedArticles = computed(() => {
+  const start = (currentPage.value - 1) * pageSize;
+  return summary.value.articles.slice(start, start + pageSize);
+});
+const totalPages = computed(() =>
+  Math.ceil(summary.value.articles.length / pageSize)
+);
+const prevPage = () => {
+  if (currentPage.value > 1) currentPage.value--;
+};
+const nextPage = () => {
+  if (currentPage.value < totalPages.value) currentPage.value++;
+};
 
 // 팔로우 관련 상태
 const isFollowing = ref(false);
@@ -122,11 +146,11 @@ const formatDate = (dateString) => {
 // 팔로우 상태 확인
 const checkFollowStatus = async () => {
   if (isMyProfile.value) return;
-  
+
   try {
     const response = await api.get("/api_follow/get/follow");
     const followingList = response.data || [];
-    isFollowing.value = followingList.some(user => user.userId === userId);
+    isFollowing.value = followingList.some((user) => user.userId === userId);
   } catch (error) {
     console.error("팔로우 상태 확인 실패:", error);
     // 204 No Content인 경우 팔로우하지 않은 것으로 처리
@@ -139,9 +163,9 @@ const checkFollowStatus = async () => {
 // 팔로우/언팔로우 토글
 const toggleFollow = async () => {
   if (followLoading.value) return;
-  
+
   followLoading.value = true;
-  
+
   try {
     if (isFollowing.value) {
       // 언팔로우
@@ -167,7 +191,7 @@ onMounted(async () => {
     // 사용자 요약 정보 조회
     const res = await api.get(`/api_mypage/summary/userId/${userId}`);
     Object.assign(summary.value, res.data);
-    
+
     // 팔로우 상태 확인 (내 프로필이 아닌 경우만)
     if (!isMyProfile.value) {
       await checkFollowStatus();
@@ -192,7 +216,8 @@ onMounted(async () => {
   padding: 32px 20px 28px 20px;
   background: #fff;
   border-radius: 18px;
-  box-shadow: 0 6px 32px rgba(66,185,131,0.10), 0 1.5px 6px rgba(66,185,131,0.07);
+  box-shadow: 0 6px 32px rgba(66, 185, 131, 0.1),
+    0 1.5px 6px rgba(66, 185, 131, 0.07);
 }
 .user-info {
   position: relative;
@@ -218,7 +243,7 @@ onMounted(async () => {
   left: 50%;
   transform: translateX(-50%);
   border: 5px solid #fff;
-  box-shadow: 0 2px 12px rgba(66,185,131,0.13);
+  box-shadow: 0 2px 12px rgba(66, 185, 131, 0.13);
   background: #f8f9fa;
 }
 
@@ -260,7 +285,7 @@ onMounted(async () => {
   cursor: pointer;
   transition: all 0.2s;
   min-width: 100px;
-  box-shadow: 0 2px 8px rgba(66,185,131,0.07);
+  box-shadow: 0 2px 8px rgba(66, 185, 131, 0.07);
 }
 
 .follow-button:disabled {
@@ -301,7 +326,7 @@ onMounted(async () => {
   margin-right: 16px;
   object-fit: contain;
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(66,185,131,0.13);
+  box-shadow: 0 2px 8px rgba(66, 185, 131, 0.13);
   background: #f8f9fa;
 }
 .represent-badge {
@@ -311,7 +336,7 @@ onMounted(async () => {
   padding: 14px 18px;
   border-radius: 12px;
   border: 1.5px solid #b2dfdb;
-  box-shadow: 0 2px 8px rgba(66,185,131,0.07);
+  box-shadow: 0 2px 8px rgba(66, 185, 131, 0.07);
   margin: 0 auto;
   max-width: 340px;
   justify-content: center;
@@ -417,9 +442,38 @@ onMounted(async () => {
     width: 100%;
     max-width: 220px;
   }
-  .represent-badge, .represent-badge.no-badge {
+  .represent-badge,
+  .represent-badge.no-badge {
     max-width: 98vw;
     padding: 10px 0;
   }
+}
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 18px;
+  margin: 24px 0 10px 0;
+  font-family: inherit;
+}
+.pagination button {
+  background: #42b983;
+  color: #fff;
+  border: none;
+  border-radius: 16px;
+  padding: 6px 18px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.pagination button:disabled {
+  background: #adb5bd;
+  cursor: not-allowed;
+}
+.pagination span {
+  font-size: 1.05rem;
+  color: #222;
+  font-weight: 500;
 }
 </style>
