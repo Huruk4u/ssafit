@@ -266,9 +266,11 @@ const pageNumbers = computed(() => {
 watch(
   () => searchCondition.tagLabel,
   (label) => {
-    searchCondition.tag = reverseTagMapping[label] || '';
+   searchCondition.tag = reverseTagMapping[label] || '';
     router.replace({ query: { ...route.query, tag: label } });
-    goToPage(1); // 태그 변경 시 1페이지로 이동
+    currentPage.value = 1;
+    searchCondition.currentPage = 1;
+    fetchArticles();
   }
 );
 
@@ -379,10 +381,12 @@ const goToPage = (page) => {
 
 onMounted(() => {
   // URL에서 초기 파라미터 가져오기
+  let tagHandled = false;
   if (route.query.tag) {
     searchCondition.tagLabel = route.query.tag;
+    tagHandled = true;
   }
-  
+
   if (route.query.page) {
     const pageNum = parseInt(route.query.page);
     if (!isNaN(pageNum) && pageNum > 0) {
@@ -390,8 +394,11 @@ onMounted(() => {
       searchCondition.currentPage = pageNum;
     }
   }
-  
-  fetchArticles();
+
+  // tagLabel이 세팅되면 watch가 fetchArticles를 호출하므로 여기서 중복 호출하지 않음
+  if (!tagHandled) {
+    fetchArticles();
+  }
 });
 </script>
 
