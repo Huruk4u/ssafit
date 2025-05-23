@@ -11,11 +11,11 @@ import Notification from '../views/Notification.vue';
 import EditPassword from '@/views/EditPassword.vue';
 import UserEdit from '@/views/UserEdit.vue';
 import AdminPage from '@/views/AdminPage.vue';
-import MyArticles from '@/components/MyArticles.vue';
-import MyLikedArticles from '@/components/MyLikedArticles.vue';
-import ActivityInfo from '@/components/ActivityInfo.vue';
+import MyArticles from '@/components/mypage/MyArticles.vue';
+import MyLikedArticles from '@/components/mypage/MyLikedArticles.vue';
+import ActivityInfo from '@/components/mypage/ActivityInfo.vue';
 import UserSummary from '@/components/UserSummary.vue';
-import MyFollowing from '@/components/MyFollowing.vue';
+import MyFollowing from '@/components/mypage/MyFollowing.vue';
 
 const routes = [
   { path: '/', redirect: '/login' },    // 기본 경로는 로그인 페이지로 리디렉션

@@ -302,28 +302,39 @@ onMounted(() => {
 </script>
 
 <style scoped>
+/* 관리자 페이지 - MyPage 스타일 참고한 리디자인 */
+
 .admin-title {
-  font-size: 1.5em;
-  font-weight: bold;
-  margin: 24px 0 12px 0;
-  color: #222;
-  letter-spacing: -1px;
+  font-size: 2rem;
+  font-weight: 800;
+  color: #42b983;
+  margin: 36px 0 24px 0;
+  letter-spacing: -1.5px;
+  padding-left: 0;
+  text-align: left;
+  background: linear-gradient(90deg, #e8f8f3 60%, #fff 100%);
+  border-radius: 0 0 18px 18px;
+  box-shadow: 0 2px 12px rgba(66,185,131,0.07);
+  padding: 18px 0 18px 24px;
+  border-left: 6px solid #42b983;
 }
 
 .admin-nav.modern-tabs {
   display: flex;
   gap: 0;
   border-bottom: 2px solid #e0e0e0;
-  background: #f8f9fa;
+  background: #fafbfc;
   padding: 0 18px;
-  margin-bottom: 24px;
+  margin-bottom: 32px;
+  border-radius: 12px 12px 0 0;
+  box-shadow: 0 2px 8px rgba(66,185,131,0.04);
 }
 
 .admin-nav.modern-tabs button {
   background: none;
   border: none;
   outline: none;
-  padding: 16px 32px 12px 32px;
+  padding: 18px 36px 14px 36px;
   font-size: 1.08em;
   color: #888;
   font-weight: 500;
@@ -331,12 +342,14 @@ onMounted(() => {
   border-bottom: 3px solid transparent;
   transition: color 0.2s, border-bottom 0.2s;
   margin-bottom: -2px;
+  border-radius: 12px 12px 0 0;
 }
 
 .admin-nav.modern-tabs button.active {
   color: #42b983;
   border-bottom: 3px solid #42b983;
-  background: none;
+  background: linear-gradient(to bottom, #f7fcfa, #fff);
+  font-weight: 700;
 }
 
 .admin-nav.modern-tabs button:not(.active):hover {
@@ -345,11 +358,10 @@ onMounted(() => {
 }
 
 .report-list-wrapper {
-  background: #f8fafc;
-  border-radius: 14px;
-  box-shadow: 0 2px 12px rgba(66, 185, 131, 0.06),
-    0 1.5px 6px rgba(0, 0, 0, 0.03);
-  padding: 32px 24px 24px 24px;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 2px 12px rgba(66, 185, 131, 0.07), 0 1.5px 6px rgba(0,0,0,0.03);
+  padding: 40px 32px 32px 32px;
   margin-bottom: 32px;
   min-height: 320px;
 }
@@ -372,16 +384,15 @@ onMounted(() => {
 }
 
 .report-card {
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 2px 12px rgba(66, 185, 131, 0.08),
-    0 1.5px 6px rgba(0, 0, 0, 0.04);
-  padding: 20px 24px 16px 24px;
-  border: 1px solid #e6f2ec;
+  background: linear-gradient(to bottom, #f7fcfa, #fff);
+  border-radius: 14px;
+  box-shadow: 0 2px 12px rgba(66,185,131,0.08), 0 1.5px 6px rgba(0,0,0,0.04);
+  padding: 24px 28px 18px 28px;
+  border: 1.5px solid #e6f2ec;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  transition: box-shadow 0.2s, transform 0.2s;
+  transition: box-shadow 0.2s, transform 0.2s, border-color 0.2s;
   position: relative;
 }
 
@@ -391,7 +402,8 @@ onMounted(() => {
 }
 
 .report-card:hover {
-  box-shadow: 0 6px 24px rgba(66, 185, 131, 0.13), 0 2px 8px rgba(0, 0, 0, 0.08);
+  border-color: #42b983;
+  box-shadow: 0 6px 24px rgba(66,185,131,0.13), 0 2px 8px rgba(0,0,0,0.08);
   transform: translateY(-2px) scale(1.01);
 }
 
@@ -444,12 +456,13 @@ onMounted(() => {
   background: #42b983;
   color: #fff;
   border: none;
-  border-radius: 4px;
-  padding: 7px 18px;
+  border-radius: 6px;
+  padding: 8px 22px;
   cursor: pointer;
   font-size: 1em;
   font-weight: 500;
   transition: background 0.2s;
+  box-shadow: 0 2px 8px rgba(66,185,131,0.08);
 }
 
 .report-actions button:hover {
@@ -459,8 +472,8 @@ onMounted(() => {
 .handled-label {
   color: #888;
   font-weight: bold;
-  padding: 7px 18px;
-  border-radius: 4px;
+  padding: 8px 22px;
+  border-radius: 6px;
   background: #f0f0f0;
 }
 
@@ -471,37 +484,34 @@ onMounted(() => {
   font-size: 1.1em;
 }
 
+/* 모달 스타일 - MyPage 참고 */
 .modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.35);
+  background: rgba(0,0,0,0.35);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
+  backdrop-filter: blur(4px);
 }
 .modal-content {
   background: #fff;
-  border-radius: 14px;
-  padding: 36px 28px 28px 28px;
-  min-width: 320px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+  border-radius: 16px;
+  padding: 36px 32px 28px 32px;
+  min-width: 340px;
+  max-width: 95vw;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.10);
   text-align: left;
   position: relative;
-  animation: modal-pop-in 0.35s cubic-bezier(0.4, 2, 0.6, 1) both;
+  animation: modal-pop-in 0.35s cubic-bezier(0.4,2,0.6,1) both;
 }
 @keyframes modal-pop-in {
-  0% {
-    opacity: 0;
-    transform: translateY(40px) scale(0.95);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
+  0% { opacity: 0; transform: translateY(40px) scale(0.95);}
+  100% { opacity: 1; transform: translateY(0) scale(1);}
 }
 .modal-close {
   position: absolute;
@@ -542,8 +552,8 @@ onMounted(() => {
 }
 .modal-reason-content {
   background: #f8f9fa;
-  border-radius: 6px;
-  padding: 10px 14px;
+  border-radius: 8px;
+  padding: 12px 16px;
   color: #333;
   margin-top: 4px;
   font-size: 1.05em;
@@ -556,15 +566,18 @@ onMounted(() => {
   display: flex;
   justify-content: flex-end;
   gap: 10px;
+  border-top: 1px solid #eee;
+  padding-top: 16px;
 }
 .modal-actions button {
   padding: 8px 22px;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   background: #42b983;
   color: #fff;
   cursor: pointer;
   font-size: 1em;
+  font-weight: 500;
   transition: background 0.2s;
 }
 .modal-actions .cancel {
@@ -631,8 +644,7 @@ onMounted(() => {
 .user-report-card {
   background: #fff;
   border-radius: 12px;
-  box-shadow: 0 2px 12px rgba(66, 185, 131, 0.08),
-    0 1.5px 6px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 2px 12px rgba(66,185,131,0.08), 0 1.5px 6px rgba(0,0,0,0.04);
   padding: 18px 20px 14px 20px;
   display: flex;
   flex-direction: column;
@@ -642,7 +654,7 @@ onMounted(() => {
 }
 
 .user-report-card:hover {
-  box-shadow: 0 6px 24px rgba(66, 185, 131, 0.13), 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 6px 24px rgba(66,185,131,0.13), 0 2px 8px rgba(0,0,0,0.08);
   transform: translateY(-2px) scale(1.01);
 }
 
@@ -702,5 +714,36 @@ onMounted(() => {
   color: #888;
   text-align: center;
   margin: 32px 0;
+}
+
+@media (max-width: 900px) {
+  .report-list-wrapper {
+    padding: 24px 8px 18px 8px;
+  }
+  .modal-content {
+    padding: 24px 8px 18px 8px;
+  }
+}
+@media (max-width: 600px) {
+  .admin-title {
+    font-size: 1.1rem;
+    padding-left: 2px;
+  }
+  .admin-nav.modern-tabs button {
+    padding: 12px 10px 8px 10px;
+    font-size: 0.95em;
+  }
+  .report-list-wrapper {
+    padding: 10px 2px 10px 2px;
+    border-radius: 8px;
+  }
+  .report-card {
+    padding: 12px 6px 10px 6px;
+    border-radius: 8px;
+  }
+  .modal-content {
+    padding: 12px 2px 10px 2px;
+    border-radius: 8px;
+  }
 }
 </style>

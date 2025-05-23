@@ -158,11 +158,11 @@ import { ref, onMounted, computed } from "vue";
 import { useRouter } from "vue-router";
 import api from "@/api/axiosInstance";
 import Header from "@/components/Header.vue";
-import ChallengeRegister from "@/components/ChallengeRegister.vue";
-import MyArticles from "@/components/MyArticles.vue";
-import MyLikedArticles from "@/components/MyLikedArticles.vue";
-import ActivityInfo from "@/components/ActivityInfo.vue";
-import MyFollowing from "@/components/MyFollowing.vue";
+import ChallengeRegister from "@/components/mypage/ChallengeRegister.vue";
+import MyArticles from "@/components/mypage/MyArticles.vue";
+import MyLikedArticles from "@/components/mypage/MyLikedArticles.vue";
+import ActivityInfo from "@/components/mypage/ActivityInfo.vue";
+import MyFollowing from "@/components/mypage/MyFollowing.vue";
 
 const router = useRouter();
 const user = ref(JSON.parse(localStorage.getItem("user") || "{}"));
