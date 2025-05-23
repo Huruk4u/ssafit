@@ -69,28 +69,44 @@ const goHome = () => {
 
 <style scoped>
 .header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  z-index: 1000;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 32px;
   height: 64px;
-  background: #fff;
-  box-shadow: 0 2px 8px rgba(60, 60, 60, 0.06);
+  background: linear-gradient(90deg, #f7fcfa 0%, #e6f9f1 100%);
+  box-shadow: 0 2px 16px rgba(66, 185, 131, 0.08);
+  border-bottom: 2px solid #42b98322;
+}
+
+body, #app {
+  padding-top: 64px;
 }
 
 .logo {
   font-size: 2rem;
-  font-weight: 700;
+  font-weight: 800;
   color: #42b983;
   cursor: pointer;
   letter-spacing: 2px;
   margin: 0;
+  text-shadow: 0 2px 8px #42b98322;
+  transition: color 0.2s, text-shadow 0.2s;
+}
+.logo:hover {
+  color: #2e8c6a;
+  text-shadow: 0 4px 16px #42b98344;
 }
 
 .nav {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
 }
 
 .nav-auth {
@@ -101,16 +117,17 @@ const goHome = () => {
 
 .nav-link {
   position: relative;
-  padding: 8px 16px;
-  font-size: 1rem;
+  padding: 8px 18px;
+  font-size: 1.05rem;
   color: #222;
   background: none;
   border: none;
   outline: none;
   cursor: pointer;
   text-decoration: none;
-  transition: color 0.2s;
-  /* 강조선 애니메이션 준비 */
+  border-radius: 22px;
+  transition: color 0.2s, background 0.2s;
+  font-weight: 500;
   overflow: hidden;
 }
 
@@ -119,10 +136,10 @@ const goHome = () => {
   display: block;
   position: absolute;
   left: 50%;
-  bottom: 0;
+  bottom: 7px;
   width: 0;
   height: 3px;
-  background: #42b983;
+  background: linear-gradient(90deg, #42b983 60%, #5eead4 100%);
   border-radius: 2px;
   transition: width 0.3s cubic-bezier(.4,0,.2,1), left 0.3s cubic-bezier(.4,0,.2,1);
 }
@@ -130,6 +147,7 @@ const goHome = () => {
 .nav-link:hover,
 .nav-link:focus {
   color: #42b983;
+  background: #e6f9f1;
 }
 
 .nav-link:hover::after,
@@ -143,26 +161,32 @@ const goHome = () => {
 .active-link,
 .nav-link.router-link-exact-active {
   color: #42b983;
-  transition: color 0.2s;
+  background: #e6f9f1;
+  transition: color 0.2s, background 0.2s;
 }
 
-/* 버튼 클릭시 약간의 scale 효과 */
 .nav-link:active {
-  transform: scale(0.96);
+  transform: scale(0.97);
   transition: transform 0.1s;
 }
 
 .nav-btn {
-  background: none;
+  background: linear-gradient(90deg, #42b983 60%, #5eead4 100%);
+  color: #fff !important;
   border: none;
   font: inherit;
   cursor: pointer;
-  padding: 8px 16px;
+  padding: 8px 22px;
+  border-radius: 22px;
+  margin-left: 8px;
+  font-weight: 600;
+  box-shadow: 0 2px 8px #42b98322;
+  transition: background 0.2s, color 0.2s;
 }
-
-.nav-btn:active,
+.nav-btn:hover,
 .nav-btn:focus {
-  color: #42b983;
+  background: linear-gradient(90deg, #2e8c6a 60%, #42b983 100%);
+  color: #fff !important;
 }
 
 @media (max-width: 600px) {

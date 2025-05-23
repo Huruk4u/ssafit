@@ -1,9 +1,8 @@
 <template>
   <div class="root">
-    <Header />
-
     <div class="mypage-container container py-4">
-      <section class="user-info card p-4 mb-4">
+      <!-- 상단 고정 유저 정보 영역 -->
+      <section class="user-info card p-4 fixed-user-info">
         <div class="user-visual position-relative mb-5">
           <img
             :src="userBackgroundImage"
@@ -17,25 +16,29 @@
               class="profile-img-overlap rounded-circle border border-white shadow"
             />
             <div class="profile-meta-side">
-              <div class="info-section">
-                <span class="user-nickname">{{ user.nickname }}</span>
-                <span class="user-id">@{{ user.userName }}</span>
-              </div>
-              <div
-                v-if="representBadge"
-                class="represent-badge-inline"
-                @click="openBadgeModal"
-                title="대표 뱃지 변경"
-                style="cursor: pointer"
-              >
-                <img
-                  :src="representBadge.iconUrl"
-                  :alt="representBadge.name"
-                  class="badge-icon-inline"
-                />
-                <span class="badge-name-inline text-secondary small">
-                  {{ representBadge.name }}
-                </span>
+              <div class="nickname-badge-row">
+                <div class="nickname-id-col">
+                  <span class="user-nickname">{{ user.nickname }}</span>
+                  <span class="user-id">@{{ user.userName }}</span>
+                </div>
+                <div
+                  class="represent-badge-inline-large"
+                  @click="openBadgeModal"
+                  title="대표 뱃지 변경"
+                >
+                  <img
+                    v-if="representBadge"
+                    :src="representBadge.iconUrl"
+                    :alt="representBadge.name"
+                    class="badge-icon-inline-large"
+                  />
+                  <span v-if="representBadge" class="badge-name-inline-large">
+                    {{ representBadge.name }}
+                  </span>
+                  <span v-else class="badge-name-inline-large" style="color:#bbb;">
+                    대표 뱃지가 없습니다
+                  </span>
+                </div>
               </div>
             </div>
           </div>
@@ -43,7 +46,8 @@
         <div class="badge-section mt-3"></div>
       </section>
 
-      <div class="tabs d-flex flex-wrap gap-2 mb-4">
+      <!-- 탭 영역 -->
+      <div class="tabs d-flex flex-wrap gap-2 mb-4 fixed-tabs">
         <button
           @click="activeTab = 1"
           :class="[
@@ -94,27 +98,26 @@
         </button>
       </div>
 
-      <div v-if="activeTab === 1" class="tab-content card p-4">
-        <ActivityInfo />
-      </div>
-
-      <div v-if="activeTab === 2" class="tab-content card p-4">
-        <ChallengeRegister />
-      </div>
-
-      <div v-if="activeTab === 3" class="tab-content card p-4">
-        <MyArticles />
-      </div>
-
-      <div v-if="activeTab === 4" class="tab-content card p-4">
-        <MyLikedArticles />
-      </div>
-
-      <div v-if="activeTab === 5" class="tab-content card p-4">
-        <MyFollowing />
-      </div>
-      <div v-if="activeTab === 6" class="tab-content card p-4">
-        <UserEdit />
+      <!-- 아래 컨텐츠 영역 -->
+      <div class="tab-content-area">
+        <div v-if="activeTab === 1" class="tab-content card p-4">
+          <ActivityInfo />
+        </div>
+        <div v-if="activeTab === 2" class="tab-content card p-4">
+          <ChallengeRegister />
+        </div>
+        <div v-if="activeTab === 3" class="tab-content card p-4">
+          <MyArticles />
+        </div>
+        <div v-if="activeTab === 4" class="tab-content card p-4">
+          <MyLikedArticles />
+        </div>
+        <div v-if="activeTab === 5" class="tab-content card p-4">
+          <MyFollowing />
+        </div>
+        <div v-if="activeTab === 6" class="tab-content card p-4">
+          <UserEdit />
+        </div>
       </div>
     </div>
 
@@ -244,11 +247,7 @@ onMounted(() => {
 });
 </script>
 
-
 <style scoped>
-/* 필요 없는 스타일 삭제 후, 핵심만 남긴 예시 */
-
-/* 폰트 및 전체 배경 */
 @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css");
 
 :root,
@@ -262,6 +261,14 @@ body,
   letter-spacing: 0.01em;
 }
 
+/* 흔들림 방지: 컨테이너 가로 고정 */
+.mypage-container {
+  width: 100vw;
+  max-width: 100vw;
+  overflow-x: hidden;
+  margin: 0 auto;
+}
+
 /* 상단 카드 */
 .user-info {
   background-color: #f4f4f4;
@@ -270,29 +277,58 @@ body,
   border: none;
   border-radius: 0;
   box-shadow: none;
+  z-index: 100;
+}
+
+/* 고정 유저 정보 */
+.fixed-user-info {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: #f4f4f4;
+  margin-bottom: 0;
+  border-radius: 0 0 16px 16px;
+  box-shadow: 0 2px 12px rgba(66, 185, 131, 0.07);
+}
+
+/* 고정 탭 */
+.fixed-tabs {
+  position: sticky;
+  top: 220px;
+  z-index: 99;
+  background: #fafbfc;
+  border-radius: 0 0 12px 12px;
+  box-shadow: 0 2px 8px rgba(66, 185, 131, 0.04);
+  margin-bottom: 2rem;
+  padding-bottom: 0.5rem;
+}
+
+/* 컨텐츠 영역 */
+.tab-content-area {
+  margin-top: 24px;
 }
 
 /* 배경/프로필 이미지 */
 .user-visual {
   position: relative;
   width: 100%;
-  height: 200px;
+  height: 300px;
   margin-bottom: 60px;
 }
 .background-img {
   width: 100%;
-  height: 200px;
+  height: 300px;
   object-fit: cover;
   border-radius: 12px;
   display: block;
 }
 .profile-row-wrap {
   position: absolute;
-  left: 5%; /* 왼쪽으로 이동 */
-  bottom: -50px; /* 더 아래로 내림 */
+  left: 5%;
+  bottom: -50px;
   display: flex;
-  flex-direction: row; /* column에서 row로 변경 */
-  align-items: flex-start; /* 하단 정렬로 변경 */
+  flex-direction: row;
+  align-items: flex-end;
   z-index: 2;
 }
 .profile-img-overlap {
@@ -304,50 +340,84 @@ body,
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   background: #fff;
 }
+
+/* 닉네임/유저네임/뱃지 한 줄 배치 */
 .profile-meta-side {
+  position: absolute;
+  left: 120px;
+  bottom: -20px;
+  min-width: 260px;
+  background: rgba(255,255,255,0.92);
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  padding: 10px 22px 10px 18px;
+  display: flex;
+  flex-direction: row; 
+  align-items: center;  
+  justify-content: flex-start;
+  height: 90px; 
+  border: 1.5px solid #42b983;
+  transition: border-color 0.2s;
+}
+
+.nickname-badge-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 18px;
+}
+
+.nickname-id-col {
   display: flex;
   flex-direction: column;
-  align-items: flex-start; /* center에서 flex-start로 변경 */
-  margin-left: 1rem; /* 프로필 이미지와의 간격 */
-  transform: translateY(110%); /* 배경 아래로 내림 */
-  gap: 4px; /* 요소간 간격 */
+  align-items: flex-start;
+  margin-right: 10px;
 }
+
 .user-nickname {
-  font-size: 1.6rem;
+  font-size: 1.35rem;
   font-weight: 700;
   color: #222;
-  margin: 0;
-  line-height: 1; /* 줄간격 최소화 */
+  margin: 0 0 2px 0;
+  line-height: 1.1;
+  white-space: nowrap;
 }
 
 .user-id {
+  display: block;
   font-size: 1rem;
-  color: #666;
-  margin-left: 5px;
-  line-height: 1.1; /* 줄간격 최소화 */
+  color: #888;
+  font-weight: 500;
+  margin: 0;
+  line-height: 1.1;
+  white-space: nowrap;
 }
-.represent-badge-inline {
-  margin-top: 4px;
-  padding: 4px 12px;
-  background: #fff;
-  border-radius: 20px;
-  border: 1px solid #e0e0e0;
+
+.represent-badge-inline-large {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 12px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
 }
-.represent-badge-inline:hover {
-  border-color: #42b983;
-  box-shadow: 0 4px 12px rgba(66, 185, 131, 0.12);
-}
-.badge-icon-inline {
-  width: 20px;
-  height: 20px;
+
+.badge-icon-inline-large {
+  width: 80px;   
+  height: 80px;  
   border-radius: 50%;
-  object-fit: cover;
+  object-fit: contain;
   margin-right: 4px;
-  border: 1px solid #eee;
+  border: 2px solid #eee;
   background: #f8f9fa;
+}
+.badge-name-inline-large {
+  font-size: 1.08rem !important;
+  font-weight: 600;
+  color: #42b983;
+  vertical-align: middle;
+  white-space: nowrap;
 }
 .badge-name-inline {
   font-size: 0.93rem;
@@ -356,7 +426,7 @@ body,
   vertical-align: middle;
 }
 
-/* 뱃지 모달 */
+/* 뱃지 모달 등 기존 스타일 유지 ... */
 .badge-modal-overlay {
   position: fixed;
   top: 0;
@@ -393,7 +463,7 @@ body,
 
 .badges-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* 더 작은 카드 */
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   gap: 12px;
   margin-bottom: 20px;
 }
@@ -423,13 +493,15 @@ body,
 }
 
 .badge-item img {
-  width: 48px;
-  height: 48px;
+  width: 80px;
+  height: 80px;
   margin-bottom: 8px;
-  border-radius: 8px;
-  object-fit: cover;
+  border-radius: 50%;
+  object-fit: contain;
+  background: #f8f9fa;
+  border: 2px solid #eee;
+  box-shadow: 0 2px 8px rgba(66,185,131,0.08);
 }
-
 .badge-name {
   font-size: 0.9rem;
   font-weight: 600;
@@ -443,7 +515,6 @@ body,
   color: #666;
   margin: 0;
   line-height: 1.3;
-  /* 2줄 이상일 때 말줄임표 */
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -479,6 +550,7 @@ body,
   padding: 0.5rem;
   margin-bottom: 2rem;
   border-bottom: 1px solid #eee;
+  background: #fafbfc;
 }
 
 .tabs button {
@@ -519,7 +591,6 @@ body,
   transform: scaleX(1);
 }
 
-/* 마지막 버튼(유저 정보 변경) 스타일 */
 .tabs button.btn-secondary {
   margin-left: auto;
   background: #f8f9fa;
@@ -532,5 +603,84 @@ body,
   background: #e9ecef;
   border-color: #ced4da;
   color: #495057;
+}
+
+@media (max-width: 900px) {
+  .fixed-user-info {
+    top: 0;
+    border-radius: 0 0 10px 10px;
+  }
+  .fixed-tabs {
+    top: 210px;
+    border-radius: 0 0 8px 8px;
+  }
+  .profile-meta-side {
+    left: 100px;
+    min-width: 180px;
+    height: 80px;
+    padding: 8px 10px 8px 10px;
+  }
+  .profile-img-overlap {
+    width: 80px;
+    height: 90px;
+  }
+}
+
+@media (max-width: 700px) {
+  .fixed-user-info {
+    top: 0;
+    border-radius: 0 0 8px 8px;
+    padding: 10px 2px 10px 2px;
+  }
+  .fixed-tabs {
+    top: 170px;
+    border-radius: 0 0 6px 6px;
+    padding-bottom: 0.2rem;
+  }
+  .profile-meta-side {
+    left: 80px;
+    min-width: 120px;
+    height: 60px;
+    padding: 6px 6px 6px 6px;
+  }
+  .profile-img-overlap {
+    width: 60px;
+    height: 65px;
+  }
+  .user-nickname {
+    font-size: 1.05rem;
+  }
+  .user-id {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 500px) {
+  .fixed-user-info {
+    top: 0;
+    border-radius: 0 0 4px 4px;
+    padding: 6px 0 6px 0;
+  }
+  .fixed-tabs {
+    top: 120px;
+    border-radius: 0 0 4px 4px;
+    padding-bottom: 0.1rem;
+  }
+  .profile-meta-side {
+    left: 60px;
+    min-width: 80px;
+    height: 40px;
+    padding: 2px 2px 2px 2px;
+  }
+  .profile-img-overlap {
+    width: 38px;
+    height: 40px;
+  }
+  .user-nickname {
+    font-size: 0.9rem;
+  }
+  .user-id {
+    font-size: 0.7rem;
+  }
 }
 </style>

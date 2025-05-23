@@ -1,7 +1,5 @@
 <template>
   <div class="board-create-container">
-    <Header />
-
     <div class="form-container">
       <h2>게시글 작성</h2>
 
@@ -240,80 +238,117 @@ const toggleDebug = () => {
 </script>
 
 <style scoped>
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css");
+
 .board-create-container {
-  max-width: 800px;
+  max-width: 600px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 32px 0 32px 0;
+  font-family: "Pretendard Variable", "Pretendard", "Noto Sans KR", Arial, sans-serif;
 }
 
 .form-container {
   background-color: #fff;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 32px 28px 28px 28px;
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(66, 185, 131, 0.09);
+  border: 2px solid #e0e7ef; /* 테두리 추가 */
 }
 
 h2 {
-  margin-bottom: 20px;
-  color: #333;
+  margin-bottom: 28px;
+  color: #42b983;
+  font-size: 1.6rem;
+  font-weight: 800;
+  letter-spacing: -1px;
+  text-align: center;
+  font-family: inherit;
 }
 
 .form-group {
-  margin-bottom: 20px;
+  margin-bottom: 22px;
 }
 
 label {
   display: block;
   margin-bottom: 8px;
-  font-weight: 500;
-  color: #555;
+  font-weight: 600;
+  color: #2563eb;
+  font-size: 1.05rem;
+  font-family: inherit;
 }
 
 input,
 select,
 textarea {
   width: 100%;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 16px;
+  padding: 12px;
+  border: 1.5px solid #bcd0ee; /* 입력창 테두리 색상 강조 */
+  border-radius: 8px;
+  font-size: 1.05rem;
+  font-family: inherit;
+  background: #f8f9fa;
+  transition: border 0.2s;
+  color: #222;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: #42b983;
+  outline: none;
+}
+
+input:disabled {
+  background-color: #f1f3f5;
+  cursor: not-allowed;
 }
 
 textarea {
   resize: vertical;
-  min-height: 200px;
+  min-height: 180px;
 }
 
 .button-group {
   display: flex;
   justify-content: flex-end;
-  gap: 10px;
-  margin-top: 20px;
+  gap: 12px;
+  margin-top: 28px;
 }
 
 .cancel-btn,
 .submit-btn {
-  padding: 10px 20px;
+  padding: 10px 28px;
   border: none;
-  border-radius: 4px;
+  border-radius: 22px;
   cursor: pointer;
-  font-size: 16px;
-  font-weight: 500;
+  font-size: 1.08rem;
+  font-weight: 700;
+  font-family: inherit;
+  transition: background 0.2s;
+  border: 1.5px solid #bcd0ee; /* 버튼 테두리 추가 */
 }
 
 .cancel-btn {
-  background-color: #f2f2f2;
-  color: #333;
+  background-color: #e9ecef;
+  color: #2563eb;
+}
+.cancel-btn:hover {
+  background-color: #bcd0ee;
 }
 
 .submit-btn {
-  background-color: #42b983;
+  background: linear-gradient(90deg, #42b983 60%, #5eead4 100%);
   color: white;
+  border: 1.5px solid #42b983;
 }
-
+.submit-btn:hover:not(:disabled) {
+  background: linear-gradient(90deg, #2e8c6a 60%, #42b983 100%);
+}
 .submit-btn:disabled {
   background-color: #a8e0c9;
   cursor: not-allowed;
+  border: 1.5px solid #a8e0c9;
 }
 
 /* 디버깅 정보 스타일 */
@@ -321,9 +356,27 @@ textarea {
   margin-top: 20px;
   padding: 10px;
   background-color: #f8f8f8;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  border: 1.5px solid #bcd0ee;
+  border-radius: 8px;
   font-family: monospace;
   font-size: 12px;
+}
+
+@media (max-width: 700px) {
+  .board-create-container {
+    padding: 12px 0 12px 0;
+  }
+  .form-container {
+    padding: 18px 6px 18px 6px;
+    border-radius: 10px;
+  }
+  h2 {
+    font-size: 1.2rem;
+    margin-bottom: 18px;
+  }
+  .button-group {
+    gap: 8px;
+    margin-top: 16px;
+  }
 }
 </style>

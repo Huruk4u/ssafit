@@ -1,6 +1,5 @@
 <template>
   <div>
-    <Header />
     <div class="admin-title">관리자 페이지</div>
     <nav class="admin-nav modern-tabs">
       <button

@@ -12,7 +12,7 @@
     
     <div v-else class="following-list">
       <div 
-        v-for="user in followingList" 
+        v-for="user in pagedFollowing" 
         :key="user.userId"
         class="following-item"
         @click="goToUserProfile(user.userId)"
@@ -30,18 +30,41 @@
           <span class="following-badge">팔로잉</span>
         </div>
       </div>
+      <div class="pagination" v-if="totalPages > 1">
+        <button @click="prevPage" :disabled="currentPage === 1">이전</button>
+        <span>{{ currentPage }} / {{ totalPages }}</span>
+        <button @click="nextPage" :disabled="currentPage === totalPages">다음</button>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { useRouter } from "vue-router";
 import api from "@/api/axiosInstance";
 
 const router = useRouter();
 const followingList = ref([]);
 const loading = ref(true);
+
+const currentPage = ref(1);
+const pageSize = 8;
+
+const pagedFollowing = computed(() => {
+  const start = (currentPage.value - 1) * pageSize;
+  return followingList.value.slice(start, start + pageSize);
+});
+const totalPages = computed(() =>
+  Math.ceil(followingList.value.length / pageSize)
+);
+
+const prevPage = () => {
+  if (currentPage.value > 1) currentPage.value--;
+};
+const nextPage = () => {
+  if (currentPage.value < totalPages.value) currentPage.value++;
+};
 
 const getUserProfileImage = (profileImage) => {
   return profileImage
@@ -61,7 +84,6 @@ const fetchFollowingList = async () => {
   } catch (error) {
     console.error("팔로우 목록 조회 실패:", error);
     if (error.response?.status === 204) {
-      // No Content - 팔로우한 사람이 없음
       followingList.value = [];
     } else {
       alert("팔로우 목록을 불러오는데 실패했습니다.");
@@ -83,10 +105,16 @@ onMounted(() => {
 
 h3 {
   margin-top: 0;
-  color: #333;
-  border-bottom: 2px solid #42b983;
-  padding-bottom: 8px;
-  margin-bottom: 20px;
+  color: #42b983;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  border-bottom: 2.5px solid #42b983;
+  padding-bottom: 10px;
+  margin-bottom: 24px;
+  background: linear-gradient(90deg, #e0f7fa 60%, #fff 100%);
+  border-radius: 12px 12px 0 0;
+  box-shadow: 0 2px 8px rgba(66,185,131,0.06);
 }
 
 .loading {
@@ -157,12 +185,47 @@ h3 {
 }
 
 .following-badge {
-  background-color: #28a745;
-  color: white;
-  padding: 4px 12px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: bold;
+  background: linear-gradient(90deg, #42b983 60%, #b2f2e5 100%);
+  color: #fff;
+  padding: 5px 18px;
+  border-radius: 18px;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  box-shadow: 0 2px 8px rgba(66,185,131,0.10);
+  border: 2px solid #b2dfdb;
+  transition: background 0.2s, border 0.2s;
+  display: inline-block;
+}
+
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 18px;
+  margin: 24px 0 10px 0;
+}
+
+.pagination button {
+  background: #42b983;
+  color: #fff;
+  border: none;
+  border-radius: 16px;
+  padding: 6px 18px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.pagination button:disabled {
+  background: #adb5bd;
+  cursor: not-allowed;
+}
+.pagination span {
+  font-size: 1.05rem;
+  color: #222;
+  font-weight: 500;
 }
 
 @media (max-width: 768px) {

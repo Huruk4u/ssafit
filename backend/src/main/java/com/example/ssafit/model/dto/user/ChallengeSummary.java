@@ -6,12 +6,12 @@ import java.util.Map;
 public class ChallengeSummary {
     private int currentStreak;
     private int longestStreak;
-    private Map<LocalDate, Boolean> streakCalendar;
+    private Map<String, Boolean> streakCalendar;
 
     public ChallengeSummary() {
     }
 
-    public ChallengeSummary(int currentStreak, int longestStreak, Map<LocalDate, Boolean> streakCalendar) {
+    public ChallengeSummary(int currentStreak, int longestStreak, Map<String, Boolean> streakCalendar) {
         this.currentStreak = currentStreak;
         this.longestStreak = longestStreak;
         this.streakCalendar = streakCalendar;
@@ -33,11 +33,11 @@ public class ChallengeSummary {
         this.longestStreak = longestStreak;
     }
 
-    public Map<LocalDate, Boolean> getStreakCalendar() {
+    public Map<String, Boolean> getStreakCalendar() {
         return streakCalendar;
     }
 
-    public void setStreakCalendar(Map<LocalDate, Boolean> streakCalendar) {
+    public void setStreakCalendar(Map<String, Boolean> streakCalendar) {
         this.streakCalendar = streakCalendar;
     }
 }

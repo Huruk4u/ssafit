@@ -35,7 +35,7 @@ public class ChallengeServiceImpl implements ChallengeService {
         int longestStreak = calculateLongestStreak(challenges);
 
         // 3. 스트릭 캘린더 맵 생성 (최근 3개월)
-        Map<LocalDate, Boolean> streakCalendar = createStreakCalendar(challenges);
+        Map<String, Boolean> streakCalendar = createStreakCalendar(challenges);
 
         return new ChallengeSummary(currentStreak, longestStreak, streakCalendar);
     }
@@ -138,27 +138,23 @@ public class ChallengeServiceImpl implements ChallengeService {
         return longestStreak;
     }
 
-    // 스트릭 캘린더 맵 생성 (최근 3개월)
-    private Map<LocalDate, Boolean> createStreakCalendar(List<Challenge> challenges) {
-        // 최근 3개월 날짜 범위 계산
+    // 스트릭 캘린더 맵 생성 (최근 6개월)
+    private Map<String, Boolean> createStreakCalendar(List<Challenge> challenges) {
         LocalDate today = LocalDate.now();
-        LocalDate threeMonthsAgo = today.minusMonths(3);
+        LocalDate threeMonthsAgo = today.minusMonths(6);
 
-        // 모든 날짜를 포함하는 맵 초기화 (기본값: false)
-        Map<LocalDate, Boolean> calendar = new HashMap<>();
+        Map<String, Boolean> calendar = new HashMap<>();
 
-        // 3개월치 날짜를 모두 맵에 추가 (기본적으로 스트릭 없음 상태)
         LocalDate current = threeMonthsAgo;
         while (!current.isAfter(today)) {
-            calendar.put(current, false);
+            calendar.put(current.toString(), false); // <-- key를 String으로!
             current = current.plusDays(1);
         }
 
-        // 챌린지 기록이 있는 날짜는 true로 설정
         for (Challenge challenge : challenges) {
             LocalDate recordDate = challenge.getRecordDate();
             if (!recordDate.isBefore(threeMonthsAgo) && !recordDate.isAfter(today)) {
-                calendar.put(recordDate, true);
+                calendar.put(recordDate.toString(), true); // <-- key를 String으로!
             }
         }
 

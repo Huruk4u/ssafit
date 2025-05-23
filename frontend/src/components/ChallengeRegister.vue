@@ -72,7 +72,7 @@
                 @click="goToBoardWithTag(tag)"
                 class="tag-button"
               >
-                {{ tag.label }}
+                #{{ tag.label }}
               </button>
           </div>
         </div>
@@ -241,25 +241,33 @@ const goToBoardWithTag = tag => {
 
 
 <style scoped>
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css");
+
 .challenge-status {
-  background-color: #f8f9fa;
-  border-radius: 8px;
-  padding: 20px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  font-family: "Pretendard Variable", "Pretendard", "Noto Sans KR", Arial, sans-serif;
+  background: #f8f9fa;
+  border-radius: 16px;
+  padding: 32px 20px 28px 20px;
+  box-shadow: 0 4px 24px rgba(66, 185, 131, 0.09);
+  max-width: 600px;
+  margin: 0 auto;
+  border: 2px solid #e0e7ef;
 }
 
 h3 {
   margin-top: 0;
-  color: #333;
-  border-bottom: 2px solid #42b983;
-  padding-bottom: 8px;
-  margin-bottom: 20px;
-}
-
-.loading {
-  display: flex;
-  justify-content: center;
-  padding: 20px;
+  color: #42b983;
+  border-bottom: 2.5px solid #42b983;
+  padding-bottom: 10px;
+  margin-bottom: 28px;
+  font-size: 1.7rem;
+  font-weight: 800;
+  letter-spacing: -1px;
+  text-align: center;
+  font-family: inherit;
+  background: linear-gradient(90deg, #e0f7fa 60%, #fff 100%);
+  border-radius: 12px 12px 0 0;
+  box-shadow: 0 2px 8px rgba(66,185,131,0.06);
 }
 
 .challenge-completed,
@@ -267,96 +275,80 @@ h3 {
   display: flex;
   flex-direction: column;
   gap: 20px;
+  align-items: center;
+  font-family: inherit;
 }
 
 .success-message {
-  background-color: #d4edda;
-  border: 1px solid #c3e6cb;
-  border-radius: 6px;
-  padding: 15px;
-  color: #155724;
+  background: linear-gradient(90deg, #e6f9f1 0%, #fff 100%);
+  border: 1.5px solid #42b98344;
+  border-radius: 10px;
+  padding: 18px 24px;
+  color: #1a7f5a;
+  text-align: center;
+  font-size: 1.13rem;
+  font-weight: 600;
+  box-shadow: 0 2px 8px #42b98311;
+  font-family: inherit;
 }
 
+.success-message h4 {
+  font-size: 1.18rem;
+  font-weight: 700;
+  color: #1a7f5a;
+  margin-bottom: 8px;
+  font-family: inherit;
+}
+.success-message p {
+  font-size: 1.05rem;
+  color: #1a7f5a;
+  font-family: inherit;
+}
 .challenge-prompt {
-  background-color: #cce5ff;
-  border: 1px solid #b8daff;
-  border-radius: 6px;
-  padding: 15px;
-  color: #004085;
+  background: linear-gradient(90deg, #e0f7fa 0%, #f8f9fa 100%);
+  border: 1.5px solid #42b98322;
+  border-radius: 10px;
+  padding: 18px 24px;
+  color: #229d6a;
+  text-align: center;
+  font-size: 1.13rem;
+  font-weight: 600;
+  box-shadow: 0 2px 8px #42b98311;
+  font-family: inherit;
 }
-
+.challenge-prompt h4 {
+  font-size: 1.18rem;
+  font-weight: 700;
+  color: #229d6a;
+  margin-bottom: 8px;
+  font-family: inherit;
+}
+.challenge-prompt p {
+  font-size: 1.05rem;
+  color: #229d6a;
+  font-family: inherit;
+}
 .streak-info {
   font-weight: bold;
   margin-top: 10px;
-}
-
-.recommended-tags {
-  margin-top: 10px;
-}
-
-.tag-buttons {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 10px;
-}
-
-.tag-button {
-  background-color: #42b983;
-  color: white;
-  border: none;
-  border-radius: 20px;
-  padding: 8px 16px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.tag-button:hover {
-  background-color: #3a9d70;
-}
-
-.inbody-info {
-  margin-top: 20px;
-}
-
-.inbody-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 15px;
-  margin-top: 10px;
-}
-
-.inbody-item {
-  background-color: #f1f1f1;
-  border-radius: 6px;
-  padding: 12px;
-  text-align: center;
-}
-
-.inbody-label {
-  font-size: 14px;
-  color: #666;
-  margin-bottom: 5px;
-}
-
-.inbody-value {
-  font-size: 18px;
-  font-weight: bold;
-  color: #333;
-  margin: 0;
+  color: #42b983;
+  font-size: 1.08rem;
+  font-family: inherit;
 }
 
 .upload-section {
-  margin-top: 20px;
+  margin-top: 18px;
   display: flex;
   flex-direction: column;
   gap: 15px;
+  align-items: center;
 }
 
 .file-input-container {
   display: flex;
   align-items: center;
   gap: 10px;
+  justify-content: center;
 }
 
 .file-input {
@@ -364,75 +356,198 @@ h3 {
 }
 
 .file-input-label {
-  background-color: #6c757d;
+  background: linear-gradient(90deg, #42b983 60%, #5eead4 100%);
   color: white;
-  padding: 8px 16px;
-  border-radius: 4px;
+  padding: 8px 18px;
+  border-radius: 22px;
   cursor: pointer;
-  transition: background-color 0.2s;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: background 0.2s;
+  border: none;
+  box-shadow: 0 2px 8px #42b98322;
+  font-family: inherit;
 }
-
 .file-input-label:hover {
-  background-color: #5a6268;
+  background: linear-gradient(90deg, #2e8c6a 60%, #42b983 100%);
 }
 
 .file-name {
   color: #495057;
-  font-size: 14px;
+  font-size: 0.98rem;
+  font-family: inherit;
 }
 
 .preview-container {
   position: relative;
   width: 100%;
-  max-width: 300px;
+  max-width: 260px;
   margin: 10px 0;
 }
 
 .image-preview {
   width: 100%;
-  border-radius: 4px;
-  border: 1px solid #ddd;
+  border-radius: 8px;
+  border: 1.5px solid #e9ecef;
+  box-shadow: 0 2px 8px #42b98311;
 }
 
 .clear-preview {
   position: absolute;
   top: 5px;
   right: 5px;
-  background-color: rgba(0, 0, 0, 0.5);
+  background: #42b983;
   color: white;
   border: none;
   border-radius: 50%;
-  width: 24px;
-  height: 24px;
+  width: 26px;
+  height: 26px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  font-size: 1.1rem;
+  box-shadow: 0 2px 8px #42b98322;
+  transition: background 0.2s;
+}
+.clear-preview:hover {
+  background: #2e8c6a;
 }
 
 .upload-button {
-  background-color: #007bff;
+  background: linear-gradient(90deg, #42b983 60%, #5eead4 100%);
   color: white;
   border: none;
-  border-radius: 4px;
-  padding: 10px 20px;
+  border-radius: 22px;
+  padding: 10px 32px;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: background 0.2s;
   font-weight: bold;
+  font-size: 1.08rem;
+  box-shadow: 0 2px 8px #42b98322;
+  font-family: inherit;
 }
-
 .upload-button:hover:not(:disabled) {
-  background-color: #0069d9;
+  background: linear-gradient(90deg, #2e8c6a 60%, #42b983 100%);
 }
-
 .upload-button:disabled {
-  background-color: #6c757d;
+  background: #adb5bd;
   cursor: not-allowed;
 }
 
+.recommended-tags {
+  margin-top: 30px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 2px solid #e0e7ef; 
+  border-radius: 12px;
+  padding: 18px 10px 14px 10px;
+  background: #fafdff;
+}
+.recommended-tags h4 {
+  font-size: 1.18rem;
+  font-weight: 700;
+  color: #222;
+  margin-bottom: 12px;
+  letter-spacing: -0.5px;
+  font-family: inherit;
+}
+
+.tag-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: center;
+}
+
+.tag-button {
+  background: linear-gradient(90deg, #42b983 60%, #5eead4 100%);
+  color: white;
+  border: none;
+  border-radius: 22px;
+  padding: 8px 22px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1.05rem;
+  transition: background 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 8px #42b98322;
+  font-family: inherit;
+}
+.tag-button:hover {
+  background: linear-gradient(90deg, #2e8c6a 60%, #42b983 100%);
+}
+
+/* 추천 태그, 인바디 정보 박스도 통일 */
+.recommended-tags,
+.inbody-info {
+  border: 2px solid #e0e7ef;
+  border-radius: 12px;
+  padding: 18px 10px 14px 10px;
+  background: #fafdff;
+}
+
+.recommended-tags h4,
+.inbody-info h4 {
+  font-size: 1.13rem;
+  font-weight: 700;
+  color: #229d6a;
+  margin-bottom: 12px;
+  letter-spacing: -0.5px;
+  text-align: center;
+  font-family: inherit;
+}
+
+.inbody-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 18px;
+  margin-top: 10px;
+}
+
+.inbody-item {
+  background: #f1f1f1;
+  border-radius: 10px;
+  padding: 16px 8px;
+  text-align: center;
+  box-shadow: 0 2px 8px #42b98311;
+  font-family: inherit;
+}
+
+.inbody-label {
+  font-size: 15px;
+  color: #666;
+  margin-bottom: 5px;
+  font-weight: 500;
+  font-family: inherit;
+}
+
+.inbody-value {
+  font-size: 20px;
+  font-weight: bold;
+  color: #222;
+  margin: 0;
+  letter-spacing: 0.5px;
+  font-family: inherit;
+}
+
 @media (max-width: 768px) {
+  .challenge-status {
+    padding: 16px 4px 16px 4px;
+    border-radius: 10px;
+  }
+  .inbody-info,
+  .recommended-tags {
+    padding: 10px 2px 10px 2px;
+    border-radius: 8px;
+  }
   .inbody-grid {
     grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  .recommended-tags {
+    margin-top: 18px;
   }
 }
 </style>

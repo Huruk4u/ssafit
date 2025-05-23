@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.ssafit.model.dao.FollowDao">
-    <select id="selectFolloweeListByUserId" resultType="User">
+    <select id="selectFolloweeListByUserId">
         SELECT u.*
         FROM follow f
                  JOIN users u ON f.followee_id = u.user_id

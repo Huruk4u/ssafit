@@ -1,22 +1,19 @@
 <template>
-  <div>
-    <div>
-      <Header />
+  <div class="noti-root">
+    <div class="noti-header-row">
+      <h2 class="noti-title">알림</h2>
+      <div class="noti-actions">
+        <button @click="markAllAsRead" :disabled="notificationList.length === 0">
+          모두 읽음
+        </button>
+        <button
+          @click="deleteAllNotifications"
+          :disabled="notificationList.length === 0"
+        >
+          모두 삭제
+        </button>
+      </div>
     </div>
-    <h2>유저 알림 처리</h2>
-
-    <div class="noti-actions">
-      <button @click="markAllAsRead" :disabled="notificationList.length === 0">
-        모든 알림 읽음 처리
-      </button>
-      <button
-        @click="deleteAllNotifications"
-        :disabled="notificationList.length === 0"
-      >
-        모든 알림 삭제
-      </button>
-    </div>
-
     <div class="noti-list-wrapper">
       <ul class="noti-list">
         <li
@@ -24,31 +21,29 @@
           :key="notification.notificationId"
           :class="['noti-card', { unread: !notification.isRead }]"
         >
-          <div class="noti-main">
-            <router-link
-              v-if="
-                notification.type === 'comment' && getArticleId(notification)
-              "
-              :to="`/board/detail/${getArticleId(notification)}`"
-              class="noti-link"
-            >
-              {{ renderMessage(notification) }}
-            </router-link>
-            <span v-else>{{ renderMessage(notification) }}</span>
-          </div>
-          <div class="noti-meta">
-            <span class="noti-date">{{ notification.createdAt }}</span>
-            <div class="noti-actions-inline">
-              <button
-                @click="markAsRead(notification.notificationId)"
-                :disabled="notification.isRead"
+          <div class="noti-main-row">
+            <div class="noti-main">
+              <router-link
+                v-if="notification.type === 'comment' && getArticleId(notification)"
+                :to="`/board/detail/${getArticleId(notification)}`"
+                class="noti-link"
               >
-                읽음
-              </button>
-              <button @click="deleteNotification(notification.notificationId)">
-                삭제
-              </button>
+                {{ renderMessage(notification) }}
+              </router-link>
+              <span v-else>{{ renderMessage(notification) }}</span>
             </div>
+            <span class="noti-date">{{ formatDate(notification.createdAt) }}</span>
+          </div>
+          <div class="noti-actions-inline">
+            <button
+              @click="markAsRead(notification.notificationId)"
+              :disabled="notification.isRead"
+            >
+              읽음
+            </button>
+            <button @click="deleteNotification(notification.notificationId)">
+              삭제
+            </button>
           </div>
         </li>
       </ul>
@@ -62,7 +57,6 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import api from "@/api/axiosInstance";
-import Header from "@/components/Header.vue";
 
 const notificationList = ref([]);
 
@@ -78,9 +72,8 @@ const renderMessage = (notification) => {
   }
 
   if (notification.type === "comment" && payloadObj.articleId) {
-    return `게시글 ${payloadObj.articleId}에 새 댓글이 달렸습니다.`;
+    return `나의 게시글에 새 댓글이 달렸습니다.`;
   } else if (notification.type === "report") {
-    // 예: 광고로 인해 0일 정지되었습니다.
     return `${payloadObj.category || "사유없음"}로 인해 ${
       payloadObj.action ?? "?"
     }일 정지되었습니다.`;
@@ -101,13 +94,24 @@ const getArticleId = (notification) => {
   }
 };
 
+// 날짜 포맷 함수 (YYYY-MM-DD HH:mm)
+const formatDate = (dateString) => {
+  if (!dateString) return "";
+  const date = new Date(dateString);
+  const yyyy = date.getFullYear();
+  const mm = String(date.getMonth() + 1).padStart(2, "0");
+  const dd = String(date.getDate()).padStart(2, "0");
+  const hh = String(date.getHours()).padStart(2, "0");
+  const min = String(date.getMinutes()).padStart(2, "0");
+  return `${yyyy}-${mm}-${dd} ${hh}:${min}`;
+};
+
 // 알림 목록 불러오기
 const loadNotifications = () => {
   api
     .get("/api_notification/list")
     .then((res) => {
       notificationList.value = res.data;
-      console.log("알림 목록", notificationList.value);
     })
     .catch(() => {
       alert("알림 목록을 가져오는데 실패했습니다.");
@@ -173,13 +177,190 @@ const deleteAllNotifications = () => {
 </script>
 
 <style scoped>
-.unread span,
-.unread .noti-link {
-  font-weight: bold;
-  color: #1a7f5a;
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css");
+
+.noti-root {
+  font-family: "Pretendard Variable", "Pretendard", "Noto Sans KR", Arial, sans-serif;
+  background: #f8f9fa;
+  min-height: 100vh;
+  padding: 32px 0 0 0;
 }
 
-.actions button {
-  margin-left: 8px;
+.noti-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 700px;
+  margin: 0 auto 18px auto;
+  padding: 0 8px;
+}
+
+.noti-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #212529;
+  letter-spacing: -1px;
+  margin: 0;
+}
+
+.noti-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.noti-actions button {
+  padding: 8px 20px;
+  background: linear-gradient(135deg, #42b983, #369870);
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(66,185,131,0.10);
+  transition: background 0.2s, box-shadow 0.2s;
+}
+
+.noti-actions button:disabled {
+  background: #adb5bd;
+  color: #fff;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.noti-list-wrapper {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+  padding: 0;
+  margin-top: 10px;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.noti-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.noti-card {
+  padding: 1.3rem 2rem 1.1rem 2rem;
+  border-bottom: 1px solid #f1f3f5;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  background: #fff;
+  transition: background 0.15s;
+}
+
+.noti-card.unread {
+  background: linear-gradient(90deg, #e6f9f1 0%, #fff 100%);
+}
+
+.noti-main-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.noti-main {
+  font-size: 1.08rem;
+  color: #212529;
+  word-break: break-word;
+  flex: 1;
+}
+
+.noti-link {
+  color: #1a7f5a;
+  text-decoration: underline;
+  font-weight: 600;
+  transition: color 0.2s;
+}
+
+.noti-link:hover {
+  color: #42b983;
+  text-decoration: underline;
+}
+
+.noti-date {
+  font-size: 0.97rem;
+  color: #adb5bd;
+  min-width: 120px;
+  text-align: right;
+  font-family: "Pretendard Variable", "Pretendard", Arial, sans-serif;
+}
+
+.noti-actions-inline {
+  display: flex;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.noti-actions-inline button {
+  padding: 6px 16px;
+  background: #f8f9fa;
+  color: #42b983;
+  border: 1.5px solid #e9ecef;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border 0.2s;
+}
+
+.noti-actions-inline button:disabled {
+  color: #adb5bd;
+  border-color: #e9ecef;
+  background: #f1f3f5;
+  cursor: not-allowed;
+}
+
+.noti-actions-inline button:hover:not(:disabled) {
+  background: #e6f9f1;
+  color: #369870;
+  border-color: #42b983;
+}
+
+.noti-empty {
+  text-align: center;
+  color: #adb5bd;
+  font-size: 1.1rem;
+  padding: 40px 0;
+  background: #f8f9fa;
+  border-radius: 0 0 18px 18px;
+}
+
+@media (max-width: 800px) {
+  .noti-list-wrapper {
+    max-width: 98vw;
+    border-radius: 10px;
+  }
+  .noti-card {
+    padding: 1rem 0.7rem;
+  }
+  .noti-header-row {
+    max-width: 98vw;
+    padding: 0 2vw;
+  }
+}
+
+@media (max-width: 500px) {
+  .noti-title {
+    font-size: 1.1rem;
+  }
+  .noti-card {
+    padding: 0.7rem 0.3rem;
+    font-size: 0.95rem;
+  }
+  .noti-list-wrapper {
+    border-radius: 6px;
+  }
+  .noti-date {
+    min-width: 70px;
+    font-size: 0.88rem;
+  }
 }
 </style>
