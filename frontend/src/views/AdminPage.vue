@@ -250,6 +250,7 @@ const confirmHandle = () => {
     .then(() => {
       alert("신고가 처리되었습니다.");
       reportList.value[selectedIdx.value].handled = true;
+      window.dispatchEvent(new Event("auth-changed")); // 헤더 동기화
       closeModal();
     })
     .catch(() => {

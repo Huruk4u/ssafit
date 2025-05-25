@@ -163,19 +163,22 @@ import MyArticles from "@/components/mypage/MyArticles.vue";
 import MyLikedArticles from "@/components/mypage/MyLikedArticles.vue";
 import ActivityInfo from "@/components/mypage/ActivityInfo.vue";
 import MyFollowing from "@/components/mypage/MyFollowing.vue";
+import { useUserImage } from "@/composables/useUserImage";
 
 const router = useRouter();
 const user = ref(JSON.parse(localStorage.getItem("user") || "{}"));
+const { getProfileImage, getBackgroundImage } = useUserImage(user.value);
 
 const userProfileImage = computed(() =>
   user.value.profileImage
     ? `http://localhost:8080/images/profile/${user.value.profileImage}`
-    : "/default-profile.png"
+    : new URL('@/assets/image/default_user.png', import.meta.url).href
 );
+
 const userBackgroundImage = computed(() =>
   user.value.backgroundImage
     ? `http://localhost:8080/images/background/${user.value.backgroundImage}`
-    : "/default-background.jpg"
+    : new URL('@/assets/image/default_background.png', import.meta.url).href
 );
 
 const activeTab = ref(1);

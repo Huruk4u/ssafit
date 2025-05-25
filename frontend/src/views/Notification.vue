@@ -133,6 +133,7 @@ const markAsRead = (notificationId) => {
         (n) => n.notificationId === notificationId
       );
       if (target) target.isRead = true;
+      window.dispatchEvent(new Event("auth-changed")); // 동기화
     })
     .catch(() => {
       alert("읽음 처리 실패");
@@ -147,6 +148,7 @@ const deleteNotification = (notificationId) => {
       notificationList.value = notificationList.value.filter(
         (n) => n.notificationId !== notificationId
       );
+      window.dispatchEvent(new Event("auth-changed")); // 동기화
     })
     .catch(() => {
       alert("알림 삭제 실패");
@@ -159,6 +161,7 @@ const markAllAsRead = () => {
     .put("/api_notification/read/all")
     .then(() => {
       notificationList.value.forEach((n) => (n.isRead = true));
+      window.dispatchEvent(new Event("auth-changed")); // 동기화
     })
     .catch(() => {
       alert("모든 알림 읽음 처리 실패");
@@ -171,6 +174,7 @@ const deleteAllNotifications = () => {
     .delete("/api_notification/delete/all")
     .then(() => {
       notificationList.value = [];
+      window.dispatchEvent(new Event("auth-changed")); // 동기화
     })
     .catch(() => {
       alert("모든 알림 삭제 실패");

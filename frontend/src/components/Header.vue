@@ -9,19 +9,24 @@
           to="/notification"
           class="nav-link"
           active-class="active-link"
+          :class="{ 'has-unread': unreadCount > 0 }"
         >
           알림
           <span
-            v-if="user && user.unreadNotifications > 0"
-            class="badge"
-          >{{ user.unreadNotifications }}</span>
+            v-if="unreadCount > 0"
+            class="dot"
+          ></span>
         </router-link>
         <router-link
           v-if="user && user.role === 'ROLE_ADMIN'"
           to="/admin"
           class="nav-link"
           active-class="active-link"
-        >관리자 페이지</router-link>
+          :class="{ 'has-unread': adminUnreadCount > 0 }"
+        >
+          관리자 페이지
+          <span v-if="adminUnreadCount > 0" class="dot"></span>
+        </router-link>
       </nav>
       <div class="nav-auth">
         <button v-if="isLogin" class="nav-link nav-btn" @click="logout">
@@ -39,7 +44,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from "vue";
+import { ref, computed, onMounted, onUnmounted } from "vue";
 import { useRouter } from "vue-router";
 import api from "@/api/axiosInstance";
 
@@ -48,18 +53,54 @@ const router = useRouter();
 const isLogin = ref(!!localStorage.getItem("token"));
 const user = ref(localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : null);
 
+// 일반 알림
+const notifications = ref([]);
+const unreadCount = computed(() =>
+  notifications.value.filter(n => n.isRead === false).length
+);
+
+// 관리자 알림
+const adminNotifications = ref([]);
+const adminUnreadCount = computed(() =>
+  adminNotifications.value.filter(r => !r.isHandled).length
+);
+
 function syncAuthState() {
   isLogin.value = !!localStorage.getItem("token");
   user.value = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : null;
+  fetchNotifications();
+  fetchAdminNotifications();
 }
 
 function handleAuthChanged() {
   syncAuthState();
 }
 
+async function fetchNotifications() {
+  if (!isLogin.value) return;
+  try {
+    const res = await api.get("/api_notification/list");
+    notifications.value = res.data;
+  } catch (err) {
+    console.error("알림 목록 불러오기 실패", err);
+  }
+}
+
+async function fetchAdminNotifications() {
+  if (!isLogin.value || !user.value || user.value.role !== "ROLE_ADMIN") return;
+  try {
+    const res = await api.get("/api_admin/get/report/notHandled");
+    adminNotifications.value = res.data;
+  } catch (err) {
+    console.error("관리자 알림 목록 불러오기 실패", err);
+  }
+}
+
 onMounted(() => {
   window.addEventListener("auth-changed", handleAuthChanged);
   window.addEventListener("storage", handleAuthChanged);
+  fetchNotifications();
+  fetchAdminNotifications();
 });
 
 onUnmounted(() => {
@@ -71,7 +112,7 @@ const logout = () => {
   api.post("/api_auth/logout").then(() => {
     localStorage.clear();
     syncAuthState();
-    window.dispatchEvent(new Event("auth-changed")); // 커스텀 이벤트 발생
+    window.dispatchEvent(new Event("auth-changed"));
     router.push("/login").catch((err) => {
       console.error("로그아웃 실패", err);
       alert("로그아웃 중 문제가 발생했습니다.");
@@ -206,6 +247,17 @@ body, #app {
   color: #fff !important;
 }
 
+.dot {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  margin-left: 6px;
+  background: #e53935;
+  border-radius: 50%;
+  vertical-align: middle;
+  box-shadow: 0 1px 4px #e5393533;
+}
+
 .badge {
   display: inline-block;
   min-width: 18px;
@@ -220,6 +272,16 @@ body, #app {
   line-height: 18px;
   text-align: center;
   box-shadow: 0 1px 4px #e5393533;
+}
+
+.has-unread {
+  color: #e53935 !important;
+  font-weight: 700;
+}
+
+.nav-link.has-unread {
+  color: #e53935 !important;
+  font-weight: 700 !important;
 }
 
 @media (max-width: 600px) {
