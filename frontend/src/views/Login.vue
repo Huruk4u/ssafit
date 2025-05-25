@@ -21,9 +21,9 @@
 </template>
 
 <script setup>
-import {ref, onMounted} from 'vue'
+import { ref, onMounted } from 'vue'
 import api from '@/api/axiosInstance'
-import {useRouter} from 'vue-router'
+import { useRouter } from 'vue-router'
 
 const username = ref("")
 const password = ref("")
@@ -35,30 +35,30 @@ const login = () => {
     username: username.value,
     password: password.value
   }).then(res => {
-    console.log(res)
-    console.log(res.data.user)
-    
     const token = res.data.token
     const user = res.data.user
 
-    localStorage.setItem("token", token)
-    api.defaults.headers.common['Authorization'] = `Bearer ${token}`
-    
-    localStorage.setItem("user", JSON.stringify(user))
-    console.log("user", user)
-    
-    router.push("/mypage")
+    localStorage.setItem("token", token);
+    localStorage.setItem("user", JSON.stringify(user));
+    window.dispatchEvent(new Event("auth-changed")); // 커스텀 이벤트 발생
 
+    api.defaults.headers.common['Authorization'] = `Bearer ${token}`
+
+    router.push("/mypage")
   }).catch(err => {
     alert("로그인 실패")
     console.error(err)
   })
-
 }
 
+// 로그인 상태면 자동 리다이렉트
+onMounted(() => {
+  if (localStorage.getItem("token")) {
+    router.replace("/mypage")
+  }
+})
 </script>
 
-...existing code...
 <style scoped>
 .auth-container {
   width: 350px;

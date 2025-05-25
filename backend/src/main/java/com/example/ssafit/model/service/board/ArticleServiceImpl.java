@@ -79,6 +79,7 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     @Transactional
     public boolean likeArticle(int articleId, int userId) {
+        // 이것도 내부 로직이므로, exception처리 안 함.
         if (articleDao.isLiked(articleId, userId)) {
             // 이미 좋아요한 경우 - 취소
             articleDao.deleteLike(articleId, userId);

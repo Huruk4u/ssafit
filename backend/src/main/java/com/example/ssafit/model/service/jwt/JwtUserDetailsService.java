@@ -31,6 +31,7 @@ public class JwtUserDetailsService implements UserDetailsService {
         if (user != null) {
             return new CustomUserDetails(user);
         } else {
+            // 이건 수정했다가 좀 안 좋을 수 있을거 같아 수정 안했다잉.
             throw new UsernameNotFoundException("User not found with username: " + username);
         }
     }

@@ -1,5 +1,7 @@
 package com.example.ssafit.model.service;
 
+import com.example.ssafit.exception.CustomBusinessException;
+import com.example.ssafit.exception.ErrorCode;
 import com.example.ssafit.model.dao.NotificationDao;
 import com.example.ssafit.model.dto.Notification;
 import com.example.ssafit.model.dto.Report;
@@ -36,9 +38,8 @@ public class NotificationServiceImpl implements NotificationService {
         Long articleAuthorId = notificationDao.selectArticleAuthorId(articleId);
 
         // articleAuthorId가 null인 경우 처리
-        if (articleAuthorId == null) {
-            return 0;
-        }
+        if (articleAuthorId == null)
+            throw new CustomBusinessException(ErrorCode.ARTICLE_AUTHOR_NOT_FOUND);
 
         // 자신의 게시글에 자신이 댓글을 남긴 경우에는 알림을 생성하지 않음
         if (articleAuthorId == commentAuthorId) {
@@ -55,8 +56,7 @@ public class NotificationServiceImpl implements NotificationService {
         try {
             payloadJson = objectMapper.writeValueAsString(payload);
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
-            return 0;
+            throw new CustomBusinessException(ErrorCode.JSON_PROCESSING_FAILED, e);
         }
 
         // 알림 객체 생성
@@ -77,10 +77,12 @@ public class NotificationServiceImpl implements NotificationService {
 
         // 신고당한 유저 조회
         User reportee = userService.searchByUserId(report.getReporteeId());
-        if (reportee == null) return 0;
+        if (reportee == null)
+            throw new CustomBusinessException(ErrorCode.REPORTEE_NOT_FOUND);
 
         // 셀프 신고 방지
-        if (report.getReporterId() == report.getReporteeId()) return 0;
+        if (report.getReporterId() == report.getReporteeId())
+            throw new CustomBusinessException(ErrorCode.SELF_REPORTED);
 
         // 알림 페이로드 생성 (JSON 형태로 저장)
         Map<String, Object> payload = new HashMap<>();
@@ -93,8 +95,7 @@ public class NotificationServiceImpl implements NotificationService {
         try {
             payloadJson = objectMapper.writeValueAsString(payload);
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
-            return 0;
+            throw new CustomBusinessException(ErrorCode.JSON_PROCESSING_FAILED, e);
         }
 
         // 알림 객체 생성

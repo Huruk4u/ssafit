@@ -1,5 +1,8 @@
 package com.example.ssafit.model.service.user;
 
+import com.example.ssafit.exception.CustomBusinessException;
+import com.example.ssafit.exception.CustomUnAuthenticationException;
+import com.example.ssafit.exception.ErrorCode;
 import com.example.ssafit.model.dao.UserDao;
 import com.example.ssafit.model.dto.user.RegistForm;
 import com.example.ssafit.model.dto.user.UpdatePasswordRequestForm;
@@ -52,14 +55,12 @@ public class UserServiceImpl implements UserService {
         System.out.println("addUser진입");
 
         // registForm의 비밀번호 확인 여부 체크
-        if (!registForm.getPassword().equals(registForm.getCheckPassword())) {
-            throw new RuntimeException("비밀번호가 일치하지 않습니다.");
-        }
+        if (!registForm.getPassword().equals(registForm.getCheckPassword()))
+            throw new CustomBusinessException(ErrorCode.PASSWORD_NOT_MATCHED);
 
         // registForm의 유저아이디 중복 여부 체크
-        if (checkExistsByUserName(registForm.getUserName())) {
-            throw new RuntimeException("이미 존재하는 아이디입니다.");
-        }
+        if (checkExistsByUserName(registForm.getUserName()))
+            throw new CustomBusinessException(ErrorCode.DUPLICATED_USER_NAME);
 
         // User등록을 위한 입력 폼 정보
         User newUser = new User();
@@ -97,13 +98,13 @@ public class UserServiceImpl implements UserService {
         User user = userDao.selectByUsername(userName);
         System.out.println("입력된 정보 : " + requestForm);
         if (user == null)
-            throw new RuntimeException("존재하지 않는 유저입니다.");
+            throw new CustomBusinessException(ErrorCode.MODIFIED_USER_NOT_FOUND);
 
         if (!passwordEncoder.matches(requestForm.getCurrentPassword(), user.getPassword()))
-            throw new RuntimeException("현재 비밀번호가 일치하지 않습니다.");
+            throw new CustomUnAuthenticationException(ErrorCode.INVALID_PASSWORD);
 
         if (!requestForm.getNewPassword().equals(requestForm.getCheckNewPassword()))
-            throw new RuntimeException("비밀번호가 일치하지 않습니다.");
+            throw new CustomBusinessException(ErrorCode.PASSWORD_NOT_MATCHED);
 
         String encodedPassword = passwordEncoder.encode(requestForm.getNewPassword());
         userDao.updateUserPasswordByUsername(userName, encodedPassword);

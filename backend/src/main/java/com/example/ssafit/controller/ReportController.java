@@ -36,7 +36,9 @@ public class ReportController {
         reportData.setType("ARTICLE");
 
         int result = reportService.addReport(reportData);
-        if (result != -1) throw new CustomBusinessException(ErrorCode.REPORT_CREATE_FAILED);
+
+        System.out.println(result);
+        if (result != 1) throw new CustomBusinessException(ErrorCode.REPORT_CREATE_FAILED);
 
         return ResponseEntity.ok(HttpStatus.ACCEPTED.value());
     }
@@ -48,7 +50,8 @@ public class ReportController {
         reportData.setType("COMMENT");
 
         int result = reportService.addReport(reportData);
-        if (result != -1) throw new CustomBusinessException(ErrorCode.REPORT_CREATE_FAILED);
+        System.out.println(result);
+        if (result != 1) throw new CustomBusinessException(ErrorCode.REPORT_CREATE_FAILED);
 
         return ResponseEntity.ok(HttpStatus.ACCEPTED.value());
     }

@@ -1,5 +1,7 @@
 package com.example.ssafit.controller;
 
+import com.example.ssafit.exception.CustomUnAuthenticationException;
+import com.example.ssafit.exception.ErrorCode;
 import com.example.ssafit.model.dto.user.RegistForm;
 import com.example.ssafit.model.dto.user.UpdatePasswordRequestForm;
 import com.example.ssafit.model.dto.user.User;
@@ -61,7 +63,9 @@ public class UserController {
         System.out.println(user);
 
         int result = userService.modifyUserStringInfoByUsername(userName, user);
-        return new ResponseEntity(result, result == 1 ? HttpStatus.ACCEPTED : HttpStatus.BAD_REQUEST);
+        if (result != 1) throw new CustomUnAuthenticationException(ErrorCode.USER_MODIFY_FAILED);
+
+        return ResponseEntity.ok(HttpStatus.ACCEPTED);
     }
 
     // User의 password 업데이트
@@ -72,10 +76,9 @@ public class UserController {
             System.out.println(requestForm);
             userService.modifyUserPasswordByUsername(userName, requestForm);
         } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+            throw new CustomUnAuthenticationException(ErrorCode.USER_MODIFY_FAILED);
         }
-        return new ResponseEntity(HttpStatus.OK);
+        return ResponseEntity.ok(HttpStatus.OK);
     }
 
     // User의 프로필 이미지를 업데이트 하기
@@ -86,8 +89,7 @@ public class UserController {
             User user = userService.searchByUsername(userName);
             return new ResponseEntity(user.getProfileImage(), HttpStatus.OK);
         } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+            throw new CustomUnAuthenticationException(ErrorCode.USER_MODIFY_FAILED);
         }
     }
 
@@ -99,8 +101,7 @@ public class UserController {
             User user = userService.searchByUsername(userName);
             return new ResponseEntity(user.getBackgroundImage(), HttpStatus.OK);
         } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+            throw new CustomUnAuthenticationException(ErrorCode.USER_MODIFY_FAILED);
         }
     }
 }

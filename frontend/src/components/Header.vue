@@ -16,7 +16,7 @@
           >알림</router-link
         >
         <router-link
-          v-if="user.role === 'ROLE_ADMIN'"
+          v-if="user && user.role === 'ROLE_ADMIN'"
           to="/admin"
           class="nav-link"
           active-class="active-link"
@@ -40,21 +40,39 @@
 </template>
 
 <script setup>
-import { computed } from "vue";
+import { ref, onMounted, onUnmounted } from "vue";
 import { useRouter } from "vue-router";
 import api from "@/api/axiosInstance";
 
 const router = useRouter();
 
-const isLogin = computed(() => !!localStorage.getItem("token"));
-const user = computed(() => {
-  const rawUser = localStorage.getItem("user");
-  return rawUser ? JSON.parse(rawUser) : null;
+const isLogin = ref(!!localStorage.getItem("token"));
+const user = ref(localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : null);
+
+function syncAuthState() {
+  isLogin.value = !!localStorage.getItem("token");
+  user.value = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : null;
+}
+
+function handleAuthChanged() {
+  syncAuthState();
+}
+
+onMounted(() => {
+  window.addEventListener("auth-changed", handleAuthChanged);
+  window.addEventListener("storage", handleAuthChanged);
 });
-// user 로그아웃
+
+onUnmounted(() => {
+  window.removeEventListener("auth-changed", handleAuthChanged);
+  window.removeEventListener("storage", handleAuthChanged);
+});
+
 const logout = () => {
   api.post("/api_auth/logout").then(() => {
     localStorage.clear();
+    syncAuthState();
+    window.dispatchEvent(new Event("auth-changed")); // 커스텀 이벤트 발생
     router.push("/login").catch((err) => {
       console.error("로그아웃 실패", err);
       alert("로그아웃 중 문제가 발생했습니다.");
