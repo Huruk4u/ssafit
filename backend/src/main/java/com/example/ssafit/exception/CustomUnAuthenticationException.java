@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
  * 유저의 인증 실패를 처리하는 Exception
  */
 public class CustomUnAuthenticationException extends RuntimeException {
+
     public final ErrorCode errorCode;
     
     public CustomUnAuthenticationException(ErrorCode errorCode) {

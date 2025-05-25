@@ -1,5 +1,8 @@
 package com.example.ssafit.controller;
 
+import com.example.ssafit.exception.CustomBusinessException;
+import com.example.ssafit.exception.CustomInbodyException;
+import com.example.ssafit.exception.ErrorCode;
 import com.example.ssafit.model.dto.Badge;
 import com.example.ssafit.model.dto.Inbody;
 import com.example.ssafit.model.dto.RecommendResult;
@@ -51,7 +54,7 @@ public class ChallengeController {
     // 인바디 정보 업데이트 및 챌린지 기록 생성
     @PostMapping(value = "/post/challenge", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> updateInbody(
-            @RequestParam("file") MultipartFile file, Principal principal) {
+            @RequestParam("file") MultipartFile file, Principal principal) throws CustomInbodyException {
         // 유저 정보 출력
         String username = principal.getName();
         User user = userService.searchByUsername(username);
@@ -74,8 +77,7 @@ public class ChallengeController {
 
 
         } catch (IOException e) {
-            System.out.println("텍스트 추출 중 오류 발생 : RecommendController.recommend()");
-            return ResponseEntity.status(500).body("");
+            throw new CustomInbodyException(ErrorCode.OCR_INVALID_IMAGE_FORMAT, e);
         }
         int loginUserId = user.getUserId();
 

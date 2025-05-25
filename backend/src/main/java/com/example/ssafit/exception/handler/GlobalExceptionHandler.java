@@ -1,6 +1,7 @@
 package com.example.ssafit.exception.handler;
 
 import com.example.ssafit.exception.CustomBusinessException;
+import com.example.ssafit.exception.CustomInbodyException;
 import com.example.ssafit.exception.CustomUnAuthenticationException;
 import com.example.ssafit.exception.ErrorCode;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +27,18 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(CustomBusinessException.class)
     public ResponseEntity CustomBusinessExceptionHandler(CustomBusinessException e) {
+        ErrorCode errorCode = e.getErrorCode();
+
+        return ResponseEntity
+                .status(errorCode.getHttpStatus())
+                .body(Map.of(
+                        "code", errorCode.getCode(),
+                        "message", errorCode.getMessage()
+                ));
+    }
+
+    @ExceptionHandler(CustomInbodyException.class)
+    public ResponseEntity CustomInbodyExceptionHandler(CustomInbodyException e) {
         ErrorCode errorCode = e.getErrorCode();
 
         return ResponseEntity

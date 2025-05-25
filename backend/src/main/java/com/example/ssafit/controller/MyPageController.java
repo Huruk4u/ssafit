@@ -1,5 +1,7 @@
 package com.example.ssafit.controller;
 
+import com.example.ssafit.exception.CustomBusinessException;
+import com.example.ssafit.exception.ErrorCode;
 import com.example.ssafit.model.dto.Badge;
 import com.example.ssafit.model.dto.Inbody;
 import com.example.ssafit.model.dto.article.Article;
@@ -49,9 +51,7 @@ public class MyPageController {
     public ResponseEntity<?> getUserSummary(@PathVariable int userId) {
         // 1) 사용자 정보 조회
         User user = userService.searchByUserId(userId);
-        if (user == null) {
-            return ResponseEntity.notFound().build();
-        }
+        if (user == null) throw new CustomBusinessException(ErrorCode.REPORTEE_NOT_FOUND);
 
         // 2) 대표 뱃지 조회
         String username = user.getUserName();
@@ -83,9 +83,7 @@ public class MyPageController {
         String username = principal.getName();
         User user = userService.searchByUsername(username);
 
-        if (user == null) {
-            return ResponseEntity.status(404).body("사용자를 찾을 수 없습니다.");
-        }
+        if (user == null) throw new CustomBusinessException(ErrorCode.REPORTEE_NOT_FOUND);
 
         List<Badge> badges = badgeService.getUserBadges(user.getUserId());
         return ResponseEntity.ok(badges);
@@ -106,9 +104,7 @@ public class MyPageController {
         String username = principal.getName();
         User user = userService.searchByUsername(username);
 
-        if (user == null) {
-            return ResponseEntity.status(404).body("사용자를 찾을 수 없습니다.");
-        }
+        if (user == null) throw new CustomBusinessException(ErrorCode.REPORTEE_NOT_FOUND);
 
         boolean result = badgeService.setRepresentedBadge(user.getUserId(), badgeId);
 
@@ -130,9 +126,7 @@ public class MyPageController {
         String username = principal.getName();
         User user = userService.searchByUsername(username);
 
-        if (user == null) {
-            return ResponseEntity.status(404).body("사용자를 찾을 수 없습니다.");
-        }
+        if (user == null) throw new CustomBusinessException(ErrorCode.REPORTEE_NOT_FOUND);
 
         int userId = user.getUserId();
 
@@ -157,14 +151,14 @@ public class MyPageController {
     @GetMapping("/get/user_id/{userId}")
     public ResponseEntity getArticleListByUserId(@PathVariable("userId") int userId) {
         List<Article> articleList = articleService.searchArticleListByUserId(userId);
-        if (articleList == null) return ResponseEntity.noContent().build();
+        if (articleList == null) throw new CustomBusinessException(ErrorCode.REPORTEE_NOT_FOUND);
         else return ResponseEntity.ok(articleList);
     }
 
     @GetMapping("/get/like/user_id/{userId}")
     public ResponseEntity getArticleListByArticleLikeUserId(@PathVariable("userId") int userId) {
         List<Article> articleList = articleService.searchArticleListByArticleLikeUserId(userId);
-        if (articleList == null) return ResponseEntity.noContent().build();
+        if (articleList == null) throw new CustomBusinessException(ErrorCode.REPORTEE_NOT_FOUND);
         else return ResponseEntity.ok(articleList);
     }
 }

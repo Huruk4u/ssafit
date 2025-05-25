@@ -1,5 +1,8 @@
 package com.example.ssafit.controller;
 
+import com.example.ssafit.exception.CustomBusinessException;
+import com.example.ssafit.exception.CustomUnAuthenticationException;
+import com.example.ssafit.exception.ErrorCode;
 import com.example.ssafit.model.dto.Badge;
 import com.example.ssafit.model.dto.user.User;
 import com.example.ssafit.model.service.board.ArticleService;
@@ -9,6 +12,7 @@ import com.example.ssafit.model.service.BadgeService;
 import com.example.ssafit.model.service.user.UserService;
 import com.example.ssafit.util.PageNavigation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
@@ -51,7 +55,7 @@ public class ArticleController {
     public ResponseEntity getArticleByArticleId(@PathVariable("articleId") int articleId, Principal principal) {
 
         Article article = articleService.searchArticleByArticleId(articleId);
-        if (article == null) return ResponseEntity.noContent().build();
+        if (article == null) throw new CustomBusinessException(ErrorCode.ARTICLE_NOT_FOUND);
 
         // 사용자 viewCnt무한으로 올라가는 거 처리해줌.
         String username = principal.getName();
@@ -68,14 +72,14 @@ public class ArticleController {
     @GetMapping("/get/user_id/{userId}")
     public ResponseEntity getArticleListByUserId(@PathVariable("userId") int userId) {
         List<Article> articleList = articleService.searchArticleListByUserId(userId);
-        if (articleList == null) return ResponseEntity.noContent().build();
+        if (articleList == null) throw new CustomBusinessException(ErrorCode.ARTICLE_NOT_FOUND);
         else return ResponseEntity.ok(articleList);
     }
 
     @GetMapping("/get/like/user_id/{userId}")
     public ResponseEntity getArticleListByArticleLikeUserId(@PathVariable("userId") int userId) {
         List<Article> articleList = articleService.searchArticleListByArticleLikeUserId(userId);
-        if (articleList == null) return ResponseEntity.noContent().build();
+        if (articleList == null) throw new CustomBusinessException(ErrorCode.ARTICLE_NOT_FOUND);
         else return ResponseEntity.ok(articleList);
     }
 
@@ -129,13 +133,13 @@ public class ArticleController {
 
     @PostMapping("/post/write")
     public ResponseEntity<?> writeArticle(
-            @RequestBody Article articleData,
+            @RequestBody @Valid Article articleData,
             Principal principal) {
 
         // 현재 로그인한 사용자 정보 확인
         User currentUser = userService.searchByUsername(principal.getName());
         if (currentUser == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
+            throw new CustomUnAuthenticationException(ErrorCode.USER_NOT_FOUND);
         }
 
         // 게시글 객체 설정 - 실제 로그인한 사용자 ID로 설정
@@ -147,19 +151,9 @@ public class ArticleController {
         article.setTag(articleData.getTag());
         if (articleData.getUrl() != null) article.setUrl(articleData.getUrl());
 
-        // 필수 필드 검증
-        if (article.getTitle() == null || article.getTitle().trim().isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("제목은 필수 항목입니다.");
-        }
-
         List<Badge> userBadgesBefore = badgeService.getUserBadges(currentUser.getUserId());
 
         int result = articleService.addArticle(article);
-
-        if (result != 1) {
-            return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
-        }
-
         List<Badge> userBadgesAfter = badgeService.getUserBadges(currentUser.getUserId());
 
         // 뱃지 새로 얻었는가
@@ -194,23 +188,26 @@ public class ArticleController {
         // 기존 게시글 조회
         Article originalArticle = articleService.searchArticleByArticleId(articleId);
         if (originalArticle == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("게시글이 존재하지 않습니다.");
+            throw new CustomBusinessException(ErrorCode.ARTICLE_NOT_FOUND);
         }
 
         // 작성자 정보 조회
         User author = userService.searchByUserId(originalArticle.getUserId());
         if (author == null) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("작성자 정보를 찾을 수 없습니다.");
+            throw new CustomUnAuthenticationException(ErrorCode.USER_NOT_FOUND);
         }
 
         // 로그인 사용자와 작성자가 다르면 수정 불가
         if (!author.getUserName().equals(currentUsername)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("수정 권한이 없습니다.");
+            throw new CustomBusinessException(ErrorCode.BAD_APPROACH);
         }
 
         // 수정 진행
         int result = articleService.modifyArticle(articleId, article);
-        return new ResponseEntity<>(result, result == 1 ? HttpStatus.ACCEPTED : HttpStatus.BAD_REQUEST);
+        if (result != 1) throw new CustomBusinessException(ErrorCode.BAD_APPROACH);
+
+        // 성공은 했고, 반환할 포맷은 없을 때, 반환하는 HttpStatus
+        return ResponseEntity.ok(result);
     }
 
     @DeleteMapping("/delete/article_id/{articleId}")
@@ -219,24 +216,19 @@ public class ArticleController {
 
         // 게시글 조회
         Article article = articleService.searchArticleByArticleId(articleId);
-        if (article == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("게시글이 존재하지 않습니다.");
-        }
+        if (article == null) throw new CustomBusinessException(ErrorCode.ARTICLE_NOT_FOUND);
 
         // 작성자 정보 조회
         User author = userService.searchByUserId(article.getUserId());
-        if (author == null) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("작성자 정보를 찾을 수 없습니다.");
-        }
+        if (author == null) throw new CustomUnAuthenticationException(ErrorCode.USER_NOT_FOUND);
 
         // 로그인 사용자와 작성자가 다른 경우
-        if (!author.getUserName().equals(currentUsername)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("삭제 권한이 없습니다.");
-        }
+        if (!author.getUserName().equals(currentUsername)) throw new CustomBusinessException(ErrorCode.BAD_APPROACH);
 
         // 삭제 진행
         int result = articleService.removeArticle(articleId);
-        return new ResponseEntity<>(result, result == 1 ? HttpStatus.NO_CONTENT : HttpStatus.BAD_REQUEST);
+        if (result != 1) throw new CustomBusinessException(ErrorCode.ARTICLE_REMOVE_FAILED);
+        return ResponseEntity.ok(HttpStatus.NO_CONTENT);
     }
 
     // 좋아요 기능 - 로그인 사용자 인증 추가
@@ -248,13 +240,13 @@ public class ArticleController {
         // 현재 로그인한 사용자 정보 확인
         User currentUser = userService.searchByUsername(principal.getName());
         if (currentUser == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
+            throw new CustomUnAuthenticationException(ErrorCode.USER_NOT_FOUND);
         }
 
         // 게시글 존재 여부 확인
         Article article = articleService.searchArticleByArticleId(articleId);
         if (article == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("게시글을 찾을 수 없습니다.");
+            throw new CustomBusinessException(ErrorCode.ARTICLE_NOT_FOUND);
         }
 
         boolean result = articleService.likeArticle(articleId, currentUser.getUserId());
@@ -270,13 +262,13 @@ public class ArticleController {
         // 현재 로그인한 사용자 정보 확인
         User currentUser = userService.searchByUsername(principal.getName());
         if (currentUser == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
+            throw new CustomUnAuthenticationException(ErrorCode.USER_NOT_FOUND);
         }
 
         // 게시글 존재 여부 확인
         Article article = articleService.searchArticleByArticleId(articleId);
         if (article == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("게시글을 찾을 수 없습니다.");
+            throw new CustomBusinessException(ErrorCode.ARTICLE_NOT_FOUND);
         }
 
         boolean result = articleService.disLikeArticle(articleId, currentUser.getUserId());

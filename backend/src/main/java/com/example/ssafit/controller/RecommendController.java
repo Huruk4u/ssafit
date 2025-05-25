@@ -29,6 +29,7 @@ public class RecommendController {
         String secondExercise = user.getSecondExercise();
         String thirdExercise = user.getThirdExercise();
 
+        // 이것도 그닥 exception은 아니라서 처리 따로 안해줌.
         if (firstExercise == null || secondExercise == null || thirdExercise == null) {
             System.out.println("추천할 수 있는 운동이 없습니다.");
             return ResponseEntity.noContent().build();

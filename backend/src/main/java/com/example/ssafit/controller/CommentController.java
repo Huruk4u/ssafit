@@ -1,5 +1,8 @@
 package com.example.ssafit.controller;
 
+import com.example.ssafit.exception.CustomBusinessException;
+import com.example.ssafit.exception.CustomUnAuthenticationException;
+import com.example.ssafit.exception.ErrorCode;
 import com.example.ssafit.model.dto.comment.Comment;
 import com.example.ssafit.model.dto.Report;
 import com.example.ssafit.model.dto.user.User;
@@ -49,9 +52,7 @@ public class CommentController {
 
         // 현재 로그인한 사용자 정보 확인
         User currentUser = userService.searchByUsername(principal.getName());
-        if (currentUser == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
-        }
+        if (currentUser == null) throw new CustomUnAuthenticationException(ErrorCode.USER_NOT_FOUND);
 
         // 댓글 객체 설정 - 실제 로그인한 사용자 ID로 설정
         Comment comment = new Comment();
@@ -60,13 +61,12 @@ public class CommentController {
         comment.setContent(commentData.getContent());
 
         int result = commentService.addComment(comment);
+        if (result == -1) throw new CustomBusinessException(ErrorCode.COMMENT_CREATE_FAILED);
 
         // 댓글 작성 성공 시 알림 생성
-        if (result == 1) {
-            notificationService.createCommentNotification(articleId, comment.getCommentId(), currentUser.getUserId());
-        }
+        notificationService.createCommentNotification(articleId, comment.getCommentId(), currentUser.getUserId());
 
-        return new ResponseEntity<>(result, result == 1 ? HttpStatus.CREATED : HttpStatus.BAD_REQUEST);
+        return ResponseEntity.ok(HttpStatus.CREATED.value());
     }
 
     // 댓글 수정
@@ -80,24 +80,22 @@ public class CommentController {
 
         // 기존 댓글 조회
         Comment originalComment = commentService.searchCommentByCommentId(commentId);
-        if (originalComment == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("댓글이 존재하지 않습니다.");
-        }
+        if (originalComment == null) throw new CustomBusinessException(ErrorCode.COMMENT_NOT_FOUND);
 
         // 작성자 정보 조회
         User author = userService.searchByUserId((int) originalComment.getUserId());
-        if (author == null) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("작성자 정보를 찾을 수 없습니다.");
-        }
+        if (author == null) throw new CustomBusinessException(ErrorCode.COMMENT_AUTHOR_NOT_FOUND);
 
         // 로그인 사용자와 작성자가 다르면 수정 불가
         if (!author.getUserName().equals(currentUsername)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("수정 권한이 없습니다.");
+            throw new CustomBusinessException(ErrorCode.BAD_APPROACH);
         }
 
         // 수정 진행
         int result = commentService.modifyComment(commentId, comment);
-        return new ResponseEntity<>(result, result == 1 ? HttpStatus.ACCEPTED : HttpStatus.BAD_REQUEST);
+        if (result == -1) throw new CustomBusinessException(ErrorCode.COMMENT_MODIFY_FAILED);
+
+        return ResponseEntity.ok(HttpStatus.ACCEPTED.value());
     }
 
     // 댓글 삭제
@@ -110,24 +108,20 @@ public class CommentController {
 
         // 댓글 조회
         Comment comment = commentService.searchCommentByCommentId(commentId);
-        if (comment == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("댓글이 존재하지 않습니다.");
-        }
+        if (comment == null) throw new CustomBusinessException(ErrorCode.COMMENT_NOT_FOUND);
 
         // 작성자 정보 조회
         User author = userService.searchByUserId(comment.getUserId());
-        if (author == null) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("작성자 정보를 찾을 수 없습니다.");
-        }
+        if (author == null) throw new CustomBusinessException(ErrorCode.COMMENT_AUTHOR_NOT_FOUND);
 
         // 로그인 사용자와 작성자가 다르면 삭제 불가
-        if (!author.getUserName().equals(currentUsername)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("삭제 권한이 없습니다.");
-        }
+        if (!author.getUserName().equals(currentUsername)) throw new CustomBusinessException(ErrorCode.BAD_APPROACH);
 
         // 삭제 진행
         int result = commentService.removeComment(commentId);
-        return new ResponseEntity<>(result, result == 1 ? HttpStatus.NO_CONTENT : HttpStatus.BAD_REQUEST);
+        if (result == -1) throw new CustomBusinessException(ErrorCode.COMMENT_REMOVE_FAILED);
+
+        return ResponseEntity.ok(HttpStatus.NO_CONTENT.value());
     }
 
     // 댓글 좋아요
@@ -138,15 +132,11 @@ public class CommentController {
 
         // 현재 로그인한 사용자 정보 확인
         User currentUser = userService.searchByUsername(principal.getName());
-        if (currentUser == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
-        }
+        if (currentUser == null) throw new CustomUnAuthenticationException(ErrorCode.USER_NOT_FOUND);
 
         // 댓글 존재 여부 확인
         Comment comment = commentService.searchCommentByCommentId(commentId);
-        if (comment == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("댓글을 찾을 수 없습니다.");
-        }
+        if (comment == null) throw new CustomBusinessException(ErrorCode.COMMENT_NOT_FOUND);
 
         boolean result = commentService.likeComment(commentId, currentUser.getUserId());
         return ResponseEntity.ok(result);
@@ -160,15 +150,11 @@ public class CommentController {
 
         // 현재 로그인한 사용자 정보 확인
         User currentUser = userService.searchByUsername(principal.getName());
-        if (currentUser == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
-        }
+        if (currentUser == null) throw new CustomUnAuthenticationException(ErrorCode.USER_NOT_FOUND);
 
         // 댓글 존재 여부 확인
         Comment comment = commentService.searchCommentByCommentId(commentId);
-        if (comment == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("댓글을 찾을 수 없습니다.");
-        }
+        if (comment == null) throw new CustomBusinessException(ErrorCode.COMMENT_NOT_FOUND);
 
         boolean result = commentService.dislikeComment(commentId, currentUser.getUserId());
         return ResponseEntity.ok(result);

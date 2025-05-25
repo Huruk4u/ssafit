@@ -1,5 +1,7 @@
 package com.example.ssafit.model.service.inbody;
 
+import com.example.ssafit.exception.CustomInbodyException;
+import com.example.ssafit.exception.ErrorCode;
 import com.example.ssafit.model.dto.RecommendResult;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -31,7 +33,7 @@ public class RecommendService {
      */
     public RecommendResult recommendParts(String ocrText, File imageFile) throws IOException {
         String prompt = buildPrompt(ocrText);
-        ;
+
         String convertedImageUrl = convertToBase64ImageUrl(imageFile);
         String responseJson = callChatGPT(prompt, convertedImageUrl);
 
@@ -76,8 +78,10 @@ public class RecommendService {
     public String convertToBase64ImageUrl(File file) throws IOException {
         String mimeType = Files.probeContentType(file.toPath()) == null ? "image/jpeg" : Files.probeContentType(file.toPath());
         System.out.println("convertToBase64ImageUrl : 사고지점 1");
+
         byte[] bytes = Files.readAllBytes(file.toPath());
         System.out.println("convertToBase64ImageUrl : 사고지점 2");
+
         String base64 = Base64.getEncoder().encodeToString(bytes);
         System.out.println("convertToBase64ImageUrl : 사고지점 3");
         return "data:" + mimeType + ";base64," + base64;
@@ -131,7 +135,7 @@ public class RecommendService {
                 System.out.println("응답 코드: " + response.code());
                 System.out.println("응답 메시지: " + response.message());
                 System.out.println("응답 본문: " + errorBody);
-                throw new IOException("GPT API 호출 실패" + response.code() + " - " + response.message());
+                throw new CustomInbodyException(ErrorCode.GPT_GET_RESPONSE_FAILED);
             }
             return response.body().string();
         }

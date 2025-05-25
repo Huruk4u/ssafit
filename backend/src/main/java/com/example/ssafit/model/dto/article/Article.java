@@ -1,11 +1,15 @@
 package com.example.ssafit.model.dto.article;
 
+import jakarta.validation.constraints.NotBlank;
+
 import java.time.LocalDateTime;
 
 public class Article {
     private int articleId;
     private int userId;
     private String category;
+
+    @NotBlank(message = "제목은 필수 항목입니다.")
     private String title;
     private String content;
     private String tag;

@@ -1,5 +1,7 @@
 package com.example.ssafit.controller;
 
+import com.example.ssafit.exception.CustomUnAuthenticationException;
+import com.example.ssafit.exception.ErrorCode;
 import com.example.ssafit.model.dto.Notification;
 import com.example.ssafit.model.dto.user.User;
 import com.example.ssafit.model.service.NotificationService;
@@ -30,9 +32,7 @@ public class NotificationController {
     public ResponseEntity<?> getNotificationList(Principal principal) {
         // 현재 로그인한 사용자 정보 확인
         User currentUser = userService.searchByUsername(principal.getName());
-        if (currentUser == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
-        }
+        if (currentUser == null) throw new CustomUnAuthenticationException(ErrorCode.USER_NOT_FOUND);
 
         List<Notification> notifications = notificationService.getNotificationsByUserId(currentUser.getUserId());
         System.out.println(notifications);
@@ -48,9 +48,7 @@ public class NotificationController {
 
         // 현재 로그인한 사용자 정보 확인
         User currentUser = userService.searchByUsername(principal.getName());
-        if (currentUser == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
-        }
+        if (currentUser == null) throw new CustomUnAuthenticationException(ErrorCode.USER_NOT_FOUND);
 
         int result = notificationService.markAsRead(notificationId);
         return new ResponseEntity<>(result, result > 0 ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
@@ -61,9 +59,7 @@ public class NotificationController {
     public ResponseEntity<?> markAllAsRead(Principal principal) {
         // 현재 로그인한 사용자 정보 확인
         User currentUser = userService.searchByUsername(principal.getName());
-        if (currentUser == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
-        }
+        if (currentUser == null) throw new CustomUnAuthenticationException(ErrorCode.USER_NOT_FOUND);
 
         int result = notificationService.markAllAsRead(currentUser.getUserId());
         return new ResponseEntity<>(result, result > 0 ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
@@ -90,9 +86,7 @@ public class NotificationController {
     public ResponseEntity<?> deleteAllNotifications(Principal principal) {
         // 현재 로그인한 사용자 정보 확인
         User currentUser = userService.searchByUsername(principal.getName());
-        if (currentUser == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
-        }
+        if (currentUser == null) throw new CustomUnAuthenticationException(ErrorCode.USER_NOT_FOUND);
 
         int result = notificationService.removeAllNotifications(currentUser.getUserId());
         return new ResponseEntity<>(result, result > 0 ? HttpStatus.NO_CONTENT : HttpStatus.BAD_REQUEST);

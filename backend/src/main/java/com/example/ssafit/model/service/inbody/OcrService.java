@@ -1,5 +1,7 @@
 package com.example.ssafit.model.service.inbody;
 
+import com.example.ssafit.exception.CustomInbodyException;
+import com.example.ssafit.exception.ErrorCode;
 import com.google.cloud.vision.v1.*;
 import com.google.protobuf.ByteString;
 import org.springframework.stereotype.Service;
@@ -36,7 +38,7 @@ public class OcrService {
         StringBuilder sb = new StringBuilder();
         for (AnnotateImageResponse res : responses) {
             if (res.hasError()) {
-                throw new IOException("Error : " + res.getError().getMessage());
+                throw new CustomInbodyException(ErrorCode.OCR_INVALID_IMAGE_FORMAT);
             }
             sb.append(res.getFullTextAnnotation().getText());
         }

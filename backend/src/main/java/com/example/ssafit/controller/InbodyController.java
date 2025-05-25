@@ -23,9 +23,12 @@ public class InbodyController {
     public ResponseEntity<Inbody> getLatestInbody(@PathVariable int userId, Principal principal) {
         //String username = principal.getName();
         Inbody latest = inbodyService.findLatestByUserId(userId);
+
+        // 이건 오류까진 아니니까 exception 처리 따로 안 함.
         if (latest == null) {
             return ResponseEntity.noContent().build();
         }
+
         return ResponseEntity.ok(latest);
     }
 }

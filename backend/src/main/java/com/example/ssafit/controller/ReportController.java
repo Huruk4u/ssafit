@@ -1,5 +1,7 @@
 package com.example.ssafit.controller;
 
+import com.example.ssafit.exception.CustomBusinessException;
+import com.example.ssafit.exception.ErrorCode;
 import com.example.ssafit.model.dto.Report;
 import com.example.ssafit.model.dto.article.Article;
 import com.example.ssafit.model.dto.comment.Comment;
@@ -32,18 +34,23 @@ public class ReportController {
     @PostMapping("/post/article")
     public ResponseEntity reportArticle(@RequestBody @Valid Report reportData) {
         reportData.setType("ARTICLE");
+
         int result = reportService.addReport(reportData);
-        System.out.println("요청 처리 완료!");
-        return new ResponseEntity(result == 1? HttpStatus.ACCEPTED : HttpStatus.BAD_REQUEST);
+        if (result != -1) throw new CustomBusinessException(ErrorCode.REPORT_CREATE_FAILED);
+
+        return ResponseEntity.ok(HttpStatus.ACCEPTED.value());
     }
 
     // 댓글 신고 기능
+    // 이거 사실상 사용 안 함.
     @PostMapping("/post/comment")
     public ResponseEntity<?> reportComment(@RequestBody @Valid Report reportData) {
         reportData.setType("COMMENT");
-        int result = reportService.addReport(reportData);
 
-        return new ResponseEntity(result == 1? HttpStatus.ACCEPTED : HttpStatus.BAD_REQUEST);
+        int result = reportService.addReport(reportData);
+        if (result != -1) throw new CustomBusinessException(ErrorCode.REPORT_CREATE_FAILED);
+
+        return ResponseEntity.ok(HttpStatus.ACCEPTED.value());
     }
 
 }
