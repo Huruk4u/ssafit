@@ -24,6 +24,8 @@
 </template>
 
 <script setup>
+// Pinia userStore는 이 컴포넌트에서 직접적으로 필요하지 않습니다.
+// 신고 대상, 사유, 내용 등은 props/emit으로 처리하므로 userStore import 불필요합니다.
 import { ref, watch } from 'vue';
 
 const props = defineProps({

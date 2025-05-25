@@ -5,6 +5,7 @@ import com.example.ssafit.exception.CustomBusinessException;
 import com.example.ssafit.exception.ErrorCode;
 import com.example.ssafit.model.dao.FollowDao;
 import com.example.ssafit.model.dto.user.User;
+import com.example.ssafit.model.service.NotificationService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,9 @@ public class FollowServiceImpl implements FollowService {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private NotificationService notificationService;
 
     @Override
     public List<User> searchFolloweeListByUserId(int userId) {
@@ -37,7 +41,10 @@ public class FollowServiceImpl implements FollowService {
 
         if (searchCountByFollow(followerId, followeeId)) throw new CustomBusinessException(ErrorCode.DUPLICATED_FOLLOW_CREATE);
 
+
         followDao.insertFollow(followerId, followeeId);
+        notificationService.createFollowNotification(followerId, followeeId);
+
         return 1;
     }
 

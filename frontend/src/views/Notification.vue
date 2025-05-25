@@ -77,6 +77,8 @@ const renderMessage = (notification) => {
     return `${payloadObj.category || "사유없음"}로 인해 ${
       payloadObj.action ?? "?"
     }일 정지되었습니다.`;
+  } else if (notification.type === "follow") {
+    return `${payloadObj.followerName || "알 수 없음"}님이 나를 팔로우했습니다.`;
   } else {
     return "새로운 알림이 도착했습니다.";
   }

@@ -3,25 +3,25 @@
     <header class="header">
       <h1 class="logo" @click="goHome">SSAFIT</h1>
       <nav class="nav">
-        <router-link to="/mypage" class="nav-link" active-class="active-link"
-          >홈</router-link
-        >
-        <router-link to="/board" class="nav-link" active-class="active-link"
-          >게시판</router-link
-        >
+        <router-link to="/mypage" class="nav-link" active-class="active-link">홈</router-link>
+        <router-link to="/board" class="nav-link" active-class="active-link">게시판</router-link>
         <router-link
           to="/notification"
           class="nav-link"
           active-class="active-link"
-          >알림</router-link
         >
+          알림
+          <span
+            v-if="user && user.unreadNotifications > 0"
+            class="badge"
+          >{{ user.unreadNotifications }}</span>
+        </router-link>
         <router-link
           v-if="user && user.role === 'ROLE_ADMIN'"
           to="/admin"
           class="nav-link"
           active-class="active-link"
-          >관리자 페이지</router-link
-        >
+        >관리자 페이지</router-link>
       </nav>
       <div class="nav-auth">
         <button v-if="isLogin" class="nav-link nav-btn" @click="logout">
@@ -32,8 +32,7 @@
           to="/login"
           class="nav-link"
           active-class="active-link"
-          >로그인</router-link
-        >
+        >로그인</router-link>
       </div>
     </header>
   </div>
@@ -205,6 +204,22 @@ body, #app {
 .nav-btn:focus {
   background: linear-gradient(90deg, #2e8c6a 60%, #42b983 100%);
   color: #fff !important;
+}
+
+.badge {
+  display: inline-block;
+  min-width: 18px;
+  padding: 0 6px;
+  margin-left: 6px;
+  font-size: 0.85em;
+  background: #e53935;
+  color: #fff;
+  border-radius: 12px;
+  font-weight: bold;
+  vertical-align: top;
+  line-height: 18px;
+  text-align: center;
+  box-shadow: 0 1px 4px #e5393533;
 }
 
 @media (max-width: 600px) {

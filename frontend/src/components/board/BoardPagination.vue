@@ -31,6 +31,8 @@
 </template>
 
 <script setup>
+// Pinia userStore는 이 컴포넌트에서 필요하지 않습니다.
+// 페이지네이션은 props/emit만 사용합니다.
 defineProps(['currentPage', 'totalPages', 'pageNumbers']);
 defineEmits(['go']);
 </script>

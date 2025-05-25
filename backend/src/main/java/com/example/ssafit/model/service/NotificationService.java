@@ -13,6 +13,9 @@ public interface NotificationService {
     // 정지 알림 생성
     int createSuspendNotification(Report report);
 
+    // 팔로우 알림 생성
+    int createFollowNotification(int followerId, int followeeId);
+
     // 일반 알림 생성
     int addNotification(Notification notification);
 

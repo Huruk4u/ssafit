@@ -1,4 +1,6 @@
 import axios from 'axios'
+// Pinia store는 이 파일에서 직접 접근하지 않습니다.
+// localStorage 접근은 여기서만 허용(스토어 동기화는 App.vue 등에서 처리)
 
 const api = axios.create({
     baseURL: 'http://localhost:8080',

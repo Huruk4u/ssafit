@@ -110,6 +110,34 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
+    @Transactional
+    public int createFollowNotification(int followerId, int followeeId) {
+
+        User follower = userService.searchByUserId(followerId);
+
+        // 알림 페이로드 생성 (JSON 형태로 저장)
+        Map<String, Object> payload = new HashMap<>();
+        payload.put("followerName", follower.getUserName());
+
+        String payloadJson;
+        try {
+            payloadJson = objectMapper.writeValueAsString(payload);
+        } catch (JsonProcessingException e) {
+            throw new CustomBusinessException(ErrorCode.JSON_PROCESSING_FAILED, e);
+        }
+
+        // 알림 객체 생성
+        Notification notification = new Notification();
+        notification.setUserId((long) followeeId); // 게시글 작성자에게 알림
+        notification.setType("follow");
+        notification.setPayload(payloadJson);
+        notification.setIsRead(false); // 읽음 상태 명시적으로 설정
+
+        // 알림 저장
+        return notificationDao.insertNotification(notification);
+    }
+
+    @Override
     public int addNotification(Notification notification) {
         return notificationDao.insertNotification(notification);
     }

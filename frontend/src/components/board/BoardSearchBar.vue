@@ -46,6 +46,8 @@
 </template>
 
 <script setup>
+// Pinia userStore는 이 컴포넌트에서 필요하지 않습니다.
+// 검색 조건은 props로만 처리합니다.
 defineProps(['searchCondition']);
 defineEmits(['search']);
 </script>
