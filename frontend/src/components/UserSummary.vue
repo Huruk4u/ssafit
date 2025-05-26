@@ -74,6 +74,7 @@
 import { ref, onMounted, computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import api from "@/api/axiosInstance";
+import { useUserImage } from "@/composables/useUserImage";
 
 const route = useRoute();
 const router = useRouter();
@@ -89,6 +90,18 @@ const summary = ref({
   representedBadge: null,
   articles: [],
 });
+
+// useUserImage로 프로필/배경 이미지 처리
+const { getProfileImage, getBackgroundImage } = useUserImage(summary.value);
+
+const profileUrl = computed(() => getProfileImage());
+const backgroundUrl = computed(() => getBackgroundImage());
+
+const badgeUrl = computed(() =>
+  summary.value.representedBadge
+    ? `http://localhost:5173${summary.value.representedBadge.iconUrl}`
+    : ""
+);
 
 // 페이지네이션 관련
 const currentPage = ref(1);
@@ -115,22 +128,6 @@ const followLoading = ref(false);
 const isMyProfile = computed(() => {
   return currentUser.value.userId === userId;
 });
-
-const profileUrl = computed(() =>
-  summary.value.profileImage
-    ? `http://localhost:8080/images/profile/${summary.value.profileImage}`
-    : "/default-profile.png"
-);
-const backgroundUrl = computed(() =>
-  summary.value.backgroundImage
-    ? `http://localhost:8080/images/background/${summary.value.backgroundImage}`
-    : "/default-background.jpg"
-);
-const badgeUrl = computed(() =>
-  summary.value.representedBadge
-    ? `http://localhost:5173${summary.value.representedBadge.iconUrl}`
-    : ""
-);
 
 // 날짜 포맷 헬퍼
 const formatDate = (dateString) => {

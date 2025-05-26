@@ -269,10 +269,10 @@
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import Header from "@/components/Header.vue";
 import api from "@/api/axiosInstance";
 import Comment from "@/components/CommentItem.vue";
 import ReportModal from "@/components/ReportModal.vue";
+import { useUserImage } from "@/composables/useUserImage";
 
 const route = useRoute();
 const router = useRouter();
@@ -306,17 +306,12 @@ const isCommentAuthor = (comment) =>
 const isEditing = (id) => editingId.value === id;
 
 const author = ref({});
-const authorProfileImage = computed(() =>
-  author.value.profileImage
-    ? `http://localhost:8080/images/profile/${author.value.profileImage}`
-    : "/default-profile.png"
-);
 
-const userProfileImage = computed(() =>
-  user.value?.profileImage
-    ? `http://localhost:8080/images/profile/${user.value.profileImage}`
-    : "/default-profile.png"
-);
+const { getProfileImage: getAuthorProfileImage } = useUserImage(author.value);
+const { getProfileImage: getUserProfileImage } = useUserImage(user.value);
+
+const authorProfileImage = computed(() => getAuthorProfileImage());
+const userProfileImage = computed(() => getUserProfileImage());
 
 const getCategoryName = (category) => {
   const categoryMap = {
@@ -561,10 +556,7 @@ const submitReport = async ({ category, content }) => {
     alert("신고가 접수되었습니다.");
     closeReportModal();
   } catch (e) {
-    const message =
-      e.response?.data?.message || "신고 처리 중 오류가 발생했습니다.";
-
-    alert(message);
+    alert("신고 처리 중 오류가 발생했습니다.");
     closeReportModal();
   }
 };

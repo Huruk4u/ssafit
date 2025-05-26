@@ -4,13 +4,15 @@
       <!-- 헤더 섹션 -->
       <section class="page-header card p-4 mb-4">
         <h2 class="page-title">프로필 편집</h2>
-        <p class="page-subtitle text-muted">프로필 이미지, 배경 이미지 및 개인정보를 수정할 수 있습니다.</p>
+        <p class="page-subtitle text-muted">
+          프로필 이미지, 배경 이미지 및 개인정보를 수정할 수 있습니다.
+        </p>
       </section>
 
       <!-- 이미지 편집 섹션 -->
       <section class="image-edit-section card p-4 mb-4">
         <h3 class="section-title">이미지 설정</h3>
-        
+
         <div class="image-edit-grid">
           <!-- 배경 이미지 편집 -->
           <div class="image-edit-item">
@@ -24,8 +26,16 @@
               />
               <div class="image-overlay" @click="triggerBackgroundImageInput">
                 <div class="overlay-content">
-                  <svg class="upload-icon" viewBox="0 0 24 24" width="32" height="32">
-                    <path fill="currentColor" d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
+                  <svg
+                    class="upload-icon"
+                    viewBox="0 0 24 24"
+                    width="32"
+                    height="32"
+                  >
+                    <path
+                      fill="currentColor"
+                      d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"
+                    />
                   </svg>
                   <span class="overlay-text">클릭하여 변경</span>
                 </div>
@@ -51,8 +61,16 @@
                 @click="triggerProfileImageInput"
               />
               <div class="profile-overlay" @click="triggerProfileImageInput">
-                <svg class="upload-icon" viewBox="0 0 24 24" width="24" height="24">
-                  <path fill="currentColor" d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
+                <svg
+                  class="upload-icon"
+                  viewBox="0 0 24 24"
+                  width="24"
+                  height="24"
+                >
+                  <path
+                    fill="currentColor"
+                    d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"
+                  />
                 </svg>
               </div>
               <input
@@ -70,36 +88,39 @@
       <!-- 개인정보 편집 섹션 -->
       <section class="info-edit-section card p-4 mb-4">
         <h3 class="section-title">개인정보 수정</h3>
-        
+
         <form @submit.prevent="userStringInfoUpdate" class="edit-form">
           <div class="form-group">
             <label for="nickname" class="form-label">닉네임</label>
-            <input 
+            <input
               id="nickname"
-              v-model="nickname" 
-              type="text" 
+              v-model="nickname"
+              type="text"
               class="form-control"
               placeholder="닉네임을 입력하세요"
               required
             />
           </div>
-          
+
           <div class="form-group">
             <label for="email" class="form-label">이메일</label>
-            <input 
+            <input
               id="email"
-              v-model="email" 
-              type="email" 
+              v-model="email"
+              type="email"
               class="form-control"
               placeholder="이메일을 입력하세요"
               required
             />
           </div>
-          
+
           <div class="form-actions">
             <button type="submit" class="btn btn-primary">
               <svg class="btn-icon" viewBox="0 0 24 24" width="16" height="16">
-                <path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"/>
+                <path
+                  fill="currentColor"
+                  d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"
+                />
               </svg>
               정보 수정하기
             </button>
@@ -110,12 +131,17 @@
       <!-- 비밀번호 변경 섹션 -->
       <section class="password-section card p-4">
         <h3 class="section-title">보안 설정</h3>
-        <p class="section-description text-muted">계정 보안을 위해 주기적으로 비밀번호를 변경해 주세요.</p>
-        
+        <p class="section-description text-muted">
+          계정 보안을 위해 주기적으로 비밀번호를 변경해 주세요.
+        </p>
+
         <div class="password-actions">
           <router-link to="/editPassword" class="btn btn-outline-primary">
             <svg class="btn-icon" viewBox="0 0 24 24" width="16" height="16">
-              <path fill="currentColor" d="M12,17A2,2 0 0,0 14,15C14,13.89 13.1,13 12,13A2,2 0 0,0 10,15A2,2 0 0,0 12,17M18,8A2,2 0 0,1 20,10V20A2,2 0 0,1 18,22H6A2,2 0 0,1 4,20V10C4,8.89 4.9,8 6,8H7V6A5,5 0 0,1 12,1A5,5 0 0,1 17,6V8H18M12,3A3,3 0 0,0 9,6V8H15V6A3,3 0 0,0 12,3Z"/>
+              <path
+                fill="currentColor"
+                d="M12,17A2,2 0 0,0 14,15C14,13.89 13.1,13 12,13A2,2 0 0,0 10,15A2,2 0 0,0 12,17M18,8A2,2 0 0,1 20,10V20A2,2 0 0,1 18,22H6A2,2 0 0,1 4,20V10C4,8.89 4.9,8 6,8H7V6A5,5 0 0,1 12,1A5,5 0 0,1 17,6V8H18M12,3A3,3 0 0,0 9,6V8H15V6A3,3 0 0,0 12,3Z"
+              />
             </svg>
             비밀번호 변경하기
           </router-link>
@@ -126,9 +152,10 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, watch } from "vue";
 import api from "@/api/axiosInstance";
 import { useRouter } from "vue-router";
+import { useUserImage } from "@/composables/useUserImage";
 
 const router = useRouter();
 
@@ -147,17 +174,11 @@ const user = ref(parsedUser);
 const nickname = ref(user.value.nickname);
 const email = ref(user.value.email);
 
-// user 프로필 이미지를 로드하기 위한 computed 변수
-const userProfileImage = computed(() =>
-  user.value?.profileImage
-    ? `http://localhost:8080/images/profile/${user.value.profileImage}`
-    : ""
-);
-
+// user가 바뀔 때마다 useUserImage를 새로 적용
+const userImageUtil = computed(() => useUserImage(user.value));
+const userProfileImage = computed(() => userImageUtil.value.getProfileImage());
 const userBackgroundImage = computed(() =>
-  user.value?.backgroundImage
-    ? `http://localhost:8080/images/background/${user.value.backgroundImage}`
-    : ""
+  userImageUtil.value.getBackgroundImage()
 );
 
 // 입력된 프로필 이미지와 배경 이미지를 저장하기 위한 ref 변수
@@ -194,7 +215,6 @@ const triggerProfileImageInput = () => {
 
 const handleProfileImageChange = (event) => {
   const file = event.target.files[0];
-  // 선택된 파일이 있을 때만 진행한다.
   if (file) {
     const formData = new FormData();
     formData.append("userName", user.value.userName);
@@ -224,9 +244,9 @@ const handleProfileImageChange = (event) => {
 const triggerBackgroundImageInput = () => {
   backgroundImageInput.value.click();
 };
+
 const handleBackgroundImageChange = (event) => {
   const file = event.target.files[0];
-  // 선택된 파일이 있을 때만 진행한다.
   if (file) {
     const formData = new FormData();
     formData.append("userName", user.value.userName);
@@ -239,7 +259,6 @@ const handleBackgroundImageChange = (event) => {
       })
       .then((res) => {
         alert("배경 이미지가 수정되었습니다.");
-        console.log(res.backgroundImage);
         user.value = {
           ...user.value,
           backgroundImage: res.data,
@@ -549,25 +568,25 @@ body,
     grid-template-columns: 1fr;
     gap: 1.5rem;
   }
-  
+
   .profile-image-container {
     width: 100px;
     height: 100px;
   }
-  
+
   .profile-img-preview {
     width: 100px;
     height: 100px;
   }
-  
+
   .background-image-container {
     height: 150px;
   }
-  
+
   .page-title {
     font-size: 1.5rem;
   }
-  
+
   .section-title {
     font-size: 1.1rem;
   }
