@@ -12,11 +12,13 @@
         <!-- 게시글 헤더 -->
         <div class="article-header card">
           <div class="article-category" v-if="article.category">
-            <span class="category-tag">{{ getCategoryName(article.category) }}</span>
+            <span class="category-tag">{{
+              getCategoryName(article.category)
+            }}</span>
           </div>
-          
+
           <h1 class="article-title">{{ article.title }}</h1>
-          
+
           <div class="article-meta">
             <div class="author-info">
               <span
@@ -24,26 +26,45 @@
                 @click="toggleUserMenu"
                 ref="authorNameRef"
               >
-                <img :src="authorProfileImage" alt="프로필" class="author-avatar" />
+                <img
+                  :src="authorProfileImage"
+                  alt="프로필"
+                  class="author-avatar"
+                />
                 <div class="author-details">
-                  <span class="author-name">{{ article.nickname || article.username }}</span>
-
+                  <span class="author-name">{{
+                    article.nickname || article.username
+                  }}</span>
                 </div>
-                <svg class="dropdown-icon" viewBox="0 0 24 24" width="16" height="16">
-                  <path fill="currentColor" d="M7,10L12,15L17,10H7Z"/>
+                <svg
+                  class="dropdown-icon"
+                  viewBox="0 0 24 24"
+                  width="16"
+                  height="16"
+                >
+                  <path fill="currentColor" d="M7,10L12,15L17,10H7Z" />
                 </svg>
-                
+
                 <div v-if="showUserMenu" class="user-dropdown" @click.stop>
                   <ul>
                     <li @click="viewUserInfo">
                       <svg viewBox="0 0 24 24" width="16" height="16">
-                        <path fill="currentColor" d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z"/>
+                        <path
+                          fill="currentColor"
+                          d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z"
+                        />
                       </svg>
                       프로필 보기
                     </li>
-                    <li v-if="user.userId !== article.userId" @click="reportUser">
+                    <li
+                      v-if="user.userId !== article.userId"
+                      @click="reportUser"
+                    >
                       <svg viewBox="0 0 24 24" width="16" height="16">
-                        <path fill="currentColor" d="M13,14H11V10H13M13,18H11V16H13M1,21H23L12,2L1,21Z"/>
+                        <path
+                          fill="currentColor"
+                          d="M13,14H11V10H13M13,18H11V16H13M1,21H23L12,2L1,21Z"
+                        />
                       </svg>
                       신고하기
                     </li>
@@ -51,17 +72,23 @@
                 </div>
               </span>
             </div>
-            
+
             <div class="meta-info">
               <span class="meta-item">
                 <svg viewBox="0 0 24 24" width="16" height="16">
-                  <path fill="currentColor" d="M19,3H18V1H16V3H8V1H6V3H5A2,2 0 0,0 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5A2,2 0 0,0 19,3M19,19H5V8H19V19Z"/>
+                  <path
+                    fill="currentColor"
+                    d="M19,3H18V1H16V3H8V1H6V3H5A2,2 0 0,0 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5A2,2 0 0,0 19,3M19,19H5V8H19V19Z"
+                  />
                 </svg>
                 {{ formatDate(article.createdAt) }}
               </span>
               <span class="meta-item">
                 <svg viewBox="0 0 24 24" width="16" height="16">
-                  <path fill="currentColor" d="M12,9A3,3 0 0,0 9,12A3,3 0 0,0 12,15A3,3 0 0,0 15,12A3,3 0 0,0 12,9M12,17A5,5 0 0,1 7,12A5,5 0 0,1 12,7A5,5 0 0,1 17,12A5,5 0 0,1 12,17M12,4.5C7,4.5 2.73,7.61 1,12C2.73,16.39 7,19.5 12,19.5C17,19.5 21.27,16.39 23,12C21.27,7.61 17,4.5 12,4.5Z"/>
+                  <path
+                    fill="currentColor"
+                    d="M12,9A3,3 0 0,0 9,12A3,3 0 0,0 12,15A3,3 0 0,0 15,12A3,3 0 0,0 12,9M12,17A5,5 0 0,1 7,12A5,5 0 0,1 12,7A5,5 0 0,1 17,12A5,5 0 0,1 12,17M12,4.5C7,4.5 2.73,7.61 1,12C2.73,16.39 7,19.5 12,19.5C17,19.5 21.27,16.39 23,12C21.27,7.61 17,4.5 12,4.5Z"
+                  />
                 </svg>
                 {{ article.viewCount }}회
               </span>
@@ -88,7 +115,7 @@
               class="video-thumbnail"
             />
           </div>
-          
+
           <!-- 일반 텍스트 컨텐츠 -->
           <div v-else class="text-content" v-html="article.content"></div>
         </div>
@@ -96,22 +123,28 @@
         <!-- 게시글 액션 버튼 -->
         <div class="article-actions card">
           <div class="reaction-buttons">
-            <button 
-              @click="toggleLike" 
+            <button
+              @click="toggleLike"
               :class="['reaction-btn', 'like-btn', { active: liked }]"
             >
               <svg viewBox="0 0 24 24" width="20" height="20">
-                <path fill="currentColor" d="M5,9V21H1V9H5M9,21A2,2 0 0,1 7,19V9C7,8.45 7.22,7.95 7.59,7.59L14.17,1L15.23,2.06C15.5,2.33 15.67,2.7 15.67,3.11L15.64,3.43L14.69,8H21C22.11,8 23,8.9 23,10V12C23,12.26 22.95,12.5 22.86,12.73L19.84,19.78C19.54,20.5 18.83,21 18,21H9M9,19H18.03L21,12V10H12.21L13.34,4.68L9,9.03V19Z"/>
+                <path
+                  fill="currentColor"
+                  d="M5,9V21H1V9H5M9,21A2,2 0 0,1 7,19V9C7,8.45 7.22,7.95 7.59,7.59L14.17,1L15.23,2.06C15.5,2.33 15.67,2.7 15.67,3.11L15.64,3.43L14.69,8H21C22.11,8 23,8.9 23,10V12C23,12.26 22.95,12.5 22.86,12.73L19.84,19.78C19.54,20.5 18.83,21 18,21H9M9,19H18.03L21,12V10H12.21L13.34,4.68L9,9.03V19Z"
+                />
               </svg>
               <span>{{ article.likeCount }}</span>
             </button>
-            
-            <button 
-              @click="toggleDislike" 
+
+            <button
+              @click="toggleDislike"
               :class="['reaction-btn', 'dislike-btn', { active: disliked }]"
             >
               <svg viewBox="0 0 24 24" width="20" height="20">
-                <path fill="currentColor" d="M19,15V3H23V15H19M15,3A2,2 0 0,1 17,5V15C17,15.55 16.78,16.05 16.41,16.41L9.83,23L8.77,21.94C8.5,21.67 8.33,21.3 8.33,20.89L8.36,20.57L9.31,16H3C1.89,16 1,15.1 1,14V12C1,11.74 1.05,11.5 1.14,11.27L4.16,4.22C4.46,3.5 5.17,3 6,3H15M15,5H5.97L3,12V14H11.79L10.66,19.32L15,14.97V5Z"/>
+                <path
+                  fill="currentColor"
+                  d="M19,15V3H23V15H19M15,3A2,2 0 0,1 17,5V15C17,15.55 16.78,16.05 16.41,16.41L9.83,23L8.77,21.94C8.5,21.67 8.33,21.3 8.33,20.89L8.36,20.57L9.31,16H3C1.89,16 1,15.1 1,14V12C1,11.74 1.05,11.5 1.14,11.27L4.16,4.22C4.46,3.5 5.17,3 6,3H15M15,5H5.97L3,12V14H11.79L10.66,19.32L15,14.97V5Z"
+                />
               </svg>
               <span>{{ article.dislikeCount }}</span>
             </button>
@@ -120,13 +153,19 @@
           <div class="action-buttons" v-if="isAuthor">
             <button @click="goToEdit" class="action-btn edit-btn">
               <svg viewBox="0 0 24 24" width="16" height="16">
-                <path fill="currentColor" d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z"/>
+                <path
+                  fill="currentColor"
+                  d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z"
+                />
               </svg>
               수정
             </button>
             <button @click="deleteArticle" class="action-btn delete-btn">
               <svg viewBox="0 0 24 24" width="16" height="16">
-                <path fill="currentColor" d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z"/>
+                <path
+                  fill="currentColor"
+                  d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z"
+                />
               </svg>
               삭제
             </button>
@@ -139,7 +178,10 @@
         <div class="comment-header">
           <h3 class="comment-title">
             <svg viewBox="0 0 24 24" width="20" height="20">
-              <path fill="currentColor" d="M9,22A1,1 0 0,1 8,21V18H4A2,2 0 0,1 2,16V4C2,2.89 2.9,2 4,2H20A2,2 0 0,1 22,4V16A2,2 0 0,1 20,18H13.9L10.2,21.71C10,21.9 9.75,22 9.5,22H9Z"/>
+              <path
+                fill="currentColor"
+                d="M9,22A1,1 0 0,1 8,21V18H4A2,2 0 0,1 2,16V4C2,2.89 2.9,2 4,2H20A2,2 0 0,1 22,4V16A2,2 0 0,1 20,18H13.9L10.2,21.71C10,21.9 9.75,22 9.5,22H9Z"
+              />
             </svg>
             댓글 {{ comments.length }}개
           </h3>
@@ -157,13 +199,16 @@
                 rows="3"
               ></textarea>
               <div class="write-actions">
-                <button 
-                  @click="submitComment" 
+                <button
+                  @click="submitComment"
                   :disabled="!newComment.trim()"
                   class="submit-btn"
                 >
                   <svg viewBox="0 0 24 24" width="16" height="16">
-                    <path fill="currentColor" d="M2,21L23,12L2,3V10L17,12L2,14V21Z"/>
+                    <path
+                      fill="currentColor"
+                      d="M2,21L23,12L2,3V10L17,12L2,14V21Z"
+                    />
                   </svg>
                   댓글 등록
                 </button>
@@ -175,11 +220,14 @@
         <!-- 댓글 목록 -->
         <div v-if="comments.length === 0" class="no-comments">
           <svg viewBox="0 0 24 24" width="48" height="48">
-            <path fill="currentColor" d="M12,3C6.5,3 2,6.6 2,11C2,13.1 3,15 4.5,16.5C4.2,17.5 3.7,18.4 3,19C4.2,19.3 6,18.8 7.3,17.8C8.5,18.3 10.2,18.7 12,18.7C17.5,18.7 22,15.1 22,10.7C22,6.3 17.5,2.7 12,2.7M12,17C7.6,17 4,14.1 4,10.5S7.6,4 12,4 20,6.9 20,10.5 16.4,17 12,17Z"/>
+            <path
+              fill="currentColor"
+              d="M12,3C6.5,3 2,6.6 2,11C2,13.1 3,15 4.5,16.5C4.2,17.5 3.7,18.4 3,19C4.2,19.3 6,18.8 7.3,17.8C8.5,18.3 10.2,18.7 12,18.7C17.5,18.7 22,15.1 22,10.7C22,6.3 17.5,2.7 12,2.7M12,17C7.6,17 4,14.1 4,10.5S7.6,4 12,4 20,6.9 20,10.5 16.4,17 12,17Z"
+            />
           </svg>
           <p>첫 번째 댓글을 남겨보세요!</p>
         </div>
-        
+
         <div v-else class="comment-list">
           <Comment
             v-for="comment in comments"
@@ -272,9 +320,9 @@ const userProfileImage = computed(() =>
 
 const getCategoryName = (category) => {
   const categoryMap = {
-    video: '영상게시판',
-    info: '정보게시판',
-    question: '질문게시판'
+    video: "영상게시판",
+    info: "정보게시판",
+    question: "질문게시판",
   };
   return categoryMap[category] || category;
 };
@@ -326,7 +374,7 @@ const toggleDislike = async () => {
 
 const goToEdit = () => router.push(`/board/edit/${articleId}`);
 const deleteArticle = async () => {
-  if (confirm('정말로 이 게시글을 삭제하시겠습니까?')) {
+  if (confirm("정말로 이 게시글을 삭제하시겠습니까?")) {
     await api.delete(`/api_article/delete/article_id/${articleId}`);
     router.push("/board");
   }
@@ -362,7 +410,7 @@ const confirmEdit = async (comment) => {
 };
 
 const deleteComment = async (commentId) => {
-  if (confirm('정말로 이 댓글을 삭제하시겠습니까?')) {
+  if (confirm("정말로 이 댓글을 삭제하시겠습니까?")) {
     await api.delete(`/api_comment/delete/comment_id/${commentId}`);
     fetchComments();
   }
@@ -372,17 +420,20 @@ const formatDate = (dateString) => {
   const date = new Date(dateString);
   const now = new Date();
   const diff = now - date;
-  
+
   const minutes = Math.floor(diff / (1000 * 60));
   const hours = Math.floor(diff / (1000 * 60 * 60));
   const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-  
-  if (minutes < 1) return '방금 전';
+
+  if (minutes < 1) return "방금 전";
   if (minutes < 60) return `${minutes}분 전`;
   if (hours < 24) return `${hours}시간 전`;
   if (days < 7) return `${days}일 전`;
-  
-  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
+    2,
+    "0"
+  )}-${String(date.getDate()).padStart(2, "0")}`;
 };
 
 // 게시글 작성자 옵션 메뉴
@@ -510,7 +561,10 @@ const submitReport = async ({ category, content }) => {
     alert("신고가 접수되었습니다.");
     closeReportModal();
   } catch (e) {
-    alert("신고 처리 중 오류가 발생했습니다.");
+    const message =
+      e.response?.data?.message || "신고 처리 중 오류가 발생했습니다.";
+
+    alert(message);
     closeReportModal();
   }
 };
@@ -525,7 +579,8 @@ const submitReport = async ({ category, content }) => {
 }
 
 .board-detail-wrapper {
-  font-family: "Pretendard Variable", "Pretendard", "Noto Sans KR", Arial, sans-serif;
+  font-family: "Pretendard Variable", "Pretendard", "Noto Sans KR", Arial,
+    sans-serif;
   background: #f8f9fa;
   min-height: 100vh;
 }
@@ -574,8 +629,12 @@ const submitReport = async ({ category, content }) => {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* 게시글 헤더 */
@@ -617,13 +676,10 @@ const submitReport = async ({ category, content }) => {
 }
 
 .author-info {
-  position: relative;   
-  overflow: visible;     
-  z-index: auto;         
+  position: relative;
+  overflow: visible;
+  z-index: auto;
 }
-
-
-
 
 .author-wrapper {
   display: flex;
@@ -762,8 +818,12 @@ const submitReport = async ({ category, content }) => {
   word-break: break-word;
 }
 
-.text-content h1, .text-content h2, .text-content h3,
-.text-content h4, .text-content h5, .text-content h6 {
+.text-content h1,
+.text-content h2,
+.text-content h3,
+.text-content h4,
+.text-content h5,
+.text-content h6 {
   margin: 1.5rem 0 1rem 0;
   color: #212529;
 }

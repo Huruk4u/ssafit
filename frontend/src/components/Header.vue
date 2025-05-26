@@ -3,8 +3,12 @@
     <header class="header">
       <h1 class="logo" @click="goHome">SSAFIT</h1>
       <nav class="nav">
-        <router-link to="/mypage" class="nav-link" active-class="active-link">홈</router-link>
-        <router-link to="/board" class="nav-link" active-class="active-link">게시판</router-link>
+        <router-link to="/mypage" class="nav-link" active-class="active-link"
+          >홈</router-link
+        >
+        <router-link to="/board" class="nav-link" active-class="active-link"
+          >게시판</router-link
+        >
         <router-link
           to="/notification"
           class="nav-link"
@@ -12,10 +16,7 @@
           :class="{ 'has-unread': unreadCount > 0 }"
         >
           알림
-          <span
-            v-if="unreadCount > 0"
-            class="dot"
-          ></span>
+          <span v-if="unreadCount > 0" class="dot"></span>
         </router-link>
         <router-link
           v-if="user && user.role === 'ROLE_ADMIN'"
@@ -37,7 +38,8 @@
           to="/login"
           class="nav-link"
           active-class="active-link"
-        >로그인</router-link>
+          >로그인</router-link
+        >
       </div>
     </header>
   </div>
@@ -51,23 +53,27 @@ import api from "@/api/axiosInstance";
 const router = useRouter();
 
 const isLogin = ref(!!localStorage.getItem("token"));
-const user = ref(localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : null);
+const user = ref(
+  localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : null
+);
 
 // 일반 알림
 const notifications = ref([]);
-const unreadCount = computed(() =>
-  notifications.value.filter(n => n.isRead === false).length
+const unreadCount = computed(
+  () => notifications.value.filter((n) => n.isRead === false).length
 );
 
 // 관리자 알림
 const adminNotifications = ref([]);
-const adminUnreadCount = computed(() =>
-  adminNotifications.value.filter(r => !r.isHandled).length
+const adminUnreadCount = computed(
+  () => adminNotifications.value.filter((r) => !r.isHandled).length
 );
 
 function syncAuthState() {
   isLogin.value = !!localStorage.getItem("token");
-  user.value = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : null;
+  user.value = localStorage.getItem("user")
+    ? JSON.parse(localStorage.getItem("user"))
+    : null;
   fetchNotifications();
   fetchAdminNotifications();
 }
@@ -111,6 +117,8 @@ onUnmounted(() => {
 const logout = () => {
   api.post("/api_auth/logout").then(() => {
     localStorage.clear();
+    notifications.value = [];
+    adminNotifications.value = []; // notification 정보 정리
     syncAuthState();
     window.dispatchEvent(new Event("auth-changed"));
     router.push("/login").catch((err) => {
@@ -142,7 +150,8 @@ const goHome = () => {
   border-bottom: 2px solid #42b98322;
 }
 
-body, #app {
+body,
+#app {
   padding-top: 64px;
 }
 
@@ -199,7 +208,8 @@ body, #app {
   height: 3px;
   background: linear-gradient(90deg, #42b983 60%, #5eead4 100%);
   border-radius: 2px;
-  transition: width 0.3s cubic-bezier(.4,0,.2,1), left 0.3s cubic-bezier(.4,0,.2,1);
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .nav-link:hover,

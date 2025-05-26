@@ -20,6 +20,8 @@ public enum ErrorCode {
     DUPLICATED_REPORT("REPORT_002", "중복된 신고입니다.", HttpStatus.CONFLICT),
     ADMIN_REPORTED("REPORT_003", "운영자는 신고 대상이 아닙니다.", HttpStatus.FORBIDDEN),
     ALREADY_HANDLED("REPORT_004", "이미 처리된 신고입니다.", HttpStatus.UNPROCESSABLE_ENTITY),
+    REPORTEE_NOT_FOUND("REPORT_005", "유저를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
+    REPORT_CREATE_FAILED("REPORT_006", "신고 중 예외가 발생했습니다.", HttpStatus.BAD_REQUEST),
 
     // Article 관련 예외 처리
     ARTICLE_NOT_FOUND("BOARD_001", "게시글이 존재하지 않습니다.", HttpStatus.NOT_FOUND),
@@ -37,10 +39,6 @@ public enum ErrorCode {
     // OCR 추출 실패 예외 처리
     OCR_INVALID_IMAGE_FORMAT("CHALLENGE_001", "OCR파싱에 실패했습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
     GPT_GET_RESPONSE_FAILED("CHALLENGE_002", "GPT API의 응답을 얻는 중 문제가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
-
-    // Report 관련 예외 처리
-    REPORTEE_NOT_FOUND("REPORT_001", "유저를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
-    REPORT_CREATE_FAILED("REPORT_002", "신고 중 예외가 발생했습니다.", HttpStatus.BAD_REQUEST),
 
     // Follow 관련 예외 처리
     SELF_FOLLOWED("FOLLOW_001", "자신을 팔로우 할 수느 없습니다.", HttpStatus.BAD_REQUEST),
