@@ -42,40 +42,44 @@
 
         <div class="form-group">
           <label for="title">제목</label>
-          <input 
-            type="text" 
-            id="title" 
-            v-model="article.title" 
-            placeholder="제목을 입력하세요" 
+          <input
+            type="text"
+            id="title"
+            v-model="article.title"
+            placeholder="제목을 입력하세요"
             required
           />
         </div>
 
         <div class="form-group">
           <label for="url">영상 URL</label>
-          <input 
-            type="url" 
-            id="url" 
-            v-model="article.url" 
-            placeholder="영상 URL을 입력하세요" 
+          <input
+            type="url"
+            id="url"
+            v-model="article.url"
+            placeholder="영상 URL을 입력하세요"
             :disabled="article.category !== 'video'"
           />
         </div>
 
         <div class="form-group">
           <label for="content">내용</label>
-          <textarea 
-            id="content" 
-            v-model="article.content" 
-            placeholder="내용을 입력하세요" 
+          <textarea
+            id="content"
+            v-model="article.content"
+            placeholder="내용을 입력하세요"
             rows="10"
           ></textarea>
         </div>
 
         <div class="button-group">
           <button class="cancel-btn" @click="cancel">취소</button>
-          <button class="submit-btn" @click="updateArticle" :disabled="isSubmitting">
-            {{ isSubmitting ? '수정 중...' : '수정하기' }}
+          <button
+            class="submit-btn"
+            @click="updateArticle"
+            :disabled="isSubmitting"
+          >
+            {{ isSubmitting ? "수정 중..." : "수정하기" }}
           </button>
         </div>
       </div>
@@ -84,9 +88,9 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue';
-import { useRouter, useRoute } from 'vue-router';
-import api from '@/api/axiosInstance';
+import { ref, reactive, onMounted } from "vue";
+import { useRouter, useRoute } from "vue-router";
+import api from "@/api/axiosInstance";
 
 const router = useRouter();
 const route = useRoute();
@@ -97,11 +101,11 @@ const error = ref(null);
 const isSubmitting = ref(false);
 
 const article = reactive({
-  category: '',
-  title: '',
-  content: '',
-  tag: '',
-  url: ''
+  category: "",
+  title: "",
+  content: "",
+  tag: "",
+  url: "",
 });
 
 const fetchArticle = async () => {
@@ -112,17 +116,13 @@ const fetchArticle = async () => {
     article.category = fetchedArticle.category;
     article.title = fetchedArticle.title;
     article.content = fetchedArticle.content;
-    article.tag = fetchedArticle.tag || '';
-    article.url = fetchedArticle.url || '';
+    article.tag = fetchedArticle.tag || "";
+    article.url = fetchedArticle.url || "";
   } catch (err) {
-    console.error('게시글을 불러오는데 실패했습니다:', err);
-    if (err.response && err.response.status === 404) {
-      error.value = '게시글을 찾을 수 없습니다.';
-    } else if (err.response && err.response.status === 403) {
-      error.value = '수정 권한이 없습니다.';
-    } else {
-      error.value = '게시글을 불러오는데 오류가 발생했습니다.';
-    }
+    const message = err.response
+      ? err.response.data.message || "게시글을 불러오는 중 오류가 발생했습니다."
+      : "네트워크 오류가 발생했습니다.";
+    alert(message);
   } finally {
     loading.value = false;
   }
@@ -130,53 +130,53 @@ const fetchArticle = async () => {
 
 const updateArticle = async () => {
   if (!article.title.trim()) {
-    alert('제목은 필수 입력 항목입니다.');
+    alert("제목은 필수 입력 항목입니다.");
     return;
   }
-  if (article.category === 'video' && !article.url.trim()) {
-    alert('영상 게시판은 URL을 입력해야 합니다.');
+  if (article.category === "video" && !article.url.trim()) {
+    alert("영상 게시판은 URL을 입력해야 합니다.");
     return;
   }
   try {
     isSubmitting.value = true;
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     if (!token) {
-      alert('로그인이 필요합니다.');
-      router.push('/login');
+      alert("로그인이 필요합니다.");
+      router.push("/login");
       return;
     }
-    const response = await api.put(`/api_article/put/modify/article_id/${articleId}`, article);
+    const response = await api.put(
+      `/api_article/put/modify/article_id/${articleId}`,
+      article
+    );
     if (response.data === 1) {
-      alert('게시글이 성공적으로 수정되었습니다.');
+      alert("게시글이 성공적으로 수정되었습니다.");
       router.push(`/board/detail/${articleId}`);
     } else {
-      alert('게시글 수정에 실패했습니다.');
+      alert("게시글 수정에 실패했습니다.");
     }
   } catch (err) {
-    console.error('게시글 수정 중 오류 발생:', err);
-    if (err.response && err.response.status === 401) {
-      alert('로그인이 필요하거나 세션이 만료되었습니다.');
-      router.push('/login');
-    } else if (err.response && err.response.status === 403) {
-      alert('수정 권한이 없습니다.');
-      router.push('/board');
-    } else {
-      alert('게시글 수정 중 오류가 발생했습니다.');
-    }
+    const message = err.response
+      ? err.response.data.message || "게시글 수정 중 오류가 발생했습니다."
+      : "네트워크 오류가 발생했습니다.";
+    alert(message);
+    
   } finally {
     isSubmitting.value = false;
   }
 };
 
 const cancel = () => {
-  const confirmLeave = confirm('수정 중인 내용은 저장되지 않습니다. 정말 취소하시겠습니까?');
+  const confirmLeave = confirm(
+    "수정 중인 내용은 저장되지 않습니다. 정말 취소하시겠습니까?"
+  );
   if (confirmLeave) {
     router.push(`/board/detail/${articleId}`);
   }
 };
 
 const goToBoard = () => {
-  router.push('/board');
+  router.push("/board");
 };
 
 onMounted(() => {
@@ -191,7 +191,8 @@ onMounted(() => {
   max-width: 600px;
   margin: 0 auto;
   padding: 32px 0 32px 0;
-  font-family: "Pretendard Variable", "Pretendard", "Noto Sans KR", Arial, sans-serif;
+  font-family: "Pretendard Variable", "Pretendard", "Noto Sans KR", Arial,
+    sans-serif;
 }
 
 .form-container {
@@ -212,7 +213,8 @@ h2 {
   font-family: inherit;
 }
 
-.loading, .error {
+.loading,
+.error {
   text-align: center;
   padding: 40px 0;
   font-family: inherit;
@@ -253,7 +255,9 @@ label {
   font-family: inherit;
 }
 
-input, select, textarea {
+input,
+select,
+textarea {
   width: 100%;
   padding: 12px;
   border: 1.5px solid #bcd0ee; /* 입력창 테두리 색상 강조 */
@@ -265,7 +269,9 @@ input, select, textarea {
   color: #222;
 }
 
-input:focus, select:focus, textarea:focus {
+input:focus,
+select:focus,
+textarea:focus {
   border-color: #42b983;
   outline: none;
 }
@@ -287,7 +293,8 @@ textarea {
   margin-top: 28px;
 }
 
-.cancel-btn, .submit-btn {
+.cancel-btn,
+.submit-btn {
   padding: 10px 28px;
   border: none;
   border-radius: 22px;
