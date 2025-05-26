@@ -124,6 +124,7 @@ public class CommentController {
         return ResponseEntity.ok(HttpStatus.NO_CONTENT.value());
     }
 
+
     // 댓글 좋아요
     @PostMapping("/like")
     public ResponseEntity<?> likeComment(
