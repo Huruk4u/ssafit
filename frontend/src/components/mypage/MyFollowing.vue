@@ -1,25 +1,25 @@
 <template>
   <div class="my-following">
     <h3>내가 팔로우한 사람들</h3>
-    
+
     <div v-if="loading" class="loading">
       <p>로딩 중...</p>
     </div>
-    
+
     <div v-else-if="followingList.length === 0" class="no-following">
       <p>팔로우한 사람이 없습니다.</p>
     </div>
-    
+
     <div v-else class="following-list">
-      <div 
-        v-for="user in pagedFollowing" 
+      <div
+        v-for="user in pagedFollowing"
         :key="user.userId"
         class="following-item"
         @click="goToUserProfile(user.userId)"
       >
-        <img 
-          :src="getUserProfileImage(user.profileImage)" 
-          :alt="user.nickname + ' 프로필'" 
+        <img
+          :src="getUserProfileImage(user.profileImage)"
+          :alt="user.nickname + ' 프로필'"
           class="user-profile-img"
         />
         <div class="user-info">
@@ -33,7 +33,9 @@
       <div class="pagination" v-if="totalPages > 1">
         <button @click="prevPage" :disabled="currentPage === 1">이전</button>
         <span>{{ currentPage }} / {{ totalPages }}</span>
-        <button @click="nextPage" :disabled="currentPage === totalPages">다음</button>
+        <button @click="nextPage" :disabled="currentPage === totalPages">
+          다음
+        </button>
       </div>
     </div>
   </div>
@@ -43,6 +45,7 @@
 import { ref, onMounted, computed } from "vue";
 import { useRouter } from "vue-router";
 import api from "@/api/axiosInstance";
+import { useUserImage } from "@/composables/useUserImage"; // 추가
 
 const router = useRouter();
 const followingList = ref([]);
@@ -66,10 +69,14 @@ const nextPage = () => {
   if (currentPage.value < totalPages.value) currentPage.value++;
 };
 
-const getUserProfileImage = (profileImage) => {
-  return profileImage
-    ? `http://localhost:8080/images/profile/${profileImage}`
-    : "/default-profile.png";
+// useUserImage 활용: 각 유저 객체를 넘겨서 프로필 이미지 URL 반환
+const getUserProfileImage = (profileImage, backgroundImage = null) => {
+  // useUserImage는 유저 객체를 받으므로 임시 객체 생성
+  const { getProfileImage } = useUserImage({
+    profileImage,
+    backgroundImage,
+  });
+  return getProfileImage();
 };
 
 const goToUserProfile = (userId) => {
@@ -114,7 +121,7 @@ h3 {
   margin-bottom: 24px;
   background: linear-gradient(90deg, #e0f7fa 60%, #fff 100%);
   border-radius: 12px 12px 0 0;
-  box-shadow: 0 2px 8px rgba(66,185,131,0.06);
+  box-shadow: 0 2px 8px rgba(66, 185, 131, 0.06);
 }
 
 .loading {
@@ -160,7 +167,9 @@ h3 {
   border-radius: 50%;
   object-fit: cover;
   margin-right: 16px;
-  border: 2px solid #dee2e6;
+  border: 4px solid #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  background: #fff;
 }
 
 .user-info {
@@ -192,12 +201,11 @@ h3 {
   font-size: 1rem;
   font-weight: 700;
   letter-spacing: 0.02em;
-  box-shadow: 0 2px 8px rgba(66,185,131,0.10);
+  box-shadow: 0 2px 8px rgba(66, 185, 131, 0.1);
   border: 2px solid #b2dfdb;
   transition: background 0.2s, border 0.2s;
   display: inline-block;
 }
-
 
 .pagination {
   display: flex;
@@ -229,22 +237,10 @@ h3 {
 }
 
 @media (max-width: 768px) {
-  .following-item {
-    padding: 12px;
-  }
-  
   .user-profile-img {
     width: 50px;
     height: 50px;
     margin-right: 12px;
-  }
-  
-  .user-nickname {
-    font-size: 16px;
-  }
-  
-  .user-username {
-    font-size: 13px;
   }
 }
 </style>
