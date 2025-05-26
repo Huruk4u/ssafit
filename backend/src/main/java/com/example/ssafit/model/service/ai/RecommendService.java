@@ -1,10 +1,9 @@
-package com.example.ssafit.model.service.inbody;
+package com.example.ssafit.model.service.ai;
 
 import com.example.ssafit.exception.CustomInbodyException;
 import com.example.ssafit.exception.ErrorCode;
 import com.example.ssafit.model.dto.RecommendResult;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import okhttp3.*;
@@ -15,7 +14,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Base64;
-import java.util.List;
 
 @Service
 public class RecommendService {

@@ -1,6 +1,5 @@
 package com.example.ssafit.controller;
 
-import com.example.ssafit.exception.CustomBusinessException;
 import com.example.ssafit.exception.CustomInbodyException;
 import com.example.ssafit.exception.ErrorCode;
 import com.example.ssafit.model.dto.Badge;
@@ -11,8 +10,8 @@ import com.example.ssafit.model.dto.user.User;
 import com.example.ssafit.model.service.*;
 import com.example.ssafit.model.service.inbody.ChallengeService;
 import com.example.ssafit.model.service.inbody.InbodyService;
-import com.example.ssafit.model.service.inbody.OcrService;
-import com.example.ssafit.model.service.inbody.RecommendService;
+import com.example.ssafit.model.service.ai.OcrService;
+import com.example.ssafit.model.service.ai.RecommendService;
 import com.example.ssafit.model.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
