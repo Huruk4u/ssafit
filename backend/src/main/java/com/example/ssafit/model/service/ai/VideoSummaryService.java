@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class VideoSummaryService {
@@ -21,12 +22,21 @@ public class VideoSummaryService {
 
     private String buildPrompt(String ocrText) {
         return String.format("""
-            너는 운동 전문가야. 이제 영상에서 추출한 자막 텍스트를 바탕으로 운동에 대해 설명해줘.
-            자막 내용:
+            너는 운동 전문가야. 너는 영상 자막을 분석해서 해당 운동의 정보를 사용자에게 제공하는 역할을 맡고 있어.
+            다음은 영상에서 추출한 자막 텍스트야:
             ```text
             %s
             ```
-            이 자막을 보고 운동이 무엇인지 설명하고, 그 운동을 진행하는 순서를 하나하나 자세히 말해줘.
+            이 자막을 분석해서 다음 기준에 따라 딱 하나만 선택해서 설명해줘:
+            자막 내용이 충분하고, 운동 설명이 포함돼 있다면:
+            어떤 운동인지 설명하고, 해당 운동을 어떻게 수행하는지 단계를 하나씩 상세하게 서술해줘.
+            
+            자막 내용이 운동을 식별할 수 있을 만큼 충분하지 않다면:
+            
+            아래 문구만 그대로 반환해줘:
+            "영상의 오디오 정보가 부족합니다."
+            
+            다른 말은 절대 하지 마. 감탄사나 인삿말 없이 위 조건 중 하나에 따라 정확한 내용만 응답해.
             """, ocrText);
     }
 
@@ -44,7 +54,11 @@ public class VideoSummaryService {
     }
 
     public String generateSubtitle(String text) throws IOException {
-        OkHttpClient client = new OkHttpClient();
+        OkHttpClient client = new OkHttpClient.Builder()
+                .connectTimeout(30, TimeUnit.SECONDS)   // 연결 시도 타임아웃
+                .writeTimeout(30, TimeUnit.SECONDS)     // 요청 보내는 데 걸리는 최대 시간
+                .readTimeout(60, TimeUnit.SECONDS)      // 응답 받는 데 걸리는 최대 시간
+                .build();
 
         String escapedPrompt = buildPrompt(text);
 

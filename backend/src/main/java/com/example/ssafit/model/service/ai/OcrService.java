@@ -2,7 +2,8 @@ package com.example.ssafit.model.service.ai;
 
 import com.example.ssafit.exception.CustomInbodyException;
 import com.example.ssafit.exception.ErrorCode;
-import com.google.cloud.speech.v1.*;
+import com.google.api.gax.longrunning.OperationFuture;
+import com.google.cloud.speech.v1p1beta1.*;
 import com.google.cloud.vision.v1.*;
 import com.google.protobuf.ByteString;
 import org.springframework.core.io.ClassPathResource;
@@ -14,15 +15,20 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 @Service
 public class OcrService {
 
     private final ImageAnnotatorClient vision;
 
-    public OcrService(ImageAnnotatorClient vision) {
+    public OcrService(ImageAnnotatorClient vision) throws IOException, InterruptedException {
         this.vision = vision;
     }
 
@@ -53,50 +59,47 @@ public class OcrService {
     /**
      * url로부터 오디오 입력
      */
-    public InputStream downloadAudio(String videoUrl) throws IOException {
-        ProcessBuilder processBuilder = new ProcessBuilder(
-                "C:\\Users\\sungm\\Desktop\\final\\yt-dlp.exe", "-f", "bestaudio", "--extract-audio", "--audio-format", "mp3", videoUrl
+    public File downloadSubtitle(String videoUrl) throws IOException, InterruptedException {
+        // 저장할 자막 파일 이름 (yt-dlp가 이 이름 기반으로 생성함)
+        File subtitleFile = new File("subtitles.en.vtt");
+
+        ProcessBuilder pb = new ProcessBuilder(
+                "C:\\Users\\sungm\\Desktop\\final\\yt-dlp.exe",
+                "--write-auto-sub",
+                "--sub-lang", "en",
+                "--skip-download",
+                "-o", "subtitles",
+                videoUrl
         );
 
-        System.out.println("사고지점1");
+        pb.inheritIO(); // 콘솔 출력 확인용
 
-        Process process = processBuilder.start();
-        System.out.println("사고지점2");
+        Process process = pb.start();
+        int exitCode = process.waitFor();
+        if (exitCode != 0) {
+            throw new IOException("yt-dlp 자막 다운로드 실패 (exit code: " + exitCode + ")");
+        }
 
-        return process.getInputStream();
+        if (!subtitleFile.exists()) {
+            throw new IOException("자막 파일 생성되지 않음: " + subtitleFile.getAbsolutePath());
+        }
+
+        return subtitleFile;
     }
 
-    /**
-     * downloadAudio -> InputStream으로부터 OCR처리를 해서 문자열을 추출할거임
-     *
-     */
-    public String transcribeAudio(InputStream inputStream) throws IOException {
 
-        SpeechClient speechClient = SpeechClient.create();
+    public String parseVttToPlainText(File subtitleFile) throws IOException {
+        StringBuilder text = new StringBuilder();
+        List<String> lines = Files.readAllLines(subtitleFile.toPath(), StandardCharsets.UTF_8);
 
-        ByteString byteString = ByteString.readFrom(inputStream);
+        for (String line : lines) {
+            if (line.trim().isEmpty() || line.matches("^\\d+$") || line.contains("-->")) {
+                continue; // 타임코드 or 빈 줄 or 인덱스 제거
+            }
+            text.append(line.trim()).append(" ");
+        }
 
-        RecognitionAudio recognitionAudio = RecognitionAudio.newBuilder()
-                .setContent(byteString)
-                .build();
-
-        // 음성 인식 설정
-        RecognitionConfig config = RecognitionConfig.newBuilder()
-                .setEncoding(RecognitionConfig.AudioEncoding.LINEAR16)
-                .setSampleRateHertz(16000)
-                .setLanguageCode("en-US")
-                .build();
-
-        RecognizeRequest request = RecognizeRequest.newBuilder()
-                .setConfig(config)
-                .setAudio(recognitionAudio)
-                .build();
-
-        RecognizeResponse response = speechClient.recognize(request);
-        StringBuilder transcription = new StringBuilder();
-        response.getResultsList().forEach( result ->
-                transcription.append(result.getAlternatives(0).getTranscript()).append("\n"));
-
-        return transcription.toString();
+        return text.toString().trim();
     }
+
 }

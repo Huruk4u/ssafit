@@ -43,6 +43,9 @@
           placeholder="유튜브 영상 URL을 입력하세요"
           required
         />
+          <button @click="fetchVideoSummary" class="submit-btn" style="margin-top: 8px;">
+            자막 요약 요청
+          </button>
       </div>
 
       <div class="form-group">
@@ -133,6 +136,49 @@ onMounted(() => {
     router.push("/login");
   }
 });
+
+const summaryText = ref("");
+
+const fetchVideoSummary = async () => {
+  const token = getToken();
+  if (!token) {
+    alert("로그인이 필요합니다.");
+    router.push("/login");
+    return;
+  }
+  
+  if (!article.url.trim()) {
+    alert("영상 URL을 입력해주세요.");
+    return;
+  }
+  console.log("영상 URL:", article.url.trim());
+
+  try {
+    article.content = "요약 중입니다...";
+
+    const response = await axios.post(
+      "http://localhost:8080/api_video_summary/post",
+      null,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        params: {
+          videoUrl: article.url.trim(),
+        },
+      }
+    );
+
+    article.content = response.data;
+  } catch (error) {
+    console.error("요약 요청 실패:", error);
+    article.content =
+      "요약 실패: " + (error.response?.data || error.message);
+  }
+};
+
+
 
 const submitArticle = async () => {
   // 제목 필수 검증
