@@ -24,7 +24,7 @@ public class VideoSummaryController {
     private OcrService ocrService;
 
     @PostMapping("/post")
-    public ResponseEntity videoSummary(@RequestParam String videoUrl) {
+    public ResponseEntity videoSummary(@RequestParam("videoUrl") String videoUrl) {
         try {
             InputStream audioStream = ocrService.downloadAudio(videoUrl);
 

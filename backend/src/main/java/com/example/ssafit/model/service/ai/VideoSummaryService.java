@@ -1,6 +1,9 @@
 package com.example.ssafit.model.service.ai;
 
-import com.google.api.gax.batching.RequestBuilder;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import okhttp3.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -27,26 +30,36 @@ public class VideoSummaryService {
             """, ocrText);
     }
 
+    private String extractContentOnly(String responseJson) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode root = mapper.readTree(responseJson);
+
+        // choices[0].message.content 경로
+        return root
+                .path("choices")
+                .get(0)
+                .path("message")
+                .path("content")
+                .asText();
+    }
 
     public String generateSubtitle(String text) throws IOException {
         OkHttpClient client = new OkHttpClient();
 
         String escapedPrompt = buildPrompt(text);
 
-        String json = String.format("""
-                {
-                  "model": "gpt-4o",
-                  "messages": [
-                    {
-                      "role": "user",
-                      "content": [
-                        { "type": "text", "text": %s },
-                      ]
-                    }
-                  ]
-                }
-        
-                """, escapedPrompt);
+        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectNode root = objectMapper.createObjectNode();
+        root.put("model", "gpt-4o");
+
+        ArrayNode messages = objectMapper.createArrayNode();
+        ObjectNode message = objectMapper.createObjectNode();
+        message.put("role", "user");
+        message.put("content", escapedPrompt);
+        messages.add(message);
+
+        root.set("messages", messages);
+        String json = objectMapper.writeValueAsString(root);
 
         RequestBody requestBody = RequestBody.create(json, MediaType.get("application/json"));
         Request request = new Request.Builder()
@@ -56,10 +69,18 @@ public class VideoSummaryService {
                 .build();
 
         try (Response response = client.newCall(request).execute()) {
-            if (response.isSuccessful()) {
-                String responseBody = response.body().string();
 
-                return responseBody;
+            int code = response.code();
+
+            String responseText = response.body() == null ? "" : response.body().string();
+            String fullResponse = responseText.replaceAll("```json\\s*", "").replaceAll("```\\s*$", "").trim();
+            String content = extractContentOnly(fullResponse);
+
+            System.out.println("ChatGPT response code: " + code);
+            System.out.println("ChatGPT response body: " + responseText);
+
+            if (response.isSuccessful()) {
+                return content;
             } else {
                 throw new IOException("ChatGPT API 호출 실패 : " + response.code());
             }

@@ -7,6 +7,7 @@ import com.google.cloud.vision.v1.ImageAnnotatorSettings;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -18,6 +19,7 @@ public class OcrConfig {
     private String keyPath;
 
     @Bean
+    @Lazy
     public ImageAnnotatorClient getOcrClient() throws IOException {
         GoogleCredentials credentials = GoogleCredentials.fromStream(new FileInputStream(keyPath));
 

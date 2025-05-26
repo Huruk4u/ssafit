@@ -5,9 +5,11 @@ import com.example.ssafit.exception.ErrorCode;
 import com.google.cloud.speech.v1.*;
 import com.google.cloud.vision.v1.*;
 import com.google.protobuf.ByteString;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -53,10 +55,14 @@ public class OcrService {
      */
     public InputStream downloadAudio(String videoUrl) throws IOException {
         ProcessBuilder processBuilder = new ProcessBuilder(
-                "yt-dlp", "-f", "bestaudio", "--extract-audio", "--audio-format", "mp3", videoUrl
+                "C:\\Users\\sungm\\Desktop\\final\\yt-dlp.exe", "-f", "bestaudio", "--extract-audio", "--audio-format", "mp3", videoUrl
         );
 
+        System.out.println("사고지점1");
+
         Process process = processBuilder.start();
+        System.out.println("사고지점2");
+
         return process.getInputStream();
     }
 
