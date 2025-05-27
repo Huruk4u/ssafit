@@ -13,14 +13,6 @@
       </div>
 
       <div v-else class="edit-form">
-        <div class="form-group">
-          <label for="category">카테고리</label>
-          <select id="category" v-model="article.category" required>
-            <option value="video">영상</option>
-            <option value="question">질문</option>
-            <option value="info">정보</option>
-          </select>
-        </div>
 
         <div class="form-group">
           <label for="tag">태그 (부위)</label>
