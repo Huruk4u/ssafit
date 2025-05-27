@@ -76,7 +76,7 @@
       <div v-if="showModal" class="modal-overlay">
         <div class="modal-content">
           <button class="modal-close" @click="closeModal">×</button>
-          <h2>신고 처리</h2>
+          <h2 class="modal-title">신고 처리</h2>
           <div class="modal-user-info">
             <div>
               <span class="modal-label">신고자</span>
@@ -315,7 +315,7 @@ onMounted(() => {
   text-align: left;
   background: linear-gradient(90deg, #e8f8f3 60%, #fff 100%);
   border-radius: 0 0 18px 18px;
-  box-shadow: 0 2px 12px rgba(66,185,131,0.07);
+  box-shadow: 0 2px 12px rgba(66, 185, 131, 0.07);
   padding: 18px 0 18px 24px;
   border-left: 6px solid #42b983;
 }
@@ -328,7 +328,7 @@ onMounted(() => {
   padding: 0 18px;
   margin-bottom: 32px;
   border-radius: 12px 12px 0 0;
-  box-shadow: 0 2px 8px rgba(66,185,131,0.04);
+  box-shadow: 0 2px 8px rgba(66, 185, 131, 0.04);
 }
 
 .admin-nav.modern-tabs button {
@@ -361,7 +361,8 @@ onMounted(() => {
 .report-list-wrapper {
   background: #fff;
   border-radius: 18px;
-  box-shadow: 0 2px 12px rgba(66, 185, 131, 0.07), 0 1.5px 6px rgba(0,0,0,0.03);
+  box-shadow: 0 2px 12px rgba(66, 185, 131, 0.07),
+    0 1.5px 6px rgba(0, 0, 0, 0.03);
   padding: 40px 32px 32px 32px;
   margin-bottom: 32px;
   min-height: 320px;
@@ -387,7 +388,8 @@ onMounted(() => {
 .report-card {
   background: linear-gradient(to bottom, #f7fcfa, #fff);
   border-radius: 14px;
-  box-shadow: 0 2px 12px rgba(66,185,131,0.08), 0 1.5px 6px rgba(0,0,0,0.04);
+  box-shadow: 0 2px 12px rgba(66, 185, 131, 0.08),
+    0 1.5px 6px rgba(0, 0, 0, 0.04);
   padding: 24px 28px 18px 28px;
   border: 1.5px solid #e6f2ec;
   display: flex;
@@ -404,7 +406,7 @@ onMounted(() => {
 
 .report-card:hover {
   border-color: #42b983;
-  box-shadow: 0 6px 24px rgba(66,185,131,0.13), 0 2px 8px rgba(0,0,0,0.08);
+  box-shadow: 0 6px 24px rgba(66, 185, 131, 0.13), 0 2px 8px rgba(0, 0, 0, 0.08);
   transform: translateY(-2px) scale(1.01);
 }
 
@@ -463,7 +465,7 @@ onMounted(() => {
   font-size: 1em;
   font-weight: 500;
   transition: background 0.2s;
-  box-shadow: 0 2px 8px rgba(66,185,131,0.08);
+  box-shadow: 0 2px 8px rgba(66, 185, 131, 0.08);
 }
 
 .report-actions button:hover {
@@ -492,7 +494,7 @@ onMounted(() => {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0,0,0,0.35);
+  background: rgba(0, 0, 0, 0.35);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -504,15 +506,21 @@ onMounted(() => {
   border-radius: 16px;
   padding: 36px 32px 28px 32px;
   min-width: 340px;
-  max-width: 95vw;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.10);
+  max-width: 50vw;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
   text-align: left;
   position: relative;
-  animation: modal-pop-in 0.35s cubic-bezier(0.4,2,0.6,1) both;
+  animation: modal-pop-in 0.35s cubic-bezier(0.4, 2, 0.6, 1) both;
 }
 @keyframes modal-pop-in {
-  0% { opacity: 0; transform: translateY(40px) scale(0.95);}
-  100% { opacity: 1; transform: translateY(0) scale(1);}
+  0% {
+    opacity: 0;
+    transform: translateY(40px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 .modal-close {
   position: absolute;
@@ -598,6 +606,14 @@ onMounted(() => {
 .modal-fade-leave-to {
   opacity: 0;
 }
+.modal-title {
+  font-size: 1.8em;
+  color: #222;
+  margin-bottom: 18px;
+  font-weight: 600;
+  letter-spacing: -0.5px;
+}
+
 .loading {
   color: #888;
   text-align: center;
@@ -606,9 +622,8 @@ onMounted(() => {
 
 /* 신고내역 모달 스타일 */
 .report-modal-content {
-  max-width: 600px;
-  width: 96vw;
   max-height: 80vh;
+  width: fit-content;
   overflow-y: auto;
   padding: 32px 24px 24px 24px;
   box-sizing: border-box;
@@ -645,7 +660,8 @@ onMounted(() => {
 .user-report-card {
   background: #fff;
   border-radius: 12px;
-  box-shadow: 0 2px 12px rgba(66,185,131,0.08), 0 1.5px 6px rgba(0,0,0,0.04);
+  box-shadow: 0 2px 12px rgba(66, 185, 131, 0.08),
+    0 1.5px 6px rgba(0, 0, 0, 0.04);
   padding: 18px 20px 14px 20px;
   display: flex;
   flex-direction: column;
@@ -655,7 +671,7 @@ onMounted(() => {
 }
 
 .user-report-card:hover {
-  box-shadow: 0 6px 24px rgba(66,185,131,0.13), 0 2px 8px rgba(0,0,0,0.08);
+  box-shadow: 0 6px 24px rgba(66, 185, 131, 0.13), 0 2px 8px rgba(0, 0, 0, 0.08);
   transform: translateY(-2px) scale(1.01);
 }
 

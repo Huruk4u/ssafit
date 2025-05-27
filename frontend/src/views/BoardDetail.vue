@@ -100,20 +100,27 @@
         <div class="article-content card">
           <!-- 비디오 컨텐츠 -->
           <div v-if="article.category === 'video'" class="video-container">
-            <iframe
-              v-if="isYoutubeUrl(article.url)"
-              :src="youtubeEmbedUrl(article.url)"
-              frameborder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowfullscreen
-              class="video-player"
-            ></iframe>
-            <img
-              v-else
-              :src="article.url"
-              alt="Video Thumbnail"
-              class="video-thumbnail"
-            />
+            <div v-if="isYoutubeUrl(article.url)">
+              <iframe
+                :src="youtubeEmbedUrl(article.url)"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen
+                class="video-player"
+              ></iframe>
+              <div
+                v-html="article.content"
+                class="text-content"
+                style="white-space: pre-wrap"
+              ></div>
+            </div>
+            <div v-else>
+              <img
+                :src="article.url"
+                alt="Video Thumbnail"
+                class="video-thumbnail"
+              />
+            </div>
           </div>
 
           <!-- 일반 텍스트 컨텐츠 -->
@@ -347,12 +354,12 @@ const getCategoryName = (category) => {
 const fetchArticle = async () => {
   const res = await api.get(`/api_article/get/article_id/${articleId}`);
   article.value = res.data;
-  
+
   // 현재 사용자의 좋아요/싫어요 상태 확인
   if (user.value) {
     try {
       const likeStatus = await api.get(`/api_article/like/status`, {
-        params: { article_id: articleId }
+        params: { article_id: articleId },
       });
       liked.value = likeStatus.data.isLiked;
       disliked.value = likeStatus.data.isDisliked;
@@ -362,12 +369,12 @@ const fetchArticle = async () => {
   }
 
   if (article.value.userId) {
-    const res = await api.get(`/api_user/get/user/userId/${article.value.userId}`);
+    const res = await api.get(
+      `/api_user/get/user/userId/${article.value.userId}`
+    );
     author.value = res.data;
   }
 };
-
-
 
 const fetchComments = async () => {
   const res = await api.get("/api_comment/list", {
@@ -392,10 +399,10 @@ const toggleLike = async () => {
     await api.post("/api_article/like", null, {
       params: { article_id: articleId },
     });
-    await fetchArticle(); 
+    await fetchArticle();
     if (user.value) {
       const likeStatus = await api.get(`/api_article/like/status`, {
-        params: { article_id: articleId }
+        params: { article_id: articleId },
       });
       liked.value = likeStatus.data.isLiked;
       disliked.value = likeStatus.data.isDisliked;
@@ -414,7 +421,7 @@ const toggleDislike = async () => {
     await fetchArticle(); // 최신 데이터로 갱신
     if (user.value) {
       const likeStatus = await api.get(`/api_article/like/status`, {
-        params: { article_id: articleId }
+        params: { article_id: articleId },
       });
       liked.value = likeStatus.data.isLiked;
       disliked.value = likeStatus.data.isDisliked;
