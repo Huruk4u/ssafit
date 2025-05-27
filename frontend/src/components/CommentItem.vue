@@ -97,9 +97,9 @@
     </div>
     <div class="comment-actions">
       <button
-        @click="$emit('like', comment)"
-        :class="['reaction-btn', 'like-btn']"
-      >
+  @click="$emit('like', comment)"
+  :class="['reaction-btn', 'like-btn', { active: liked }]"
+>
         <svg viewBox="0 0 24 24" width="20" height="20" style="color: #42b983">
           <path
             fill="currentColor"
@@ -109,9 +109,9 @@
         <span>{{ comment.likeCount }}</span>
       </button>
       <button
-        @click="$emit('dislike', comment)"
-        :class="['reaction-btn', 'dislike-btn']"
-      >
+  @click="$emit('dislike', comment)"
+  :class="['reaction-btn', 'dislike-btn', { active: disliked }]"
+>
         <svg viewBox="0 0 24 24" width="20" height="20" style="color: #dc3545">
           <path
             fill="currentColor"
@@ -135,6 +135,8 @@ const props = defineProps({
   isCommentAuthor: Boolean,
   editContent: String,
   showMenu: Boolean,
+  liked: Boolean,
+  disliked: Boolean,
   formatDate: Function,
   userId: Number,
 });
@@ -319,6 +321,20 @@ onMounted(() => {
   gap: 0.75rem;
   align-items: center;
   margin-top: 0.5rem;
+}
+
+.reaction-btn.like-btn.active {
+  color: #fff !important;
+  background: linear-gradient(135deg, #a8eec1, #7ed6a7) !important;
+  border-color: #a8eec1 !important;
+  box-shadow: 0 4px 15px rgba(168, 238, 193, 0.2) !important;
+}
+
+.reaction-btn.dislike-btn.active {
+  color: #fff !important;
+  background: linear-gradient(135deg, #f7bfc3, #f38181) !important;
+  border-color: #f7bfc3 !important;
+  box-shadow: 0 4px 15px rgba(243, 129, 129, 0.2) !important;
 }
 
 .reaction-btn {

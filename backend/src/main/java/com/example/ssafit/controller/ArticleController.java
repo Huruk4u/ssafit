@@ -274,4 +274,13 @@ public class ArticleController {
         boolean result = articleService.disLikeArticle(articleId, currentUser.getUserId());
         return ResponseEntity.ok(result);
     }
+
+    @GetMapping("/like/status")
+    public ResponseEntity<?> getLikeStatus(
+            @RequestParam("article_id") int articleId,
+            Principal principal) {
+
+        return ResponseEntity.ok(articleService.getLikeStatus(articleId, principal.getName()));
+    }
+
 }

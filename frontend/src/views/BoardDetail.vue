@@ -237,6 +237,8 @@
             :isEditing="isEditing(comment.commentId)"
             :isCommentAuthor="isCommentAuthor(comment)"
             :editContent="editContent"
+            :liked="commentLikeStatus[comment.commentId]?.liked"
+            :disliked="commentLikeStatus[comment.commentId]?.disliked"
             @update:editContent="editContent = $event"
             :showMenu="showCommentUserMenuId === comment.commentId"
             :formatDate="formatDate"
@@ -289,6 +291,26 @@ const isLoading = ref(true);
 
 const editingId = ref(null);
 const editContent = ref("");
+const commentLikeStatus = ref({});
+
+const fetchCommentLikeStatus = async () => {
+  if (!user.value) return;
+  const statusMap = {};
+  for (const comment of comments.value) {
+    try {
+      const res = await api.get("/api_comment/like/status", {
+        params: { comment_id: comment.commentId },
+      });
+      statusMap[comment.commentId] = {
+        liked: res.data.isLiked,
+        disliked: res.data.isDisliked,
+      };
+    } catch (e) {
+      statusMap[comment.commentId] = { liked: false, disliked: false };
+    }
+  }
+  commentLikeStatus.value = statusMap;
+};
 
 console.log(article.value);
 
@@ -325,22 +347,34 @@ const getCategoryName = (category) => {
 const fetchArticle = async () => {
   const res = await api.get(`/api_article/get/article_id/${articleId}`);
   article.value = res.data;
-  liked.value = false;
-  disliked.value = false;
+  
+  // 현재 사용자의 좋아요/싫어요 상태 확인
+  if (user.value) {
+    try {
+      const likeStatus = await api.get(`/api_article/like/status`, {
+        params: { article_id: articleId }
+      });
+      liked.value = likeStatus.data.isLiked;
+      disliked.value = likeStatus.data.isDisliked;
+    } catch (error) {
+      console.error("Error fetching like status:", error);
+    }
+  }
 
   if (article.value.userId) {
-    const res = await api.get(
-      `/api_user/get/user/userId/${article.value.userId}`
-    );
+    const res = await api.get(`/api_user/get/user/userId/${article.value.userId}`);
     author.value = res.data;
   }
 };
+
+
 
 const fetchComments = async () => {
   const res = await api.get("/api_comment/list", {
     params: { article_id: articleId },
   });
   comments.value = res.data || [];
+  await fetchCommentLikeStatus();
 };
 
 const submitComment = async () => {
@@ -354,17 +388,41 @@ const submitComment = async () => {
 };
 
 const toggleLike = async () => {
-  await api.post("/api_article/like", null, {
-    params: { article_id: articleId },
-  });
-  await fetchArticle(); // 항상 최신 데이터로 동기화
+  try {
+    await api.post("/api_article/like", null, {
+      params: { article_id: articleId },
+    });
+    await fetchArticle(); 
+    if (user.value) {
+      const likeStatus = await api.get(`/api_article/like/status`, {
+        params: { article_id: articleId }
+      });
+      liked.value = likeStatus.data.isLiked;
+      disliked.value = likeStatus.data.isDisliked;
+    }
+  } catch (error) {
+    console.error("Error toggling like:", error);
+    alert("좋아요 처리 중 오류가 발생했습니다.");
+  }
 };
 
 const toggleDislike = async () => {
-  await api.post("/api_article/disLike", null, {
-    params: { article_id: articleId },
-  });
-  await fetchArticle(); // 항상 최신 데이터로 동기화
+  try {
+    await api.post("/api_article/disLike", null, {
+      params: { article_id: articleId },
+    });
+    await fetchArticle(); // 최신 데이터로 갱신
+    if (user.value) {
+      const likeStatus = await api.get(`/api_article/like/status`, {
+        params: { article_id: articleId }
+      });
+      liked.value = likeStatus.data.isLiked;
+      disliked.value = likeStatus.data.isDisliked;
+    }
+  } catch (error) {
+    console.error("Error toggling dislike:", error);
+    alert("싫어요 처리 중 오류가 발생했습니다.");
+  }
 };
 
 const goToEdit = () => router.push(`/board/edit/${articleId}`);
@@ -378,14 +436,14 @@ const deleteArticle = async () => {
 const reportCategories = ["욕설/비방", "광고", "도배", "음란물", "기타"];
 
 const toggleCommentLike = async (comment) => {
-  const res = await api.post("/api_comment/like", null, {
+  await api.post("/api_comment/like", null, {
     params: { comment_id: comment.commentId },
   });
   await fetchComments();
 };
 
 const toggleCommentDislike = async (comment) => {
-  const res = await api.post("/api_comment/dislike", null, {
+  await api.post("/api_comment/dislike", null, {
     params: { comment_id: comment.commentId },
   });
   await fetchComments();

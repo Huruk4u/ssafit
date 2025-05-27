@@ -5,22 +5,28 @@
 
     <!-- 1. 모든 댓글 조회 (사용자명 포함) -->
     <select id="selectAllComments">
-        SELECT c.*, u.username
+        SELECT c.*, u.username,
+               (SELECT COUNT(*) FROM comment_likes cl WHERE cl.comment_id = c.comment_id) AS likeCount,
+               (SELECT COUNT(*) FROM comment_dislikes cd WHERE cd.comment_id = c.comment_id) AS dislikeCount
         FROM comments c
                  LEFT JOIN users u ON c.user_id = u.user_id
     </select>
 
     <!-- 2. 특정 댓글 조회 (사용자명 포함) -->
     <select id="selectCommentByCommentId">
-        SELECT c.*, u.username
+        SELECT c.*, u.username,
+               (SELECT COUNT(*) FROM comment_likes cl WHERE cl.comment_id = c.comment_id) AS likeCount,
+               (SELECT COUNT(*) FROM comment_dislikes cd WHERE cd.comment_id = c.comment_id) AS dislikeCount
         FROM comments c
                  LEFT JOIN users u ON c.user_id = u.user_id
         WHERE c.comment_id = #{commentId}
     </select>
 
     <!-- 3. 특정 게시글의 댓글 리스트 조회 (사용자명 포함) -->
-    <select id="selectCommentListByArticleId" >
-        SELECT c.*, u.username
+    <select id="selectCommentListByArticleId">
+        SELECT c.*, u.username,
+               (SELECT COUNT(*) FROM comment_likes cl WHERE cl.comment_id = c.comment_id) AS likeCount,
+               (SELECT COUNT(*) FROM comment_dislikes cd WHERE cd.comment_id = c.comment_id) AS dislikeCount
         FROM comments c
                  LEFT JOIN users u ON c.user_id = u.user_id
         WHERE c.article_id = #{articleId}
@@ -29,7 +35,9 @@
 
     <!-- 4. 특정 사용자의 댓글 리스트 조회 (사용자명 포함) -->
     <select id="selectCommentListByUserId">
-        SELECT c.*, u.username
+        SELECT c.*, u.username,
+               (SELECT COUNT(*) FROM comment_likes cl WHERE cl.comment_id = c.comment_id) AS likeCount,
+               (SELECT COUNT(*) FROM comment_dislikes cd WHERE cd.comment_id = c.comment_id) AS dislikeCount
         FROM comments c
                  LEFT JOIN users u ON c.user_id = u.user_id
         WHERE c.user_id = #{userId}
@@ -49,11 +57,9 @@
         WHERE comment_id = #{commentId}
     </update>
 
-
     <!-- 댓글 삭제 -->
     <delete id="deleteComment">
-        DELETE
-        FROM comments
+        DELETE FROM comments
         WHERE comment_id = #{commentId}
     </delete>
 
@@ -77,27 +83,6 @@
           AND user_id = #{userId}
     </delete>
 
-    <!-- 좋아요 수 증가 -->
-    <update id="increaseLikeCount">
-        UPDATE comments
-        SET like_count = like_count + 1
-        WHERE comment_id = #{commentId}
-    </update>
-
-    <!-- 좋아요 수 감소 -->
-    <update id="decreaseLikeCount">
-        UPDATE comments
-        SET like_count = like_count - 1
-        WHERE comment_id = #{commentId}
-    </update>
-
-    <!-- 좋아요 수 조회 -->
-    <select id="getLikeCount" resultType="int">
-        SELECT like_count
-        FROM comments
-        WHERE comment_id = #{commentId}
-    </select>
-
     <!-- ========== 싫어요 기능 ========== -->
     <select id="isDisliked" resultType="boolean">
         SELECT EXISTS (
@@ -117,27 +102,6 @@
         WHERE comment_id = #{commentId}
           AND user_id = #{userId}
     </delete>
-
-    <!-- 싫어요 수 증가 -->
-    <update id="increaseDislikeCount">
-        UPDATE comments
-        SET dislike_count = dislike_count + 1
-        WHERE comment_id = #{commentId}
-    </update>
-
-    <!-- 싫어요 수 감소 -->
-    <update id="decreaseDislikeCount">
-        UPDATE comments
-        SET dislike_count = dislike_count - 1
-        WHERE comment_id = #{commentId}
-    </update>
-
-    <!-- 싫어요 수 조회 -->
-    <select id="getDislikeCount" resultType="int">
-        SELECT dislike_count
-        FROM comments
-        WHERE comment_id = #{commentId}
-    </select>
 
     <!-- ========== 신고 기능 ========== -->
     <insert id="insertReport" parameterType="Report">

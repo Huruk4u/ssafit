@@ -3,34 +3,47 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.ssafit.model.dao.ArticleDao">
 
-    <!--1. 모든 글들을 조회 (사용자명 포함)-->
-    <select id="selectAllArticle" >
-        SELECT a.*, u.nickname
+    <!-- 1. 모든 글들을 조회 (사용자명 포함) -->
+    <select id="selectAllArticle">
+        SELECT a.article_id, a.user_id, a.category, a.title, a.content, a.tag, a.url,
+               a.created_at, a.updated_at, a.view_count, u.nickname,
+               (SELECT COUNT(*) FROM article_likes al WHERE al.article_id = a.article_id) AS likeCount,
+               (SELECT COUNT(*) FROM article_dislikes ad WHERE ad.article_id = a.article_id) AS dislikeCount
         FROM articles a
                  LEFT JOIN users u ON a.user_id = u.user_id
         ORDER BY a.created_at DESC
     </select>
 
-    <!--2. articleId가 일치하는 글을 조회 (사용자명 포함)-->
-    <select id="selectArticleByArticleId" >
-        SELECT a.*, u.nickname
+    <!-- 2. articleId가 일치하는 글을 조회 (사용자명 포함) -->
+    <select id="selectArticleByArticleId">
+        SELECT a.article_id, a.user_id, a.category, a.title, a.content, a.tag, a.url,
+               a.created_at, a.updated_at, a.view_count, u.nickname,
+               (SELECT COUNT(*) FROM article_likes al WHERE al.article_id = a.article_id) AS likeCount,
+               (SELECT COUNT(*) FROM article_dislikes ad WHERE ad.article_id = a.article_id) AS dislikeCount
         FROM articles a
                  LEFT JOIN users u ON a.user_id = u.user_id
         WHERE a.article_id = #{articleId}
     </select>
 
-    <!--3. userId가 일치하는 글들을 조회 (사용자명 포함)-->
-    <select id="selectArticleListByUserId" >
-        SELECT a.*, u.username
+    <!-- 3. userId가 일치하는 글들을 조회 (사용자명 포함) -->
+    <select id="selectArticleListByUserId">
+        SELECT a.article_id, a.user_id, a.category, a.title, a.content, a.tag, a.url,
+               a.created_at, a.updated_at, a.view_count, u.username,
+               (SELECT COUNT(*) FROM article_likes al WHERE al.article_id = a.article_id) AS likeCount,
+               (SELECT COUNT(*) FROM article_dislikes ad WHERE ad.article_id = a.article_id) AS dislikeCount
         FROM articles a
                  LEFT JOIN users u ON a.user_id = u.user_id
         WHERE a.user_id = #{userId}
         ORDER BY a.created_at DESC
     </select>
 
-    <!--4. ArticleLike의 userId가 일치하는 글들을 조회 (사용자명 포함)-->
+    <!-- 4. ArticleLike의 userId가 일치하는 글들을 조회 (사용자명 포함) -->
     <select id="selectArticleListByArticleLikeUserId">
-        SELECT DISTINCT a.*, u.nickname
+        SELECT DISTINCT a.article_id, a.user_id, a.category, a.title, a.content, a.tag, a.url,
+                        a.created_at, a.updated_at, a.view_count, u.nickname,
+                        (SELECT COUNT(*) FROM article_likes al WHERE al.article_id = a.article_id) AS likeCount,
+                        (SELECT COUNT(*) FROM article_dislikes ad WHERE ad.article_id = a.article_id) AS dislikeCount,
+                        (SELECT COUNT(*) FROM comments c WHERE c.article_id = a.article_id) AS commentCount
         FROM articles a
                  LEFT JOIN users u ON a.user_id = u.user_id
                  INNER JOIN article_likes al ON a.article_id = al.article_id
@@ -38,26 +51,28 @@
         ORDER BY a.created_at DESC
     </select>
 
-    <!--5. boardId(category)가 일치하는 글들을 조회 (사용자명 포함)-->
-    <select id="selectArticleListByBoardId" >
-        SELECT a.*, (
-            SELECT COUNT(*)
-            FROM comments
-            WHERE article_id = a.id
-        ), u.nickname
+    <!-- 5. boardId(category)가 일치하는 글들을 조회 (사용자명 포함) -->
+    <select id="selectArticleListByBoardId">
+        SELECT a.article_id, a.user_id, a.category, a.title, a.content, a.tag, a.url,
+               a.created_at, a.updated_at, a.view_count,
+               (SELECT COUNT(*) FROM comments WHERE article_id = a.article_id) AS commentCount,
+               u.nickname,
+               (SELECT COUNT(*) FROM article_likes al WHERE al.article_id = a.article_id) AS likeCount,
+               (SELECT COUNT(*) FROM article_dislikes ad WHERE ad.article_id = a.article_id) AS dislikeCount
         FROM articles a
                  LEFT JOIN users u ON a.user_id = u.user_id
         WHERE a.category = #{category}
         ORDER BY a.created_at DESC
     </select>
 
-    <!--6. searchForm으로 글들을 조회 (사용자명 포함) - articles 테이블의 tag 컬럼만 사용-->
-    <select id="selectArticleListByCondition" parameterType="SearchCondition" >
-        SELECT a.*, (
-        SELECT COUNT(*)
-        FROM comments
-        WHERE article_id = a.article_id
-        ) AS comment_count, u.nickname
+    <!-- 6. searchForm으로 글들을 조회 (사용자명 포함) -->
+    <select id="selectArticleListByCondition" parameterType="SearchCondition">
+        SELECT a.article_id, a.user_id, a.category, a.title, a.content, a.tag, a.url,
+        a.created_at, a.updated_at, a.view_count,
+        (SELECT COUNT(*) FROM comments WHERE article_id = a.article_id) AS commentCount,
+        u.nickname,
+        (SELECT COUNT(*) FROM article_likes al WHERE al.article_id = a.article_id) AS likeCount,
+        (SELECT COUNT(*) FROM article_dislikes ad WHERE ad.article_id = a.article_id) AS dislikeCount
         FROM articles a
         LEFT JOIN users u ON a.user_id = u.user_id
         <where>
@@ -81,15 +96,13 @@
                 AND a.tag = #{tag}
             </if>
         </where>
-
-        <!-- 정렬 조건 처리 -->
         <choose>
             <when test="orderBy != null and orderBy != 'none'">
                 ORDER BY
                 <choose>
                     <when test="orderBy == 'created_at'">a.created_at</when>
                     <when test="orderBy == 'view_count'">a.view_count</when>
-                    <when test="orderBy == 'like_count'">a.like_count</when>
+                    <when test="orderBy == 'like_count'">likeCount</when>
                     <otherwise>a.created_at</otherwise>
                 </choose>
                 <choose>
@@ -101,10 +114,8 @@
                 ORDER BY a.created_at DESC
             </otherwise>
         </choose>
-
         LIMIT #{countPerPage} OFFSET #{offset}
     </select>
-
 
     <insert id="insertArticle" parameterType="Article">
         INSERT INTO articles(user_id, category, title, content, tag, url)
@@ -121,13 +132,12 @@
     </update>
 
     <delete id="deleteArticle">
-        DELETE
-        FROM articles
+        DELETE FROM articles
         WHERE article_id = #{articleId}
     </delete>
 
-    <!-- ========== 좋아요 기능 ========== -->
-    <select  id="isLiked" resultType="boolean">
+    <!-- ========== 좋아요/싫어요 기능 ========== -->
+    <select id="isLiked" resultType="boolean">
         SELECT EXISTS (
             SELECT 1 FROM article_likes
             WHERE article_id = #{articleId}
@@ -146,8 +156,7 @@
           AND user_id    = #{userId}
     </delete>
 
-    <!-- ========== 싫어요 기능 ========== -->
-    <select  id="isDisliked" resultType="boolean">
+    <select id="isDisliked" resultType="boolean">
         SELECT EXISTS (
             SELECT 1 FROM article_dislikes
             WHERE article_id = #{articleId}
@@ -165,43 +174,6 @@
         WHERE article_id = #{articleId}
           AND user_id    = #{userId}
     </delete>
-
-    <!-- Get like and dislike counts -->
-    <select id="getLikeCount" resultType="int">
-        SELECT like_count FROM articles WHERE article_id = #{articleId}
-    </select>
-
-    <select id="getDislikeCount" resultType="int">
-        SELECT dislike_count FROM articles WHERE article_id = #{articleId}
-    </select>
-
-    <!-- 좋아요 수 증가 -->
-    <update id="increaseLikeCount">
-        UPDATE articles
-        SET like_count = like_count + 1
-        WHERE article_id = #{articleId}
-    </update>
-
-    <!-- 좋아요 수 감소 -->
-    <update id="decreaseLikeCount">
-        UPDATE articles
-        SET like_count = like_count - 1
-        WHERE article_id = #{articleId}
-    </update>
-
-    <!-- 싫어요 수 증가 -->
-    <update id="increaseDislikeCount">
-        UPDATE articles
-        SET dislike_count = dislike_count + 1
-        WHERE article_id = #{articleId}
-    </update>
-
-    <!-- 싫어요 수 감소 -->
-    <update id="decreaseDislikeCount">
-        UPDATE articles
-        SET dislike_count = dislike_count - 1
-        WHERE article_id = #{articleId}
-    </update>
 
     <update id="increaseViewCount">
         UPDATE articles

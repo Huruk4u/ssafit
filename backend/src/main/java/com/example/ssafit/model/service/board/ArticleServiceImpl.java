@@ -1,14 +1,20 @@
 package com.example.ssafit.model.service.board;
 
+import com.example.ssafit.exception.CustomUnAuthenticationException;
+import com.example.ssafit.exception.ErrorCode;
 import com.example.ssafit.model.dao.ArticleDao;
 import com.example.ssafit.model.dto.article.Article;
 import com.example.ssafit.model.dto.SearchCondition;
+import com.example.ssafit.model.dto.user.User;
 import com.example.ssafit.model.service.BadgeService;
+import com.example.ssafit.model.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ArticleServiceImpl implements ArticleService {
@@ -18,6 +24,9 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Autowired
     private BadgeService badgeService;
+
+    @Autowired
+    private UserService userService;
 
     @Override
     public List<Article> searchAllArticle() {
@@ -53,12 +62,9 @@ public class ArticleServiceImpl implements ArticleService {
     @Transactional
     public int addArticle(Article article) {
         int result = articleDao.insertArticle(article);
-
-        // If the article was successfully inserted, check if the user earns any badges
         if (result > 0) {
             badgeService.checkAndAwardArticleBadges(article.getUserId());
         }
-
         return result;
     }
 
@@ -79,21 +85,13 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     @Transactional
     public boolean likeArticle(int articleId, int userId) {
-        // 이것도 내부 로직이므로, exception처리 안 함.
         if (articleDao.isLiked(articleId, userId)) {
-            // 이미 좋아요한 경우 - 취소
             articleDao.deleteLike(articleId, userId);
-            articleDao.decreaseLikeCount(articleId); // 좋아요 수 감소
             return false;
         } else {
-            // 좋아요 추가
             articleDao.insertLike(articleId, userId);
-            articleDao.increaseLikeCount(articleId); // 좋아요 수 증가
-
-            // 이미 싫어요를 했다면 싫어요 취소
             if (articleDao.isDisliked(articleId, userId)) {
                 articleDao.deleteDislike(articleId, userId);
-                articleDao.decreaseDislikeCount(articleId);
             }
             return true;
         }
@@ -103,32 +101,15 @@ public class ArticleServiceImpl implements ArticleService {
     @Transactional
     public boolean disLikeArticle(int articleId, int userId) {
         if (articleDao.isDisliked(articleId, userId)) {
-            // 이미 싫어요한 경우 - 취소
             articleDao.deleteDislike(articleId, userId);
-            articleDao.decreaseDislikeCount(articleId); // 싫어요 수 감소
             return false;
         } else {
-            // 싫어요 추가
             articleDao.insertDislike(articleId, userId);
-            articleDao.increaseDislikeCount(articleId); // 싫어요 수 증가
-
-            // 이미 좋아요를 했다면 좋아요 취소
             if (articleDao.isLiked(articleId, userId)) {
                 articleDao.deleteLike(articleId, userId);
-                articleDao.decreaseLikeCount(articleId);
             }
             return true;
         }
-    }
-
-    @Override
-    public int getLikeCount(int articleId) {
-        return articleDao.getLikeCount(articleId);
-    }
-
-    @Override
-    public int getDislikeCount(int articleId) {
-        return articleDao.getDislikeCount(articleId);
     }
 
     @Override
@@ -140,5 +121,17 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public int getTotalCount(SearchCondition condition) {
         return articleDao.getTotalCount(condition);
+    }
+
+    @Override
+    public Map<String, Boolean> getLikeStatus(int articleId, String username) {
+        User user = userService.searchByUsername(username);
+        if (user == null) {
+            throw new CustomUnAuthenticationException(ErrorCode.USER_NOT_FOUND);
+        }
+        Map<String, Boolean> status = new HashMap<>();
+        status.put("isLiked", articleDao.isLiked(articleId, user.getUserId()));
+        status.put("isDisliked", articleDao.isDisliked(articleId, user.getUserId()));
+        return status;
     }
 }

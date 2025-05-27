@@ -12,7 +12,7 @@ public interface CommentDao {
     List<Comment> selectAllComments();
     Comment selectCommentByCommentId(int commentId);
     List<Comment> selectCommentListByArticleId(int articleId);
-    List<Comment> selectCommentListByUserId(int userId);
+    List<Comment> selectCommentListByUserId(long userId);
 
     // 댓글 작성
     int insertComment(Comment comment);
@@ -25,21 +25,15 @@ public interface CommentDao {
 
     // 좋아요 관련 메서드
     boolean isLiked(@Param("commentId") int commentId, @Param("userId") Long userId);
-    void insertLike(@Param("commentId") int commentId, @Param("userId") int userId);
-    void deleteLike(@Param("commentId") int commentId, @Param("userId") int userId);
-    void increaseLikeCount(int commentId);
-    void decreaseLikeCount(int commentId);
-    int getLikeCount(int commentId);
+    void insertLike(@Param("commentId") int commentId, @Param("userId") Long userId);
+    void deleteLike(@Param("commentId") int commentId, @Param("userId") Long userId);
 
     // 싫어요 관련 메서드
-    boolean isDisliked(@Param("commentId") int commentId, @Param("userId") int userId);
-    void insertDislike(@Param("commentId") int commentId, @Param("userId") int userId);
-    void deleteDislike(@Param("commentId") int commentId, @Param("userId") int userId);
-    void increaseDislikeCount(int commentId);
-    void decreaseDislikeCount(int commentId);
-    int getDislikeCount(int commentId);
+    boolean isDisliked(@Param("commentId") int commentId, @Param("userId") Long userId);
+    void insertDislike(@Param("commentId") int commentId, @Param("userId") Long userId);
+    void deleteDislike(@Param("commentId") int commentId, @Param("userId") Long userId);
 
     // 신고 관련 메서드
     int insertReport(Report report);
-    boolean isReported(@Param("commentId") int commentId, @Param("userId") int userId);
+    boolean isReported(@Param("commentId") int commentId, @Param("userId") Long userId);
 }

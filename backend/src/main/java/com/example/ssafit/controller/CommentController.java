@@ -160,4 +160,12 @@ public class CommentController {
         boolean result = commentService.dislikeComment(commentId, currentUser.getUserId());
         return ResponseEntity.ok(result);
     }
+
+    @GetMapping("/like/status")
+    public ResponseEntity<?> getLikeStatus(
+            @RequestParam("comment_id") int commentId,
+            Principal principal) {
+
+        return ResponseEntity.ok(commentService.getLikeStatus(commentId, principal.getName()));
+    }
 }
