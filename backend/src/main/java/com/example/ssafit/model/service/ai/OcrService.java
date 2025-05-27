@@ -2,26 +2,17 @@ package com.example.ssafit.model.service.ai;
 
 import com.example.ssafit.exception.CustomInbodyException;
 import com.example.ssafit.exception.ErrorCode;
-import com.google.api.gax.longrunning.OperationFuture;
-import com.google.cloud.speech.v1p1beta1.*;
 import com.google.cloud.vision.v1.*;
 import com.google.protobuf.ByteString;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 @Service
 public class OcrService {
