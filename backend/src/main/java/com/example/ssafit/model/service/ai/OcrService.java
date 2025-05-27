@@ -64,7 +64,7 @@ public class OcrService {
         File subtitleFile = new File("subtitles.en.vtt");
 
         ProcessBuilder pb = new ProcessBuilder(
-                "C:\\Users\\sungm\\Desktop\\final\\yt-dlp.exe",
+                "C:\\Temp\\tools\\yt-dlp.exe",
                 "--write-auto-sub",
                 "--sub-lang", "en",
                 "--skip-download",
