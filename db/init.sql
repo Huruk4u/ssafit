@@ -1,0 +1,555 @@
+-- ========================================
+-- 1. 데이터베이스 생성/사용
+-- ========================================
+DROP DATABASE IF EXISTS ssafitdb;
+CREATE DATABASE IF NOT EXISTS ssafitdb;
+USE ssafitdb;
+
+-- ========================================
+-- 2. 유저 / 관리자 / 배지
+-- ========================================
+CREATE TABLE badges (
+                        badge_id    VARCHAR(100) PRIMARY KEY,
+                        name        VARCHAR(100) NOT NULL,
+                        icon_url    VARCHAR(255),
+                        description TEXT
+) ENGINE=InnoDB;
+
+CREATE TABLE users (
+                       user_id          BIGINT       PRIMARY KEY AUTO_INCREMENT,
+                       username         VARCHAR(100) NOT NULL UNIQUE,
+                       password         VARCHAR(255) NOT NULL,
+                       nickname         VARCHAR(100),
+                       email            VARCHAR(255),
+                       profile_image    VARCHAR(255),
+                       background_image VARCHAR(255),
+                       enabled          BOOLEAN      DEFAULT TRUE,
+                       suspend_start TIMESTAMP NULL,
+                       suspend_end   TIMESTAMP NULL,
+                       created_at       TIMESTAMP    DEFAULT CURRENT_TIMESTAMP,
+                       first_exercise VARCHAR(50) NULL,
+                       second_exercise VARCHAR(50) NULL,
+                       third_exercise VARCHAR(50) NULL,
+                       role VARCHAR(20) DEFAULT 'ROLE_USER'
+) ENGINE=InnoDB;
+
+CREATE TABLE user_badges (
+                             user_id        BIGINT,
+                             badge_id       VARCHAR(100),
+                             earned_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                             is_represented BOOLEAN DEFAULT FALSE,
+                             PRIMARY KEY (user_id, badge_id),
+                             FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+                             FOREIGN KEY (badge_id) REFERENCES badges(badge_id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- ========================================
+-- 3. 챌린지 / 인바디
+-- ========================================
+CREATE TABLE challenges (
+                            challenge_id        BIGINT    PRIMARY KEY AUTO_INCREMENT,
+                            user_id             BIGINT    NOT NULL,
+                            record_date DATE NOT NULL,
+                            created_at          TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                            FOREIGN KEY (user_id) REFERENCES users(user_id),
+                            UNIQUE(user_id, record_date)
+) ENGINE=InnoDB;
+
+CREATE TABLE inbody_data (
+                             inbody_id    BIGINT    PRIMARY KEY AUTO_INCREMENT,
+                             user_id      BIGINT    NOT NULL,
+                             weight       DECIMAL(5,2),
+                             muscle_mass  DECIMAL(5,2),
+                             body_fat     DECIMAL(5,2),
+                             body_fat_percentage DECIMAL(5,2),
+                             bmi          DECIMAL(5,2),
+                             uploaded_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                             updated_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                             FOREIGN KEY (user_id) REFERENCES users(user_id)
+) ENGINE=InnoDB;
+
+-- ========================================
+-- 4. 게시글 / 댓글 / 좋아요·싫어요
+-- ========================================
+
+CREATE TABLE articles (
+                          article_id  BIGINT     PRIMARY KEY AUTO_INCREMENT,
+                          user_id     BIGINT     NOT NULL,
+                          category    VARCHAR(255)  NOT NULL,
+                          title       VARCHAR(255) NOT NULL,
+                          content     TEXT,
+                          tag    VARCHAR(255),
+                          view_count BIGINT DEFAULT 0,
+                          like_count    BIGINT NOT NULL DEFAULT 0,
+                          dislike_count    BIGINT NOT NULL DEFAULT 0,
+                          url         VARCHAR(255),
+                          created_at  TIMESTAMP  DEFAULT CURRENT_TIMESTAMP,
+                          updated_at  TIMESTAMP  DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                          FOREIGN KEY (user_id)  REFERENCES users(user_id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+CREATE TABLE comments (
+                          comment_id  BIGINT     PRIMARY KEY AUTO_INCREMENT,
+                          article_id  BIGINT     NOT NULL,
+                          user_id     BIGINT     NOT NULL,
+                          content     TEXT        NOT NULL,
+                          like_count    BIGINT NOT NULL DEFAULT 0,
+                          dislike_count    BIGINT NOT NULL DEFAULT 0,
+                          created_at  TIMESTAMP  DEFAULT CURRENT_TIMESTAMP,
+                          updated_at  TIMESTAMP  DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                          FOREIGN KEY (article_id) REFERENCES articles(article_id) ON DELETE CASCADE,
+                          FOREIGN KEY (user_id)    REFERENCES users(user_id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+CREATE TABLE article_likes (
+                               article_like_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+                               article_id      BIGINT NOT NULL,
+                               user_id         BIGINT NOT NULL,
+                               created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                               FOREIGN KEY (article_id) REFERENCES articles(article_id) ON DELETE CASCADE,
+                               FOREIGN KEY (user_id)    REFERENCES users(user_id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+CREATE TABLE article_dislikes (
+                                  article_dislike_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+                                  article_id         BIGINT NOT NULL,
+                                  user_id            BIGINT NOT NULL,
+                                  created_at         TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                                  FOREIGN KEY (article_id) REFERENCES articles(article_id) ON DELETE CASCADE,
+                                  FOREIGN KEY (user_id)    REFERENCES users(user_id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+CREATE TABLE comment_likes (
+                               comment_like_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+                               comment_id      BIGINT NOT NULL,
+                               user_id         BIGINT NOT NULL,
+                               created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                               FOREIGN KEY (comment_id) REFERENCES comments(comment_id) ON DELETE CASCADE,
+                               FOREIGN KEY (user_id)     REFERENCES users(user_id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+CREATE TABLE comment_dislikes (
+                                  comment_dislike_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+                                  comment_id         BIGINT NOT NULL,
+                                  user_id            BIGINT NOT NULL,
+                                  created_at         TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                                  FOREIGN KEY (comment_id) REFERENCES comments(comment_id) ON DELETE CASCADE,
+                                  FOREIGN KEY (user_id)     REFERENCES users(user_id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- ========================================
+-- 5. 알림 (Notifications)
+-- ========================================
+CREATE TABLE notifications (
+                               notification_id BIGINT    PRIMARY KEY AUTO_INCREMENT,
+                               user_id         BIGINT    NOT NULL,
+                               type            VARCHAR(50) NOT NULL COMMENT 'challenge, reply, like 등',
+                               payload         JSON       NOT NULL COMMENT '관련 대상(articleId, commentId 등)',
+                               is_read         BOOLEAN    DEFAULT FALSE,
+                               created_at      TIMESTAMP  DEFAULT CURRENT_TIMESTAMP,
+                               FOREIGN KEY (user_id) REFERENCES users(user_id)
+) ENGINE=InnoDB;
+
+-- ========================================
+-- 8. 신고 (Report) — Polymorphic 구조
+-- ========================================
+CREATE TABLE reports (
+                         report_id    BIGINT    PRIMARY KEY AUTO_INCREMENT,
+                         report_category VARCHAR(100),
+                         reporter_id      BIGINT    NOT NULL COMMENT '신고자 id',
+                         reporter_name  VARCHAR(50) NOT NULL COMMENT '신고자 name',
+                         reportee_id      BIGINT    NOT NULL COMMENT '피신고자 id',
+                         reportee_name  VARCHAR(50) NOT NULL COMMENT '피신고자 name',
+                         type  VARCHAR(20) NOT NULL COMMENT 'article, comment, user 등',
+                         article_id    BIGINT    NOT NULL,
+                         content      TEXT,
+                         action int NULL COMMENT '조치 내용',
+                         created_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                         is_handled BOOLEAN DEFAULT FALSE,
+                         FOREIGN KEY (article_id) REFERENCES articles(article_id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+
+CREATE TABLE follow (
+                        follower_id BIGINT NOT NULL,
+                        followee_id BIGINT NOT NULL,
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        PRIMARY KEY (follower_id, followee_id),
+                        FOREIGN KEY (follower_id) REFERENCES users(user_id) ON DELETE CASCADE,
+                        FOREIGN KEY (followee_id) REFERENCES users(user_id) ON DELETE CASCADE
+);
+
+
+-- badge 기본 설정
+INSERT INTO badges (badge_id, name, icon_url, description)
+VALUES ('ARTICLE_POSTER_LV1', '게시글 작성자 Lv.1', '/images/badges/article_poster_lv1.png', '게시글 3개 작성 배지'),
+       ('ARTICLE_POSTER_LV2', '게시글 작성자 Lv.2', '/images/badges/article_poster_lv2.png', '게시글 10개 작성 배지'),
+       ('ARTICLE_POSTER_LV3', '게시글 작성자 Lv.3', '/images/badges/article_poster_lv3.png', '게시글 50개 작성 배지')
+;
+
+INSERT INTO badges (badge_id, name, icon_url, description)
+VALUES
+    ('STREAK_3_DAYS', '3일 연속 챌린지', '/images/badges/streak_3.png', '3일 연속으로 챌린지를 완료했습니다!'),
+    ('STREAK_7_DAYS', '7일 연속 챌린지', '/images/badges/streak_7.png', '7일 연속으로 챌린지를 완료했습니다!'),
+    ('STREAK_30_DAYS', '30일 연속 챌린지', '/images/badges/streak_30.png', '30일 연속으로 챌린지를 완료했습니다!'),
+    ('STREAK_100_DAYS', '100일 연속 챌린지', '/images/badges/streak_100.png', '100일 연속으로 챌린지를 완료했습니다!');
+
+INSERT INTO users(user_id, username, password, nickname, email)
+VALUES
+    (1, "robo", "$2a$10$BSTy3.gRRCOYkQX6dapqg.5fAriwypedkQKQx6TyZ/8q8ikaWQx3u", "robo", "robo@gmail.com"),
+    (2, "dijk", "$2a$10$BSTy3.gRRCOYkQX6dapqg.5fAriwypedkQKQx6TyZ/8q8ikaWQx3u", "dijk", "dijk@gmail.com"),
+    (3, "salah", "$2a$10$BSTy3.gRRCOYkQX6dapqg.5fAriwypedkQKQx6TyZ/8q8ikaWQx3u", "salah", "salah@gmail.com"),
+    (4, "nunez", "$2a$10$BSTy3.gRRCOYkQX6dapqg.5fAriwypedkQKQx6TyZ/8q8ikaWQx3u", "nunez", "nunez@gmail.com"),
+    (5, "szobo", "$2a$10$BSTy3.gRRCOYkQX6dapqg.5fAriwypedkQKQx6TyZ/8q8ikaWQx3u", "szobo", "szobo@gmail.com"),
+    (6, "macall", "$2a$10$BSTy3.gRRCOYkQX6dapqg.5fAriwypedkQKQx6TyZ/8q8ikaWQx3u", "macall", "macall@gmail.com"),
+    (7, "elliott", "$2a$10$BSTy3.gRRCOYkQX6dapqg.5fAriwypedkQKQx6TyZ/8q8ikaWQx3u", "elliott", "elliott@gmail.com"),
+    (8, "taa", "$2a$10$BSTy3.gRRCOYkQX6dapqg.5fAriwypedkQKQx6TyZ/8q8ikaWQx3u", "taa", "taa@gmail.com"),
+    (9, "alisson", "$2a$10$BSTy3.gRRCOYkQX6dapqg.5fAriwypedkQKQx6TyZ/8q8ikaWQx3u", "alisson", "alisson@gmail.com"),
+    (10, "gomez", "$2a$10$BSTy3.gRRCOYkQX6dapqg.5fAriwypedkQKQx6TyZ/8q8ikaWQx3u", "gomez", "gomez@gmail.com");
+
+
+UPDATE users
+SET role="ROLE_ADMIN"
+WHERE username="robo";
+
+
+-- articles
+INSERT INTO articles (user_id, category, title, content, tag) VALUES
+                                                                  (3, 'info', '벤치프레스 기록 공유', '오늘 벤치프레스 80kg 성공했습니다!', 'chest'),
+                                                                  (3, 'info', '런닝머신 5km 도전', '처음으로 5km를 쉬지 않고 달렸어요.', 'cardio'),
+                                                                  (3, 'info', '플랭크 2분 성공!', '코어 힘이 많이 좋아진 것 같아요.', 'core'),
+                                                                  (3, 'info', '살라의 첫 운동일지', '오늘도 열심히 운동했습니다. 전신을 골고루 사용했어요.', 'full'),
+                                                                  (3, 'question', '상체 운동 루틴 추천 좀 해주세요', '집에서 할 수 있는 상체 루틴 뭐가 있을까요?', 'upper'),
+                                                                  (4, 'info', '누녜즈의 하체 집중 루틴 공유', '하체 강화에 집중한 하루였습니다.', 'lower'),
+                                                                  (4, 'question', '하체 운동 시 무릎 통증이 생겨요', '무릎에 무리 없이 할 수 있는 운동이 있을까요?', 'leg'),
+                                                                  (5, 'info', '소보슬라이의 코어 챌린지', '플랭크 3분 성공! 더 도전해보겠습니다.', 'core'),
+                                                                  (5, 'info', '상체+어깨 조합운동', '어깨 운동과 상체를 함께 조졌습니다.', 'shoulder'),
+                                                                  (6, 'question', '유산소만 해도 살 빠질까요?', '식단 병행 없이 유산소만으로 감량 가능한가요?', 'cardio'),
+                                                                  (6, 'info', '맥알리스터의 복근 운동 루틴', '복근 운동만 5세트 돌렸습니다.', 'abs'),
+                                                                  (7, 'question', '팔 운동 루틴 공유 좀 부탁드려요', '팔 근육을 키우고 싶은데 어떻게 해야 할까요?', 'arm'),
+                                                                  (7, 'info', '엘리엇의 등 운동 후기', '등 운동 루틴 테스트 해봤습니다.', 'back'),
+                                                                  (7, 'question', '복근 운동 매일 해도 되나요?', '매일 해도 근육에 무리가 없을까요?', 'abs'),
+                                                                  (8, 'info', '트렌트의 전신운동 루틴', '전신 타바타 돌렸습니다. 땀이 비 오듯!', 'full'),
+                                                                  (8, 'question', '전신운동 다음날 회복이 너무 느려요', '회복 속도 높이는 팁이 있을까요?', 'full'),
+                                                                  (9, 'info', '알리송의 하체+코어 훈련', '하체와 코어를 중심으로 훈련했습니다.', 'core'),
+                                                                  (9, 'question', '어깨+팔 같이 운동해도 되나요?', '같은 날 해도 괜찮을까요?', 'shoulder'),
+                                                                  (10, 'info', '고메즈의 상체 루틴', '상체 3종 세트 완료했습니다.', 'upper'),
+                                                                  (10, 'info', '등 + 가슴 운동 조합', '등과 가슴을 번갈아 훈련했어요.', 'chest'),
+                                                                  (10, 'question', '가슴 운동 후 근육통이 심해요', '정상인가요? 스트레칭 방법 추천 좀.', 'chest'),
+                                                                  (3, 'info', '살라의 루틴 - 복부 집중', '복부 타겟 루틴 공유합니다.', 'abs'),
+                                                                  (4, 'question', '팔꿈치 아플 때 팔 운동은?', '팔꿈치 통증에도 할 수 있는 운동 있을까요?', 'arm'),
+                                                                  (3, 'info', '살라의 어깨 루틴 공유', '오늘은 어깨 운동에 집중했습니다. 후면까지 타겟했어요.', 'shoulder'),
+                                                                  (3, 'question', '전신 루틴 구성 조언 부탁드립니다', '월~금까지 전신 루틴 짜보려는데 조언 구합니다.', 'full'),
+                                                                  (4, 'info', '누녜즈의 등 운동 루틴', '턱걸이 포함한 등 루틴으로 구성해봤습니다.', 'back'),
+                                                                  (4, 'question', '하체 루틴 중에 점프스쿼트는 몇 세트?', '점프스쿼트를 몇 세트나 해야 효과 있을까요?', 'leg'),
+                                                                  (4, 'info', '하체와 코어 복합 루틴', '오늘은 하체와 코어를 함께 했습니다.', 'core'),
+                                                                  (5, 'info', '소보슬라이의 복근 챌린지 일지', '30일 복근 챌린지 5일차 후기입니다.', 'abs'),
+                                                                  (5, 'question', '유산소 vs 무산소 조합 운동?', '유산소랑 근력 같이 하면 효과가 덜한가요?', 'cardio'),
+                                                                  (5, 'info', '팔 운동 덤벨 루틴 공유', '덤벨만으로 효과 본 팔 운동 공유합니다.', 'arm'),
+                                                                  (6, 'question', '어깨 통증 없이 운동하는 법', '어깨가 약한 편인데 운동 조언 부탁드려요.', 'shoulder'),
+                                                                  (6, 'info', '코어 강화 루틴 - 맥알리스터 버전', '복부와 코어 강화에 초점을 맞췄습니다.', 'core'),
+                                                                  (6, 'info', '하체 근육을 위한 루틴 변경', '새로운 하체 루틴 테스트해봤어요.', 'lower'),
+                                                                  (7, 'question', '가슴 운동 덤벨만으로 가능한가요?', '덤벨만으로 가슴 운동 루틴 짜고 싶어요.', 'chest'),
+                                                                  (7, 'info', '엘리엇의 상체 루틴 후기', '상체 루틴을 다양하게 바꿔봤어요.', 'upper'),
+                                                                  (7, 'info', '유산소 20분 루틴 공유', '줄넘기 + 버피 조합이 좋네요.', 'cardio'),
+                                                                  (8, 'question', '등 운동 시 승모근에 힘이 들어가요', '등보다는 승모가 아픈데 폼 문제일까요?', 'back'),
+                                                                  (8, 'info', '트렌트의 팔 루틴 정리', '이두, 삼두 균형 있게 운동했습니다.', 'arm'),
+                                                                  (8, 'info', '복근 루틴 - 사이클크런치 포함', '복근 루틴에 사이클크런치 추가했습니다.', 'abs'),
+                                                                  (9, 'question', '상체 루틴 매일 해도 괜찮을까요?', '하루에 상체만 계속 해도 되나요?', 'upper'),
+                                                                  (9, 'info', '전신 서킷 루틴 후기', '짧고 굵게 전신 운동했어요.', 'full'),
+                                                                  (9, 'info', '어깨 루틴 - 사이드레터럴 집중', '사이드레터럴 위주로 어깨 운동했어요.', 'shoulder'),
+                                                                  (10, 'info', '고메즈의 가슴 루틴 공유', '벤치 프레스 없이 가슴 운동해봤습니다.', 'chest'),
+                                                                  (10, 'question', '코어 운동 시 허리 통증', '코어 운동하다가 허리 아픈데 원인이 뭘까요?', 'core'),
+                                                                  (10, 'info', '하체 루틴 - 덤벨 스쿼트 중심', '덤벨을 활용한 하체 루틴입니다.', 'lower'),
+                                                                  (3, 'question', '가슴 + 어깨 조합 괜찮을까요?', '같은 날 하면 과부하일까요?', 'chest'),
+                                                                  (4, 'info', '등 근육 자극 제대로 받은 날', '로우 머신 효과가 좋았어요.', 'back'),
+                                                                  (5, 'info', '상체 루틴 리뉴얼 후기', '덤벨 + 바벨 조합으로 구성했어요.', 'upper'),
+                                                                  (6, 'question', '복근 운동은 유산소 후에?', '순서가 중요한가요? 복근은 언제?', 'abs'),
+                                                                  (7, 'info', '다리 운동 기구 없이도 가능', '맨몸 루틴으로도 근육통 생겼어요.', 'leg'),
+                                                                  (8, 'info', '유산소 루틴 - 스텝박스 활용', '30분 스텝 루틴 공유합니다.', 'cardio'),
+                                                                  (9, 'question', '등 운동 루틴에 데드리프트 포함?', '등 운동에 데드리프트는 필수인가요?', 'back');
+
+-- comments
+-- robo -> dijk 게시글(3,4)에 댓글
+INSERT INTO comments (article_id, user_id, content) VALUES
+                                                        (3, 1, '대단하세요! 하체 불꽃입니다.'),
+                                                        (4, 1, '저도 궁금해요. 전문가 답변 부탁드려요.');
+-- dijk -> robo 게시글(1,2)에 댓글
+INSERT INTO comments (article_id, user_id, content) VALUES
+                                                        (1, 2, '운동 꿀팁 감사합니다!'),
+                                                        (2, 2, '식단 참고할게요~');
+
+-- inbody_data
+-- robo (user_id=1)
+INSERT INTO inbody_data (user_id, weight, muscle_mass, body_fat, body_fat_percentage, bmi, uploaded_at) VALUES
+                                                                                                            (1, 70.2, 35.1, 16.0, 22.8, 23.1, '2024-05-01'),
+                                                                                                            (1, 70.1, 35.2, 15.9, 22.7, 23.0, '2024-05-02'),
+                                                                                                            (1, 70.0, 35.3, 15.8, 22.6, 22.9, '2024-05-03'),
+                                                                                                            (1, 69.8, 35.4, 15.5, 22.2, 22.7, '2024-05-04'),
+                                                                                                            (1, 69.7, 35.6, 15.4, 22.1, 22.6, '2024-05-05'),
+                                                                                                            (1, 69.5, 35.7, 15.2, 22.0, 22.5, '2024-05-06'),
+                                                                                                            (1, 69.9, 35.5, 15.3, 22.3, 22.7, '2024-05-07'),
+                                                                                                            (1, 69.4, 35.6, 15.0, 21.9, 22.4, '2024-05-08'),
+                                                                                                            (1, 69.2, 35.8, 14.9, 21.7, 22.3, '2024-05-09'),
+                                                                                                            (1, 69.1, 36.0, 14.6, 21.2, 22.2, '2024-05-10'),
+                                                                                                            (1, 69.0, 36.1, 14.5, 21.1, 22.1, '2024-05-11'),
+                                                                                                            (1, 68.9, 36.2, 14.3, 20.9, 22.0, '2024-05-12'),
+                                                                                                            (1, 68.8, 36.3, 14.2, 20.8, 21.9, '2024-05-13'),
+                                                                                                            (1, 68.7, 36.4, 14.1, 20.7, 21.8, '2024-05-14');
+
+-- dijk (user_id=2)
+INSERT INTO inbody_data (user_id, weight, muscle_mass, body_fat, body_fat_percentage, bmi, uploaded_at) VALUES
+                                                                                                            (2, 83.5, 38.2, 17.9, 21.5, 25.1, '2024-05-01'),
+                                                                                                            (2, 83.2, 38.2, 17.7, 21.3, 25.0, '2024-05-02'),
+                                                                                                            (2, 83.0, 38.3, 17.5, 21.1, 24.9, '2024-05-03'),
+                                                                                                            (2, 82.8, 38.4, 17.3, 20.9, 24.8, '2024-05-04'),
+                                                                                                            (2, 82.7, 38.5, 17.1, 20.7, 24.7, '2024-05-05'),
+                                                                                                            (2, 82.5, 38.6, 17.0, 20.6, 24.6, '2024-05-06'),
+                                                                                                            (2, 82.3, 38.7, 16.8, 20.4, 24.5, '2024-05-07'),
+                                                                                                            (2, 82.0, 38.8, 16.6, 20.2, 24.4, '2024-05-08'),
+                                                                                                            (2, 81.9, 38.9, 16.5, 20.1, 24.3, '2024-05-09'),
+                                                                                                            (2, 82.0, 39.0, 16.3, 19.9, 24.2, '2024-05-10'),
+                                                                                                            (2, 81.8, 39.2, 16.2, 19.7, 24.1, '2024-05-11'),
+                                                                                                            (2, 81.7, 39.2, 16.1, 19.7, 24.1, '2024-05-12'),
+                                                                                                            (2, 81.6, 39.3, 16.0, 19.6, 24.0, '2024-05-13'),
+                                                                                                            (2, 81.5, 39.4, 15.9, 19.5, 23.9, '2024-05-14');
+
+-- reports
+-- robo가 dijk의 글(article_id=3)을 신고
+INSERT INTO reports (report_category, reporter_id, reporter_name, reportee_id, reportee_name, type, article_id, content) VALUES
+    ('욕설', 1,'robo',  2, 'dijk', 'ARTICLE', 3, '욕설 및 비방성 글 신고합니다');
+-- dijk가 robo의 글(article_id=1)을 신고
+INSERT INTO reports (report_category, reporter_id, reporter_name, reportee_id, reportee_name, type, article_id, content) VALUES
+    ('광고', 2, 'dijk', 1, 'robo', 'ARTICLE', 1, '홍보성 게시글로 의심');
+
+select * from articles;
+
+-- 3번 유저의 challenge에 넣었던 날짜에 맞춰 inbody_data도 같이 삽입
+INSERT INTO inbody_data (user_id, weight, muscle_mass, body_fat, body_fat_percentage, bmi, uploaded_at) VALUES
+                                                                                                            (3, 70.1, 35.2, 15.3, 21.7, 22.1, '2024-12-05'),
+                                                                                                            (3, 69.9, 35.3, 15.1, 21.6, 22.0, '2024-12-12'),
+                                                                                                            (3, 69.6, 35.5, 14.9, 21.4, 21.9, '2024-12-25'),
+                                                                                                            (3, 69.3, 35.7, 14.7, 21.2, 21.8, '2025-01-10'),
+                                                                                                            (3, 68.9, 36.0, 14.4, 20.9, 21.7, '2025-02-14'),
+                                                                                                            (3, 68.5, 36.3, 14.1, 20.6, 21.6, '2025-03-03'),
+                                                                                                            (3, 68.2, 36.5, 13.8, 20.2, 21.5, '2025-03-21'),
+                                                                                                            (3, 68.0, 36.7, 13.6, 20.0, 21.4, '2025-04-01'),
+                                                                                                            (3, 67.9, 36.8, 13.5, 19.9, 21.4, '2025-04-02'),
+                                                                                                            (3, 67.8, 36.9, 13.4, 19.8, 21.3, '2025-04-03'),
+                                                                                                            (3, 67.7, 37.0, 13.3, 19.7, 21.3, '2025-04-04'),
+                                                                                                            (3, 67.6, 37.1, 13.2, 19.6, 21.2, '2025-04-05'),
+                                                                                                            (3, 67.5, 37.2, 13.1, 19.5, 21.2, '2025-04-06'),
+                                                                                                            (3, 67.4, 37.3, 13.0, 19.3, 21.1, '2025-04-07'),
+                                                                                                            (3, 67.3, 37.4, 12.9, 19.2, 21.1, '2025-04-08'),
+                                                                                                            (3, 67.2, 37.5, 12.8, 19.1, 21.0, '2025-04-09'),
+                                                                                                            (3, 67.1, 37.6, 12.7, 19.0, 21.0, '2025-04-10'),
+                                                                                                            (3, 67.0, 37.7, 12.6, 18.8, 20.9, '2025-04-11'),
+                                                                                                            (3, 66.9, 37.8, 12.5, 18.7, 20.9, '2025-04-12'),
+                                                                                                            (3, 66.8, 37.9, 12.4, 18.6, 20.8, '2025-04-13'),
+                                                                                                            (3, 66.7, 38.0, 12.3, 18.5, 20.8, '2025-04-14'),
+                                                                                                            (3, 66.6, 38.1, 12.2, 18.3, 20.7, '2025-04-15'),
+                                                                                                            (3, 66.5, 38.2, 12.1, 18.2, 20.7, '2025-04-16'),
+                                                                                                            (3, 66.4, 38.3, 12.0, 18.1, 20.6, '2025-04-17'),
+                                                                                                            (3, 66.3, 38.4, 11.9, 18.0, 20.6, '2025-04-18'),
+                                                                                                            (3, 66.2, 38.5, 11.8, 17.8, 20.5, '2025-04-19'),
+                                                                                                            (3, 66.1, 38.6, 11.7, 17.7, 20.5, '2025-04-20'),
+                                                                                                            (3, 66.0, 38.7, 11.6, 17.6, 20.4, '2025-04-21'),
+                                                                                                            (3, 65.9, 38.8, 11.5, 17.5, 20.4, '2025-04-22'),
+                                                                                                            (3, 65.8, 38.9, 11.4, 17.3, 20.3, '2025-04-23'),
+                                                                                                            (3, 65.7, 39.0, 11.3, 17.2, 20.3, '2025-04-24'),
+                                                                                                            (3, 65.6, 39.1, 11.2, 17.1, 20.2, '2025-04-25'),
+                                                                                                            (3, 65.5, 39.2, 11.1, 17.0, 20.2, '2025-04-26'),
+                                                                                                            (3, 65.4, 39.3, 11.0, 16.8, 20.1, '2025-04-27'),
+                                                                                                            (3, 65.3, 39.4, 10.9, 16.7, 20.1, '2025-04-29'),
+                                                                                                            (3, 65.2, 39.5, 10.8, 16.6, 20.0, '2025-04-30'),
+                                                                                                            (3, 65.1, 39.6, 10.7, 16.5, 20.0, '2025-05-01'),
+                                                                                                            (3, 65.0, 39.7, 10.6, 16.3, 19.9, '2025-05-02'),
+                                                                                                            (3, 64.9, 39.8, 10.5, 16.2, 19.9, '2025-05-03'),
+                                                                                                            (3, 64.8, 39.9, 10.4, 16.1, 19.8, '2025-05-04'),
+                                                                                                            (3, 64.7, 40.0, 10.3, 16.0, 19.8, '2025-05-05'),
+                                                                                                            (3, 64.6, 40.1, 10.2, 15.8, 19.7, '2025-05-06'),
+                                                                                                            (3, 64.5, 40.2, 10.1, 15.7, 19.7, '2025-05-07'),
+                                                                                                            (3, 64.4, 40.3, 10.0, 15.6, 19.6, '2025-05-08'),
+                                                                                                            (3, 64.3, 40.4, 9.9, 15.5, 19.6, '2025-05-09'),
+                                                                                                            (3, 64.2, 40.5, 9.8, 15.3, 19.5, '2025-05-10'),
+                                                                                                            (3, 64.1, 40.6, 9.7, 15.2, 19.5, '2025-05-11'),
+                                                                                                            (3, 64.0, 40.7, 9.6, 15.1, 19.4, '2025-05-12'),
+                                                                                                            (3, 63.9, 40.8, 9.5, 15.0, 19.4, '2025-05-13'),
+                                                                                                            (3, 63.8, 40.9, 9.4, 14.8, 19.3, '2025-05-14'),
+                                                                                                            (3, 63.7, 41.0, 9.3, 14.7, 19.3, '2025-05-15'),
+                                                                                                            (3, 63.6, 41.1, 9.2, 14.6, 19.2, '2025-05-16'),
+                                                                                                            (3, 63.5, 41.2, 9.1, 14.5, 19.2, '2025-05-17'),
+                                                                                                            (3, 63.4, 41.3, 9.0, 14.3, 19.1, '2025-05-18'),
+                                                                                                            (3, 63.3, 41.4, 8.9, 14.2, 19.1, '2025-05-19'),
+                                                                                                            (3, 63.2, 41.5, 8.8, 14.1, 19.0, '2025-05-20'),
+                                                                                                            (3, 63.1, 41.6, 8.7, 14.0, 19.0, '2025-05-21'),
+                                                                                                            (3, 63.0, 41.7, 8.6, 13.8, 18.9, '2025-05-22'),
+                                                                                                            (3, 62.9, 41.8, 8.5, 13.7, 18.9, '2025-05-23'),
+                                                                                                            (3, 62.8, 41.9, 8.4, 13.6, 18.8, '2025-05-24'),
+                                                                                                            (3, 62.7, 42.0, 8.3, 13.5, 18.8, '2025-05-25'),
+                                                                                                            (3, 62.6, 42.1, 8.2, 13.3, 18.7, '2025-05-26'),
+                                                                                                            (3, 62.5, 42.2, 8.1, 13.2, 18.7, '2025-05-27');
+select * from users;
+select * from notifications;
+select * from reports;
+select * from inbody_data;
+select * from articles;
+select * from follow;
+select * from challenges;
+-- 3번 유저의 최근 6개월
+INSERT INTO challenges (user_id, record_date) VALUES
+                                                  (3, '2025-04-01'), (3, '2025-04-02'), (3, '2025-04-03'), (3, '2025-04-04'), (3, '2025-04-05'),
+                                                  (3, '2025-04-06'), (3, '2025-04-07'), (3, '2025-04-08'), (3, '2025-04-09'), (3, '2025-04-10'),
+                                                  (3, '2025-04-11'), (3, '2025-04-12'), (3, '2025-04-13'), (3, '2025-04-14'), (3, '2025-04-15'),
+                                                  (3, '2025-04-16'), (3, '2025-04-17'), (3, '2025-04-18'), (3, '2025-04-19'), (3, '2025-04-20'),
+                                                  (3, '2025-04-21'), (3, '2025-04-22'), (3, '2025-04-23'), (3, '2025-04-24'), (3, '2025-04-25'),
+                                                  (3, '2025-04-26'), (3, '2025-04-27'), (3, '2025-04-29'), (3, '2025-04-30'),
+                                                  (3, '2025-05-01'), (3, '2025-05-02'), (3, '2025-05-03'), (3, '2025-05-04'), (3, '2025-05-05'),
+                                                  (3, '2025-05-06'), (3, '2025-05-07'), (3, '2025-05-08'), (3, '2025-05-09'), (3, '2025-05-10'),
+                                                  (3, '2025-05-11'), (3, '2025-05-12'), (3, '2025-05-13'), (3, '2025-05-14'), (3, '2025-05-15'),
+                                                  (3, '2025-05-16'), (3, '2025-05-17'), (3, '2025-05-18'), (3, '2025-05-19'), (3, '2025-05-20'),
+                                                  (3, '2025-05-21'), (3, '2025-05-22'), (3, '2025-05-23'), (3, '2025-05-24'), (3, '2025-05-25'), (3, '2025-05-26'), (3, '2025-05-27'),
+                                                  (3, '2024-12-05'), (3, '2024-12-12'), (3, '2024-12-25'),
+                                                  (3, '2025-01-10'), (3, '2025-02-14'), (3, '2025-03-03'), (3, '2025-03-21');
+
+INSERT INTO articles (user_id, category, title, url, content, tag) VALUES
+                                                                       (1, 'video', '30분 전신 운동 - 좁은 공간에서도 가능', 'https://www.youtube.com/watch?v=KjzbHCbrnWQ', '좁은 공간에서도 가능한 30분 전신 운동 루틴입니다.', 'full'),
+                                                                       (1, 'video', '20분 상체 근력 강화 운동', 'https://www.youtube.com/watch?v=xxVRCzT2a1E', '집에서 할 수 있는 20분 상체 근력 강화 운동입니다.', 'upper'),
+                                                                       (1, 'video', '20분 하체 근력 강화 운동', 'https://www.youtube.com/watch?v=zZ8tWnE8kzQ', '하체 근력을 강화하는 20분 운동 루틴입니다.', 'lower'),
+                                                                       (1, 'video', '10분 복부 중심 코어 운동', 'https://www.youtube.com/watch?v=Dl8N_8UtWUU', '집에서 할 수 있는 10분 복부 중심의 코어 운동입니다.', 'core'),
+                                                                       (1, 'video', '30분 유산소 에어로빅 운동', 'https://www.youtube.com/watch?v=vI5MzT-wIjs', '신나는 음악에 맞춰 하는 30분 유산소 에어로빅 운동입니다.', 'cardio'),
+                                                                       (1, 'video', '15분 등 근육 강화 운동', 'https://www.youtube.com/watch?v=Cd5q6veZfK0', '집에서 할 수 있는 15분 등 근육 강화 운동입니다.', 'back'),
+                                                                       (1, 'video', '2025년 가슴 운동 루틴', 'https://www.youtube.com/watch?v=zD266B2jk0s', '과학적으로 설계된 2025년 가슴 운동 루틴입니다.', 'chest'),
+                                                                       (1, 'video', '20분 어깨 근육 강화 운동', 'https://www.youtube.com/watch?v=w8cSjkXkYRc', '덤벨을 활용한 20분 어깨 근육 강화 운동입니다.', 'shoulder'),
+                                                                       (1, 'video', '10분 팔 근육 강화 운동', 'https://www.youtube.com/watch?v=9bJ8o8peiKY', '덤벨을 사용한 10분 팔 근육 강화 운동입니다.', 'arm'),
+                                                                       (1, 'video', '15분 하체 근력 강화 운동', 'https://www.youtube.com/watch?v=BFRYY12wQtc', '덤벨을 활용한 15분 하체 근력 강화 운동입니다.', 'leg'),
+                                                                       (1, 'video', '30분 전신 운동 - 아파트에서도 가능한 루틴', 'https://www.youtube.com/watch?v=73NEi4HzHPs', '좁은 공간에서도 할 수 있는 30분 전신 운동입니다.', 'full'),
+                                                                       (1, 'video', '20분 상체 근력 강화 운동 - 덤벨 활용', 'https://www.youtube.com/watch?v=JZPzynsdYCE', '덤벨을 활용한 20분 상체 근력 강화 운동입니다.', 'upper'),
+                                                                       (1, 'video', '20분 하체 운동 - 체중만으로 가능한 루틴', 'https://www.youtube.com/watch?v=Yx0BW-H5W0Y', '기구 없이 체중만으로 할 수 있는 20분 하체 운동입니다.', 'lower'),
+                                                                       (1, 'video', '10분 복부 운동 - 플랭크 없이 가능한 루틴', 'https://www.youtube.com/watch?v=RVrxNf4dtO4', '플랭크 없이 할 수 있는 10분 복부 운동입니다.', 'core'),
+                                                                       (1, 'video', '30분 유산소 운동 - 점프 없이 가능한 루틴', 'https://www.youtube.com/watch?v=oFON1wxbdjw', '점프 없이 할 수 있는 30분 유산소 운동입니다.', 'cardio'),
+                                                                       (1, 'video', '15분 등 근육 강화 운동 - 기구 없이 가능한 루틴', 'https://www.youtube.com/watch?v=jyWEHAkgI2g', '기구 없이 할 수 있는 15분 등 근육 강화 운동입니다.', 'back'),
+                                                                       (1, 'video', '25분 가슴 운동 - 덤벨과 벤치를 활용한 루틴', 'https://www.youtube.com/watch?v=rPZLkqr429g', '덤벨과 벤치를 활용한 25분 가슴 운동입니다.', 'chest'),
+                                                                       (1, 'video', '20분 어깨 운동 - 덤벨을 활용한 루틴', 'https://www.youtube.com/watch?v=I7dtBnRIzNs', '덤벨을 활용한 20분 어깨 근육 강화 운동입니다.', 'shoulder'),
+                                                                       (1, 'video', '10분 팔 근육 강화 운동 - 서서 하는 루틴', 'https://www.youtube.com/watch?v=DWs_2_Ahcio', '서서 할 수 있는 10분 팔 근육 강화 운동입니다.', 'arm'),
+                                                                       (1, 'video', '15분 하체 운동 - 덤벨을 활용한 루틴', 'https://www.youtube.com/watch?v=rma9n_xL1i0', '덤벨을 활용한 15분 하체 근력 강화 운동입니다.', 'leg'),
+                                                                       (1, 'video', '전신 운동 30분', 'https://www.youtube.com/watch?v=swRNeYw1JkY', '집에서 하는 전신 운동 루틴', 'full'),
+                                                                       (1, 'video', '상체 근력 운동', 'https://www.youtube.com/watch?v=UBMk30rjy0o', '덤벨로 하는 상체 운동', 'upper'),
+                                                                       (1, 'video', '유산소 운동', 'https://www.youtube.com/watch?v=ml6cT4AZdqI', '집에서 하는 유산소', 'cardio'),
+                                                                       (1, 'video', '고강도 유산소', 'https://www.youtube.com/watch?v=M0uO8X3_tEA', 'HIIT 운동', 'cardio'),
+                                                                       (1, 'video', '등 근육 강화', 'https://www.youtube.com/watch?v=CAwf7n6Luuc', '등 근육 발달 운동', 'back'),
+                                                                       (1, 'video', '가슴 근육 발달', 'https://www.youtube.com/watch?v=Z57CtFmRMxA', '푸쉬업 변형 운동', 'chest'),
+                                                                       (1, 'video', '어깨 근육 훈련', 'https://www.youtube.com/watch?v=3R14MnZbcpw', '어깨 넓어지는 운동', 'shoulder'),
+                                                                       (1, 'video', '팔 근력 운동', 'https://www.youtube.com/watch?v=sAq_ocpRh_I', '팔 근육 증가 운동', 'arm'),
+                                                                       (1, 'video', '복부 근육 강화', 'https://www.youtube.com/watch?v=AnYl6Nk9GOA', '복부 근력 향상', 'abs'),
+                                                                       (1, 'video', '상체 지방 태우기', 'https://www.youtube.com/watch?v=6kALZikXxLc', '상체 비만 탈출', 'upper'),
+                                                                       (1, 'video', '하체 근육 발달', 'https://www.youtube.com/watch?v=GZbfZ033f74', '하체 근력 향상', 'lower'),
+                                                                       (1, 'video', '팔 근육 발달', 'https://www.youtube.com/watch?v=sAq_ocpRh_I', '팔 근육 증가', 'arm'),
+                                                                       (1, 'video', '집에서 하는 15분 전신 운동', 'https://www.youtube.com/watch?v=2pLT-olgUJs', '간단한 동작으로 전신을 움직이는 루틴입니다.', 'full'),
+                                                                       (1, 'video', '복부 집중 10분 루틴', 'https://www.youtube.com/watch?v=1919eTCoESo', '복근을 집중적으로 단련하는 짧은 루틴입니다.', 'abs'),
+                                                                       (1, 'video', '코어 근육을 깨우는 10분 루틴', 'https://www.youtube.com/watch?v=H3jJ29oE8Zg', '코어 중심의 균형 및 안정성 향상 운동입니다.', 'core'),
+                                                                       (1, 'video', '가슴 운동 루틴 - 푸쉬업 위주', 'https://www.youtube.com/watch?v=IODxDxX7oi4', '푸쉬업 위주의 가슴 집중 운동입니다.', 'chest'),
+                                                                       (1, 'video', '팔 근육 강화 루틴 - 튜빙밴드 활용', 'https://www.youtube.com/watch?v=ykJmrZ5v0Oo', '간단한 도구로 팔 근육을 집중적으로 운동합니다.', 'arm');
+
+INSERT INTO follow (follower_id, followee_id) VALUES
+                                                  (3, 4),
+                                                  (3, 5),
+                                                  (3, 6),
+                                                  (3, 7),
+                                                  (3, 8),
+                                                  (3, 9),
+                                                  (3, 10);
+
+-- user 3이 다양한 게시글에 좋아요를 누른 경우
+INSERT INTO article_likes (article_id, user_id) VALUES
+                                                    (1, 3),
+                                                    (3, 3),
+                                                    (4, 3),
+                                                    (6, 3),
+                                                    (7, 3),
+                                                    (9, 3),
+                                                    (10, 3),
+                                                    (13, 3),
+                                                    (15, 3),
+                                                    (18, 3),
+                                                    (20, 3);
+
+-- ===== article_likes 더미 데이터 (15개) =====
+INSERT INTO article_likes (article_id, user_id, created_at) VALUES
+                                                                ( 5,  2, '2025-05-12 09:14:23'),
+                                                                (12,  7, '2025-05-13 14:03:51'),
+                                                                (23,  3, '2025-05-10 18:45:12'),
+                                                                (34, 10, '2025-05-11 07:22:38'),
+                                                                (45,  6, '2025-05-15 20:11:05'),
+                                                                ( 8,  4, '2025-05-12 12:30:47'),
+                                                                (19,  1, '2025-05-14 16:59:02'),
+                                                                (27,  9, '2025-05-13 08:05:29'),
+                                                                (31,  5, '2025-05-10 10:17:53'),
+                                                                (47,  3, '2025-05-11 22:49:18'),
+                                                                (14,  8, '2025-05-12 11:06:44'),
+                                                                (38,  2, '2025-05-14 13:33:27'),
+                                                                (44,  7, '2025-05-15 15:27:50'),
+                                                                ( 3, 10, '2025-05-13 19:58:11'),
+                                                                (50,  6, '2025-05-10 21:05:39');
+
+
+-- ===== article_dislikes 더미 데이터 (10개) =====
+INSERT INTO article_dislikes (article_id, user_id, created_at) VALUES
+                                                                   ( 6,  5, '2025-05-11 08:54:16'),
+                                                                   (15,  1, '2025-05-12 17:12:09'),
+                                                                   (22,  4, '2025-05-10 19:45:37'),
+                                                                   (29,  8, '2025-05-13 06:21:44'),
+                                                                   (33, 10, '2025-05-14 14:37:22'),
+                                                                   (41,  3, '2025-05-15 18:02:58'),
+                                                                   ( 9,  2, '2025-05-10 11:28:05'),
+                                                                   (26,  7, '2025-05-12 20:46:31'),
+                                                                   (37,  6, '2025-05-13 09:15:49'),
+                                                                   (49,  9, '2025-05-11 23:57:12');
+
+
+-- ===== comments 더미 데이터 (20개) =====
+INSERT INTO comments (article_id, user_id, content, created_at, updated_at) VALUES
+                                                                                ( 1,  4, '좋은 운동 루틴 감사합니다!',   '2025-05-10 07:12:33', '2025-05-10 07:12:33'),
+                                                                                ( 2,  6, '이 동작이 잘 이해가 안 가는데 설명 부탁드려요.',  '2025-05-11 09:45:18', '2025-05-11 09:45:18'),
+                                                                                ( 4,  6, '운동일지 잘 보고 갑니다.',  '2025-05-11 09:45:18', '2025-05-11 09:45:18'),
+                                                                                ( 5,  3, '정말 땀이 많이 나네요 ㅎㅎ',   '2025-05-12 14:22:50', '2025-05-12 14:22:50'),
+                                                                                ( 8, 10, '집에서 따라 하기 좋아요!',   '2025-05-13 16:05:07', '2025-05-13 16:05:07'),
+                                                                                (12,  2, '난이도 조절 팁 있을까요?',   '2025-05-14 18:31:44', '2025-05-14 18:31:44'),
+                                                                                (15,  7, '이 루틴 중 스쿼트가 제일 힘드네요.',   '2025-05-10 20:47:29', '2025-05-10 20:47:29'),
+                                                                                (19,  5, '추천 영상 목록 더 부탁드립니다.',   '2025-05-11 12:55:03', '2025-05-11 12:55:03'),
+                                                                                (23,  9, '어깨 통증 없이 하는 방법 있을까요?',   '2025-05-12 21:10:16', '2025-05-12 21:10:16'),
+                                                                                (27,  1, '좋은 설명 감사합니다!',  '2025-05-13 08:34:52', '2025-05-13 08:34:52'),
+                                                                                (31,  6, '저도 도전해봐야겠어요.',   '2025-05-14 11:23:28', '2025-05-14 11:23:28'),
+                                                                                (34,  4, '이거 하루에 몇 번이 적당할까요?',   '2025-05-15 13:14:05', '2025-05-15 13:14:05'),
+                                                                                (38,  8, '영상 퀄리티 좋네요!',  '2025-05-10 15:02:39', '2025-05-10 15:02:39'),
+                                                                                (41,  3, '이 루틴 후 회복 팁 알려주세요.',   '2025-05-11 17:48:22', '2025-05-11 17:48:22'),
+                                                                                (44,  7, '음악도 좋고 동작도 편하네요.',  '2025-05-12 19:25:11', '2025-05-12 19:25:11'),
+                                                                                (47, 10, '플랭크 자세 수정 안내 부탁드립니다.',   '2025-05-13 10:37:56', '2025-05-13 10:37:56'),
+                                                                                (50,  2, '더 어려운 버전도 있나요?',   '2025-05-14 22:05:44', '2025-05-14 22:05:44'),
+                                                                                ( 3,  5, '맨몸으로도 충분히 운동되네요.',   '2025-05-10 09:18:30', '2025-05-10 09:18:30'),
+                                                                                ( 6,  9, '이거 매일 해도 될까요?',   '2025-05-11 14:50:17', '2025-05-11 14:50:17'),
+                                                                                ( 9,  1, '스트레칭 부분이 특히 좋았어요.',   '2025-05-12 12:09:44', '2025-05-12 12:09:44'),
+                                                                                (14,  4, '덤벨 없이도 가능한가요?',   '2025-05-13 18:22:05', '2025-05-13 18:22:05');
+-- comment_likes 더미 데이터
+INSERT INTO comment_likes (comment_id, user_id)
+VALUES
+    (1, 1),
+    (1, 2),
+    (1, 3),
+    (2, 2),
+    (2, 4),
+    (3, 1),
+    (3, 5);
+
+-- comment_dislikes 더미 데이터
+INSERT INTO comment_dislikes (comment_id, user_id)
+VALUES
+    (1, 4),
+    (2, 1),
+    (2, 3),
+    (3, 2),
+    (3, 4);
+INSERT INTO user_badges (user_id, badge_id, earned_at, is_represented) VALUES
+                                                                           (3, 'ARTICLE_POSTER_LV1', NOW(), FALSE),
+                                                                           (3, 'STREAK_3_DAYS', NOW(), FALSE),
+                                                                           (3, 'STREAK_7_DAYS', NOW(), FALSE);

@@ -15,6 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.util.PathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -33,16 +34,16 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     @Autowired
     private TokenBlacklist tokenBlacklist;
 
-    @Autowired
-    private PathMatcher pathMatcher;
+    private static final AntPathMatcher matcher = new AntPathMatcher();
 
     // token인증 없이 접근 가능한 URL request
-    private static final String[] WHITE_LIST_URL = { "/api/v1/auth/**", "/v2/api-docs", "/v3/api-docs",
-            "/v3/api-docs/**", "/swagger-resources", "/swagger-resources/**", "/configuration/ui",
-            "/configuration/security", "/swagger-ui/**", "/webjars/**", "/swagger-ui.html", "/api/auth/**",
-            "/api/test/**", "/api_auth/authenticate", "/api_user/post/signup", "/swagger-ui/index.html",
-            "/images/**"};
-
+    private static final String[] WHITE_LIST_URL = {
+            "/", "/index.html", "/favicon.ico", "/assets/**", "/css/**", "/js/**", "/images/**",
+            "/api/v1/auth/**", "/api_auth/authenticate", "/api_user/post/signup",
+            "/v2/api-docs", "/v3/api-docs", "/v3/api-docs/**", "/swagger-resources",
+            "/swagger-resources/**", "/configuration/ui", "/configuration/security",
+            "/swagger-ui/**", "/swagger-ui.html", "/webjars/**", "/api/test/**"
+    };
 
     @Override
     protected void doFilterInternal(jakarta.servlet.http.HttpServletRequest request,
@@ -52,7 +53,14 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
         String uri = request.getRequestURI();
 
-        if (Arrays.stream(WHITE_LIST_URL).anyMatch(pattern -> pathMatcher.match(pattern, uri))) {
+        System.out.println("URI: " + uri);
+
+        if (uri.startsWith("/assets/")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        if (Arrays.stream(WHITE_LIST_URL).anyMatch(pattern -> matcher.match(pattern, uri))) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -60,7 +68,13 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         String rawHeader = request.getHeader("Authorization");
         String token = jwtTokenUtil.extractPureToken(rawHeader);
 
-        if (token == null || tokenBlacklist.isBlacklisted(token)) {
+        if (token == null) {
+            filterChain.doFilter(request, response);
+            System.out.println("token 존재하지 않아.");
+            return;
+        }
+
+        if (tokenBlacklist.isBlacklisted(token)) {
             logger.warn("blacklisted된 JWT토큰으로 접근을 시도했습니다.");
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.getWriter().write("토큰이 만료되었거나, 로그아웃된 상태입니다.");
@@ -113,7 +127,5 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             }
         }
         filterChain.doFilter(request, response);
-
     }
-
 }

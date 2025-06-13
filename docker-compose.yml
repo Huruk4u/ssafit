@@ -1,0 +1,30 @@
+services:
+  mysql:
+    image: mysql:8
+    container_name: ssafit-mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=fhqjxmtms26!
+      - MYSQL_DATABASE=ssafitdb
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  redis:
+    image: redis:7
+    container_name: ssafit-redis
+    ports:
+      - "6379:6379"
+
+  backend:
+    build: ./backend
+    container_name: ssafit-backend
+    ports:
+      - "8080:8080"
+    env_file:
+      - ./backend/.env
+    volumes:
+      - ./backend/secret/cloud-vision-api.json:/secrets/cloud-vision-api.json
+    depends_on:
+      - mysql
+      - redis

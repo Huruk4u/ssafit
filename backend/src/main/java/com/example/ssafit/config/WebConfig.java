@@ -21,6 +21,9 @@ public class WebConfig implements WebMvcConfigurer {
         // 뱃지 이미지를 위한 리소스 핸들러 추가
         registry.addResourceHandler("/images/badges/**")
                 .addResourceLocations("file:///" + BADGES_IMAGE_PATH);
+
+        registry.addResourceHandler("/assets/**")
+                .addResourceLocations("classpath:/static/assets/");
     }
 
     @Override
@@ -35,4 +38,13 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedOrigins("http://localhost:5173")
                 .allowedMethods("GET", "POST", "PUT", "DELETE");
     }
+
+    @Override
+    public void addViewControllers(ViewControllerRegistry registry) {
+        registry.addViewController("/{spring:[a-zA-Z0-9-_]+}")
+                .setViewName("forward:/index.html");
+        registry.addViewController("/**/{spring:[a-zA-Z0-9-_]+}")
+                .setViewName("forward:/index.html");
+    }
+
 }
