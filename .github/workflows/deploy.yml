@@ -1,0 +1,27 @@
+name: CD Deploy
+
+on:
+  push:
+    branches: [ "master_docker" ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Setup SSH
+      uses: webfactory/ssh-agent@v0.7.0
+      with:
+        ssh-private-key: ${{ secrets.DEPLOY_KEY }}
+
+    - name: Deploy to Home PC
+      run: |
+        ssh -o StrictHostKeyChecking=no -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "
+          cd C:/Users/sungm/Desktop/final/ssafit
+          docker pull ${{ secrets.DOCKER_USERNAME }}/ssafit &&
+          docker-compose down &&
+          docker-compose up -d
+        "
