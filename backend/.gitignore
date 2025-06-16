@@ -38,5 +38,7 @@ src/main/resources/cloud-vision-api.json
 ### sensitive information
 deploy.bat
 /secrets/
+./backend/secrets/
+*.json
 
 .env
