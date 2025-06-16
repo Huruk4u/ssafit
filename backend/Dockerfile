@@ -21,11 +21,3 @@ COPY --from=builder /app/target/*.jar app.jar
 ENV SPRING_PROFILES_ACTIVE=prod
 
 ENTRYPOINT ["java", "-jar", "/app/app.jar"]
-
-
-#FROM openjdk:17-jdk-slim
-#
-#ARG JAR_FILE=target/*.jar
-#COPY ${JAR_FILE} app.jar
-#
-#ENTRYPOINT ["java", "-jar", "/app.jar"]
