@@ -32,13 +32,11 @@ build/
 ### VS Code ###
 .vscode/
 
-### api key
-src/main/resources/cloud-vision-api.json
-
 ### sensitive information
 deploy.bat
-/secrets/
-./backend/secrets/
+/secret/
+./secret/
 *.json
+secret/
 
 .env
